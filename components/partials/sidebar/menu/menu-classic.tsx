@@ -16,9 +16,6 @@ import { useConfig } from "@/hooks/use-config";
 import MenuLabel from "../common/menu-label";
 import MenuItem from "../common/menu-item";
 import { CollapseMenuButton } from "../common/collapse-menu-button";
-import MenuWidget from "../common/menu-widget";
-import SearchBar from '@/components/partials/sidebar/common/search-bar'
-import TeamSwitcher from '../common/team-switcher'
 import { useTranslations } from 'next-intl';
 import { useParams } from 'next/navigation'
 import { getLangDir } from 'rtl-detect';
@@ -77,8 +74,8 @@ export function MenuClassic({ }) {
                         'text-center': collapsed || !hovered
                     })}>
 
-                        <TeamSwitcher />
-                        <SearchBar />
+                        {/*<TeamSwitcher />*/}
+                        {/*<SearchBar />*/}
                     </div>
 
                 )}
@@ -144,11 +141,6 @@ export function MenuClassic({ }) {
 
                             </li>
                         ))}
-                        {!collapsed && (
-                            <li className="w-full grow flex items-end">
-                                <MenuWidget />
-                            </li>
-                        )}
                     </ul>
                 </nav>
 

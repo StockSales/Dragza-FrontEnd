@@ -1,8 +1,8 @@
 // user data 
 const users = [
   {
-    name: "dashcode",
-    email: "dashcode@codeshaper.net",
+    name: "Dr/ Mina Emad",
+    email: "minaemad@gmail.com",
     password: "password",
     image: '/images/users/user-1.jpg',
   },

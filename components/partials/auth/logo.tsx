@@ -7,15 +7,11 @@ const Logo = () => {
   return (
     <div>
       <Image
-        src={
-          mode === "light"
-            ? "/images/logo/logo.svg"
-            : "/images/logo/logo-white.svg"
-        }
+        src={"/LOGO.png"}
         alt=""
         width={300}
         height={300}
-        className=" w-36 "
+        className=" w-36"
       />
     </div>
   );
