@@ -68,10 +68,7 @@ const TransactionsTable = () => {
 
   return (
     <div className="w-full">
-      <div className="flex flex-wrap items-center py-4 px-6 border-b border-solid border-default-200">
-        <div className="flex-1 text-xl flex gap-4 font-medium text-default-900">
-          Purchase List
-        </div>
+      <div className="flex flex-wrap justify-end items-center py-4 px-6 border-b border-solid border-default-200">
         <div className="#flex-none">
           <div className="flex items-center gap-4 flex-wrap">
             <Select>

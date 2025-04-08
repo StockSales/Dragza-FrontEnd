@@ -4,7 +4,6 @@ import TransactionsTable from "./transactions";
 const OrderList = () => {
   return (
     <div>
-      Orders
       <Card>
         <TransactionsTable />
       </Card>

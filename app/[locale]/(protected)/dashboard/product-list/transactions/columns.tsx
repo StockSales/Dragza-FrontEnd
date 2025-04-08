@@ -1,16 +1,26 @@
 import { ColumnDef } from "@tanstack/react-table";
-import { SquarePen, Trash2, TriangleAlert } from "lucide-react";
+import { SquarePen, Trash2 } from "lucide-react";
 import { Checkbox } from "@/components/ui/checkbox";
 import { Link } from '@/i18n/routing';
+import { Switch } from "@/components/ui/switch";
+import Image from "next/image";
+import {usePathname} from "next/navigation";
 
 export type DataProps = {
   id: string | number;
-  phone: string;
+  product: {
+    name: string;
+    image: string;
+  };
+  category: string;
   seller: string;
-  date: string;
-  email: string;
-  store: string;
-  quantity: number;
+  stock: number;
+  info: {
+    soldItems: number;
+    basePrice: string;
+    ratings: number;
+  };
+  published: boolean;
   action: React.ReactNode;
 };
 export const columns: ColumnDef<DataProps>[] = [
@@ -42,14 +52,23 @@ export const columns: ColumnDef<DataProps>[] = [
   },
 
   {
-    accessorKey: "seller",
-    header: "Billing Name",
+    accessorKey: "product",
+    header: "Product",
     cell: ({ row }) => {
+      const product = row.original.product;
       return (
         <div className="font-medium text-card-foreground/80">
           <div className="flex gap-3 items-center">
-            <span className="text-sm text-default-600 whitespace-nowrap">
-              {row.getValue("seller")}
+            <Image
+              src={product.image}
+              alt=""
+              height={32}
+              width={32}
+              className=" w-8 h-8"
+            />
+
+            <span className="text-sm text-default-600">
+              {product?.name ?? "Unknown User"}
             </span>
           </div>
         </div>
@@ -57,34 +76,48 @@ export const columns: ColumnDef<DataProps>[] = [
     },
   },
   {
-    accessorKey: "phone",
-    header: "Phone",
-    cell: ({ row }) => <span>{row.getValue("phone")}</span>,
+    accessorKey: "category",
+    header: "Category",
+    cell: ({ row }) => <span>{row.getValue("category")}</span>,
   },
   {
-    accessorKey: "email",
-    header: "Email",
-    cell: ({ row }) => <span>{row.getValue("email")}</span>,
-  },
-  {
-    accessorKey: "date",
-    header: "Create Date",
+    accessorKey: "info",
+    header: "Info",
     cell: ({ row }) => {
-      return <span>{row.getValue("date")}</span>;
+      const info = row.original.info;
+      return (
+        <div className="font-medium text-card-foreground/80">
+          <div className="flex gap-3 items-center">
+            <p>
+              <span>No of sale:</span> {info?.soldItems}
+              <br />
+              <span>Base Price:</span> {info?.basePrice}
+              <br />
+              <span>Rating:</span> {info?.ratings}
+            </p>
+          </div>
+        </div>
+      );
     },
   },
   {
-    accessorKey: "quantity",
-    header: "Products",
+    accessorKey: "stock",
+    header: "Stock",
+    cell: ({ row }) => <span>{row.getValue("stock")}</span>,
+  },
+  {
+    accessorKey: "seller",
+    header: "Seller",
     cell: ({ row }) => {
-      return <span>{row.getValue("quantity")}</span>;
+      return <span>{row.getValue("seller")}</span>;
     },
   },
   {
-    accessorKey: "store",
-    header: "Store",
+    accessorKey: "published",
+    header: "Published",
     cell: ({ row }) => {
-      return <span> {row.getValue("store")}</span>;
+      const published = row.original.published;
+      return <Switch color="success" />;
     },
   },
   {
@@ -93,19 +126,21 @@ export const columns: ColumnDef<DataProps>[] = [
     header: "Actions",
     enableHiding: false,
     cell: ({ row }) => {
+      const pathname = usePathname();
+      const getHref = () => {
+        if (pathname?.includes('/product-list')) {
+          return '/dashboard/edit-product';
+        } else {
+          return '/utility/invoice/preview/1'; // Default path
+        }
+      };
       return (
         <div className="flex items-center gap-1">
           <Link
-            href="/utility/invoice/preview/1"
+            href={getHref()}
             className="flex items-center p-2 border-b text-info hover:text-info-foreground bg-info/40 hover:bg-info duration-200 transition-all rounded-full"
           >
             <SquarePen className="w-4 h-4" />
-          </Link>
-          <Link
-            href="#"
-            className="flex items-center p-2 border-b text-warning hover:text-warning-foreground bg-warning/40 hover:bg-warning duration-200 transition-all rounded-full"
-          >
-            <TriangleAlert className="w-4 h-4" />
           </Link>
           <Link
             href="#"

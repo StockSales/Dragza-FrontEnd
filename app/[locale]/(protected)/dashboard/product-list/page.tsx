@@ -1,10 +1,9 @@
 import { Card } from "@/components/ui/card";
 import TransactionsTable from "./transactions";
 
-const PurchaseList = () => {
+const ProductList = () => {
   return (
     <div>
-      Purchase List
       <Card>
         <TransactionsTable />
       </Card>
@@ -12,4 +11,4 @@ const PurchaseList = () => {
   );
 };
 
-export default PurchaseList;
+export default ProductList;

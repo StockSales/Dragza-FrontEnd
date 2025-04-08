@@ -4,7 +4,6 @@ import TransactionsTable from "./transactions";
 const CustomerList = () => {
   return (
     <div>
-      Customer List
       <Card>
         <TransactionsTable />
       </Card>
