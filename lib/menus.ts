@@ -52,11 +52,25 @@ export function getMenuList(pathname: string, t: any): Group[] {
               children: [],
             },
             {
-              href: "/ecommerce/backend/customer-list",
+              href: "/dashboard/customer-list",
               label: t("customerList"),
-              active: pathname === "/ecommerce/backend/customer-list",
+              active: pathname === "/dashboard/customer-list",
               children: [],
               icon: "heroicons:users",
+            },
+            {
+              href: "/ecommerce/backend/order-list",
+              label: t("orderList"),
+              active: pathname === "/ecommerce/backend/order-list",
+              children: [],
+              icon: "heroicons:document-text",
+            },
+            {
+              href: "/dashboard/invoice",
+              label: t("invoice"),
+              active: pathname === "/dashboard/invoice",
+              children: [],
+              icon: "heroicons:document-text",
             },
             // {
             //   href: "/dashboard/dash-ecom",

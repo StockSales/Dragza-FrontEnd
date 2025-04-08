@@ -7,8 +7,7 @@ import TotalTable from "./totaltable";
 const InvoicePreviewPage = () => {
   return (
     <div>
-      <div className="lg:flex justify-between flex-wrap items-center mb-6">
-        <h4>title</h4>
+      <div className="lg:flex justify-end flex-wrap items-center mb-6">
         <div className="flex lg:justify-end items-center flex-wrap gap-4">
           <Button variant="soft" size="md" className="cursor-pointer">
             <span className="text-lg me-2">

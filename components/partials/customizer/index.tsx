@@ -65,7 +65,7 @@ const ThemeCustomize = ({ }) => {
           </SheetTitle>
         </SheetHeader>
         <SheetDescription className="hidden"></SheetDescription>
-        <ScrollArea className="h-[calc(100%-120px)] -mx-6">
+        <ScrollArea className="h-[calc(100%-38px)] -mx-6">
           <div className=" space-y-8 mt-3">
             <Tabs defaultValue="style" className=" w-full">
               <TabsList className="w-full border border-solid border-default-200 dark:border-default-300 rounded-none p-0 divide-x gap-0 ">
@@ -114,9 +114,6 @@ const ThemeCustomize = ({ }) => {
             </Tabs>
           </div>
         </ScrollArea>
-        <SheetFooter className="lg:py-4 lg:gap-3 gap-2 flex justify-between    ">
-          <BuyButton />
-        </SheetFooter>
       </SheetContent>
     </Sheet>
   );

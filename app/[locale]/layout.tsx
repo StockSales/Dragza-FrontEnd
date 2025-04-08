@@ -15,6 +15,9 @@ import AuthProvider from "@/providers/auth.provider";
 
 export const metadata: Metadata = {
   title: "DrugZA",
+  icons: {
+    icon: "/LOGO.png",
+  }
 };
 
 export default async function RootLayout({
