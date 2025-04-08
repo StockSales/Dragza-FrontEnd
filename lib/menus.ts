@@ -176,14 +176,14 @@ export function getMenuList(pathname: string, t: any): Group[] {
           icon: "heroicons-outline:clipboard-check",
           submenus: [],
         },
-        {
-          id: "projects",
-          href: "/app/projects",
-          label: t("projects"),
-          active: pathname.includes("/app/projects"),
-          icon: "heroicons-outline:document",
-          submenus: [],
-        },
+        // {
+        //   id: "projects",
+        //   href: "/app/projects",
+        //   label: t("projects"),
+        //   active: pathname.includes("/app/projects"),
+        //   icon: "heroicons-outline:document",
+        //   submenus: [],
+        // },
       ],
     },
     // {
