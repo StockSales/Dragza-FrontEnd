@@ -80,6 +80,13 @@ export function getMenuList(pathname: string, t: any): Group[] {
               icon: "heroicons:document-text",
             },
             {
+              href: "/dashboard/user-rules",
+              label: t("User Rules"),
+              active: pathname === "/dashboard/user-rules",
+              children: [],
+              icon: "heroicons:document-text",
+            },
+            {
               href: "/dashboard/invoice",
               label: t("invoice"),
               active: pathname === "/dashboard/invoice",

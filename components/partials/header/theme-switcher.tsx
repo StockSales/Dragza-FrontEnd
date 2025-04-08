@@ -25,7 +25,7 @@ const ThemeButton = () => {
                     <span className="sr-only">Toggle theme</span>
                 </Button>
             </DropdownMenuTrigger>
-            <DropdownMenuContent align="end" className="p-2">
+            <DropdownMenuContent align="start" className="p-2">
                 <DropdownMenuItem
                     onClick={() => setTheme("light")}
                     className={cn(

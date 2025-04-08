@@ -29,7 +29,7 @@ const Notifications = () => {
                 </button>
             </DropdownMenuTrigger>
             <DropdownMenuContent
-                align="end"
+                align="start"
                 className=" z-999 mx-4 lg:w-[320px] p-0">
                 <DropdownMenuLabel>
                     <div className="flex justify-between px-4 py-3 border-b border-default-100 ">
