@@ -60,7 +60,7 @@ export function MenuClassic({ }) {
             {isDesktop && (
                 <div className="flex items-center justify-between  px-4 py-4">
                     <Logo />
-                    <SidebarHoverToggle />
+                    {/*<SidebarHoverToggle />*/}
                 </div>
             )}
 
@@ -69,7 +69,7 @@ export function MenuClassic({ }) {
 
             <ScrollArea className="[&>div>div[style]]:block!" dir={direction}>
                 {isDesktop && (
-                    <div className={cn(' space-y-3 mt-6 ', {
+                    <div className={cn(' space-y-3 ', {
                         'px-4': !collapsed || hovered,
                         'text-center': collapsed || !hovered
                     })}>

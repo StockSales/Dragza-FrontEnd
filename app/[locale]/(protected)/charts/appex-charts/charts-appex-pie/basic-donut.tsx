@@ -1,11 +1,16 @@
 "use client";
 import dynamic from "next/dynamic";
-const Chart = dynamic(() => import("react-apexcharts"), { ssr: false });
+const Chart = dynamic(() => import("react-apexcharts"), {
+    ssr: false,
+  loading: () => <div className="flex mx-auto items-center justify-center"><Loader2 className="text-blue-500"/></div>
+  }
+);
 
 import { colors } from "@/lib/colors";
 import { useTheme } from "next-themes";
 import { hexToRGB } from "@/lib/utils";
 import { useConfig } from "@/hooks/use-config";
+import {Loader2} from "lucide-react";
 
 const BasicDonut = ({ height = 350 }) => {
   const [config] = useConfig();
@@ -20,7 +25,7 @@ const BasicDonut = ({ height = 350 }) => {
         show: false,
       },
     },
-    labels: ["Team A", "Team B", "Team C", "Team D", "Team E"],
+    labels: ["A", "B", "C", "D", "E"],
     dataLabels: {
       enabled: true,
       style: {

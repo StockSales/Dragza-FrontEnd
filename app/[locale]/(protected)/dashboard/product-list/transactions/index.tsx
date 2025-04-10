@@ -37,6 +37,8 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
+import { Link } from '@/i18n/routing';
+import {Button} from "@/components/ui/button";
 
 const TransactionsTable = () => {
   const [sorting, setSorting] = React.useState<SortingState>([]);
@@ -71,6 +73,11 @@ const TransactionsTable = () => {
       <div className="flex flex-wrap justify-end items-center py-4 px-6 border-b border-solid border-default-200">
         <div className="#flex-none">
           <div className="flex items-center gap-4 flex-wrap">
+            <Link href="/dashboard/add-product">
+              <Button size={"md"} variant="ghost">
+                Add Product
+              </Button>
+            </Link>
             <Select>
               <SelectTrigger className=" w-[150px] cursor-pointer">
                 <SelectValue placeholder="Bulk Action" />
