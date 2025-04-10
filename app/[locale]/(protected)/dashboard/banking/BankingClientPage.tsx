@@ -10,7 +10,7 @@ import HistoryChart from "./components/history-chart";
 import AccountChart from "./components/account-chart";
 import { useTranslations } from "next-intl";
 
-function BankingClientPage({session}) {
+function BankingClientPage({session}: { session: any }) {
     const t = useTranslations("BankingDashboard");
 
     return (
