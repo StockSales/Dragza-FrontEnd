@@ -11,10 +11,12 @@ export const data: DataProps[] = [
     "info": {
       "soldItems": 128,
       "basePrice": "$12.99",
+      "purchasePrice": "$9.99",
       "ratings": 4.7
     },
     "stock": 430,
     "published": true,
+    "isAvailable": false,
     "action": null
   },
   {
@@ -28,10 +30,12 @@ export const data: DataProps[] = [
     "info": {
       "soldItems": 93,
       "basePrice": "$8.49",
+      "purchasePrice": "$9.99",
       "ratings": 4.5
     },
     "stock": 265,
     "published": true,
+    "isAvailable": false,
     "action": null
   },
   {
@@ -45,10 +49,12 @@ export const data: DataProps[] = [
     "info": {
       "soldItems": 57,
       "basePrice": "$15.99",
+      "purchasePrice": "$9.99",
       "ratings": 4.8
     },
     "stock": 189,
     "published": true,
+    "isAvailable": true,
     "action": null
   },
   {
@@ -62,10 +68,12 @@ export const data: DataProps[] = [
     "info": {
       "soldItems": 42,
       "basePrice": "$19.95",
+      "purchasePrice": "$9.99",
       "ratings": 4.6
     },
     "stock": 105,
     "published": true,
+    "isAvailable": false,
     "action": null
   },
   {
@@ -79,10 +87,12 @@ export const data: DataProps[] = [
     "info": {
       "soldItems": 31,
       "basePrice": "$29.99",
+      "purchasePrice": "$9.99",
       "ratings": 4.9
     },
     "stock": 78,
     "published": true,
+    "isAvailable": true,
     "action": null
   },
   {
@@ -96,10 +106,12 @@ export const data: DataProps[] = [
     "info": {
       "soldItems": 85,
       "basePrice": "$14.50",
+      "purchasePrice": "$9.99",
       "ratings": 4.7
     },
     "stock": 240,
     "published": true,
+    "isAvailable": false,
     "action": null
   },
   {
@@ -113,10 +125,12 @@ export const data: DataProps[] = [
     "info": {
       "soldItems": 63,
       "basePrice": "$22.99",
+      "purchasePrice": "$9.99",
       "ratings": 4.5
     },
     "stock": 152,
     "published": true,
+    "isAvailable": true,
     "action": null
   },
   {
@@ -130,10 +144,12 @@ export const data: DataProps[] = [
     "info": {
       "soldItems": 37,
       "basePrice": "$45.99",
+      "purchasePrice": "$9.99",
       "ratings": 4.8
     },
     "stock": 68,
     "published": true,
+    "isAvailable": true,
     "action": null
   },
   {
@@ -147,10 +163,12 @@ export const data: DataProps[] = [
     "info": {
       "soldItems": 25,
       "basePrice": "$59.95",
+      "purchasePrice": "$9.99",
       "ratings": 4.6
     },
     "stock": 47,
     "published": true,
+    "isAvailable": true,
     "action": null
   },
   {
@@ -164,10 +182,12 @@ export const data: DataProps[] = [
     "info": {
       "soldItems": 72,
       "basePrice": "$18.99",
+      "purchasePrice": "$9.99",
       "ratings": 4.7
     },
     "stock": 185,
     "published": true,
+    "isAvailable": false,
     "action": null
   },
   {
@@ -181,10 +201,12 @@ export const data: DataProps[] = [
     "info": {
       "soldItems": 48,
       "basePrice": "$8.99",
+      "purchasePrice": "$9.99",
       "ratings": 4.4
     },
     "stock": 132,
     "published": true,
+    "isAvailable": true,
     "action": null
   },
   {
@@ -198,10 +220,12 @@ export const data: DataProps[] = [
     "info": {
       "soldItems": 39,
       "basePrice": "$7.49",
+      "purchasePrice": "$9.99",
       "ratings": 4.3
     },
     "stock": 97,
     "published": true,
+    "isAvailable": true,
     "action": null
   },
   {
@@ -215,10 +239,12 @@ export const data: DataProps[] = [
     "info": {
       "soldItems": 59,
       "basePrice": "$19.99",
+      "purchasePrice": "$9.99",
       "ratings": 4.6
     },
     "stock": 143,
     "published": true,
+    "isAvailable": true,
     "action": null
   },
   {
@@ -232,10 +258,12 @@ export const data: DataProps[] = [
     "info": {
       "soldItems": 41,
       "basePrice": "$29.95",
+      "purchasePrice": "$9.99",
       "ratings": 4.7
     },
     "stock": 86,
     "published": true,
+    "isAvailable": true,
     "action": null
   },
   {
@@ -249,10 +277,12 @@ export const data: DataProps[] = [
     "info": {
       "soldItems": 53,
       "basePrice": "$9.99",
+      "purchasePrice": "$9.99",
       "ratings": 4.5
     },
     "stock": 124,
     "published": true,
+    "isAvailable": true,
     "action": null
   },
   {
@@ -266,10 +296,12 @@ export const data: DataProps[] = [
     "info": {
       "soldItems": 36,
       "basePrice": "$24.50",
+      "purchasePrice": "$9.99",
       "ratings": 4.8
     },
     "stock": 92,
     "published": true,
+    "isAvailable": true,
     "action": null
   },
   {
@@ -283,10 +315,12 @@ export const data: DataProps[] = [
     "info": {
       "soldItems": 67,
       "basePrice": "$11.99",
+      "purchasePrice": "$9.99",
       "ratings": 4.6
     },
     "stock": 158,
     "published": true,
+    "isAvailable": true,
     "action": null
   },
   {
@@ -300,10 +334,12 @@ export const data: DataProps[] = [
     "info": {
       "soldItems": 43,
       "basePrice": "$3.99",
+      "purchasePrice": "$9.99",
       "ratings": 4.4
     },
     "stock": 215,
     "published": true,
+    "isAvailable": true,
     "action": null
   },
   {
@@ -317,10 +353,12 @@ export const data: DataProps[] = [
     "info": {
       "soldItems": 51,
       "basePrice": "$12.49",
+      "purchasePrice": "$9.99",
       "ratings": 4.7
     },
     "stock": 173,
     "published": true,
+    "isAvailable": true,
     "action": null
   },
   {
@@ -334,10 +372,12 @@ export const data: DataProps[] = [
     "info": {
       "soldItems": 47,
       "basePrice": "$13.99",
+      "purchasePrice": "$9.99",
       "ratings": 4.5
     },
     "stock": 112,
     "published": true,
+    "isAvailable": true,
     "action": null
   },
   {
@@ -351,10 +391,12 @@ export const data: DataProps[] = [
     "info": {
       "soldItems": 32,
       "basePrice": "$16.95",
+      "purchasePrice": "$9.99",
       "ratings": 4.6
     },
     "stock": 89,
     "published": true,
+    "isAvailable": true,
     "action": null
   },
   {
@@ -368,10 +410,12 @@ export const data: DataProps[] = [
     "info": {
       "soldItems": 29,
       "basePrice": "$8.95",
+      "purchasePrice": "$9.99",
       "ratings": 4.5
     },
     "stock": 104,
     "published": true,
+    "isAvailable": true,
     "action": null
   },
   {
@@ -385,10 +429,12 @@ export const data: DataProps[] = [
     "info": {
       "soldItems": 83,
       "basePrice": "$4.99",
+      "purchasePrice": "$9.99",
       "ratings": 4.7
     },
     "stock": 267,
     "published": true,
+    "isAvailable": true,
     "action": null
   },
   {
@@ -402,10 +448,12 @@ export const data: DataProps[] = [
     "info": {
       "soldItems": 24,
       "basePrice": "$32.99",
+      "purchasePrice": "$9.99",
       "ratings": 4.9
     },
     "stock": 65,
     "published": true,
+    "isAvailable": true,
     "action": null
   },
   {
@@ -419,10 +467,12 @@ export const data: DataProps[] = [
     "info": {
       "soldItems": 38,
       "basePrice": "$9.95",
+      "purchasePrice": "$9.99",
       "ratings": 4.4
     },
     "stock": 92,
     "published": true,
+    "isAvailable": true,
     "action": null
   },
   {
@@ -436,10 +486,12 @@ export const data: DataProps[] = [
     "info": {
       "soldItems": 27,
       "basePrice": "$24.99",
+      "purchasePrice": "$9.99",
       "ratings": 4.8
     },
     "stock": 73,
     "published": true,
+    "isAvailable": true,
     "action": null
   },
   {
@@ -453,10 +505,12 @@ export const data: DataProps[] = [
     "info": {
       "soldItems": 35,
       "basePrice": "$19.95",
+      "purchasePrice": "$9.99",
       "ratings": 4.6
     },
     "stock": 87,
     "published": true,
+    "isAvailable": true,
     "action": null
   },
   {
@@ -470,10 +524,12 @@ export const data: DataProps[] = [
     "info": {
       "soldItems": 62,
       "basePrice": "$4.49",
+      "purchasePrice": "$9.99",
       "ratings": 4.3
     },
     "stock": 183,
     "published": true,
+    "isAvailable": true,
     "action": null
   },
   {
@@ -487,10 +543,12 @@ export const data: DataProps[] = [
     "info": {
       "soldItems": 46,
       "basePrice": "$7.99",
+      "purchasePrice": "$9.99",
       "ratings": 4.7
     },
     "stock": 128,
     "published": true,
+    "isAvailable": true,
     "action": null
   },
   {
@@ -504,10 +562,12 @@ export const data: DataProps[] = [
     "info": {
       "soldItems": 31,
       "basePrice": "$12.95",
+      "purchasePrice": "$9.99",
       "ratings": 4.5
     },
     "stock": 82,
     "published": true,
+    "isAvailable": true,
     "action": null
   },
   {
@@ -521,10 +581,12 @@ export const data: DataProps[] = [
     "info": {
       "soldItems": 29,
       "basePrice": "$39.99",
+      "purchasePrice": "$9.99",
       "ratings": 4.8
     },
     "stock": 58,
     "published": true,
+    "isAvailable": true,
     "action": null
   },
   {
@@ -538,10 +600,12 @@ export const data: DataProps[] = [
     "info": {
       "soldItems": 57,
       "basePrice": "$6.49",
+      "purchasePrice": "$9.99",
       "ratings": 4.5
     },
     "stock": 142,
     "published": true,
+    "isAvailable": true,
     "action": null
   },
   {
@@ -555,10 +619,12 @@ export const data: DataProps[] = [
     "info": {
       "soldItems": 23,
       "basePrice": "$28.99",
+      "purchasePrice": "$9.99",
       "ratings": 4.7
     },
     "stock": 67,
     "published": true,
+    "isAvailable": true,
     "action": null
   },
   {
@@ -572,10 +638,12 @@ export const data: DataProps[] = [
     "info": {
       "soldItems": 42,
       "basePrice": "$5.95",
+      "purchasePrice": "$9.99",
       "ratings": 4.6
     },
     "stock": 115,
     "published": true,
+    "isAvailable": true,
     "action": null
   },
   {
@@ -589,10 +657,12 @@ export const data: DataProps[] = [
     "info": {
       "soldItems": 19,
       "basePrice": "$8.99",
+      "purchasePrice": "$9.99",
       "ratings": 4.4
     },
     "stock": 78,
     "published": true,
+    "isAvailable": true,
     "action": null
   },
   {
@@ -606,10 +676,12 @@ export const data: DataProps[] = [
     "info": {
       "soldItems": 47,
       "basePrice": "$15.99",
+      "purchasePrice": "$9.99",
       "ratings": 4.6
     },
     "stock": 123,
     "published": true,
+    "isAvailable": true,
     "action": null
   },
   {
@@ -623,10 +695,12 @@ export const data: DataProps[] = [
     "info": {
       "soldItems": 89,
       "basePrice": "$12.99",
+      "purchasePrice": "$9.99",
       "ratings": 4.7
     },
     "stock": 235,
     "published": true,
+    "isAvailable": true,
     "action": null
   },
   {
@@ -640,10 +714,12 @@ export const data: DataProps[] = [
     "info": {
       "soldItems": 33,
       "basePrice": "$14.95",
+      "purchasePrice": "$9.99",
       "ratings": 4.5
     },
     "stock": 79,
     "published": true,
+    "isAvailable": true,
     "action": null
   },
   {
@@ -657,10 +733,12 @@ export const data: DataProps[] = [
     "info": {
       "soldItems": 28,
       "basePrice": "$13.49",
+      "purchasePrice": "$9.99",
       "ratings": 4.6
     },
     "stock": 83,
     "published": true,
+    "isAvailable": true,
     "action": null
   },
   {
@@ -674,10 +752,12 @@ export const data: DataProps[] = [
     "info": {
       "soldItems": 36,
       "basePrice": "$10.49",
+      "purchasePrice": "$9.99",
       "ratings": 4.5
     },
     "stock": 97,
     "published": true,
+    "isAvailable": true,
     "action": null
   },
   {
@@ -691,10 +771,12 @@ export const data: DataProps[] = [
     "info": {
       "soldItems": 52,
       "basePrice": "$24.99",
+      "purchasePrice": "$9.99",
       "ratings": 4.7
     },
     "stock": 134,
     "published": true,
+    "isAvailable": true,
     "action": null
   },
   {
@@ -708,10 +790,12 @@ export const data: DataProps[] = [
     "info": {
       "soldItems": 43,
       "basePrice": "$11.95",
+      "purchasePrice": "$9.99",
       "ratings": 4.4
     },
     "stock": 96,
     "published": true,
+    "isAvailable": true,
     "action": null
   },
   {
@@ -725,10 +809,12 @@ export const data: DataProps[] = [
     "info": {
       "soldItems": 61,
       "basePrice": "$5.49",
+      "purchasePrice": "$9.99",
       "ratings": 4.6
     },
     "stock": 172,
     "published": true,
+    "isAvailable": true,
     "action": null
   },
   {
@@ -742,10 +828,12 @@ export const data: DataProps[] = [
     "info": {
       "soldItems": 21,
       "basePrice": "$49.99",
+      "purchasePrice": "$9.99",
       "ratings": 4.8
     },
     "stock": 54,
     "published": true,
+    "isAvailable": true,
     "action": null
   },
   {
@@ -759,10 +847,12 @@ export const data: DataProps[] = [
     "info": {
       "soldItems": 32,
       "basePrice": "$7.95",
+      "purchasePrice": "$9.99",
       "ratings": 4.5
     },
     "stock": 87,
     "published": true,
+    "isAvailable": true,
     "action": null
   },
   {
@@ -776,10 +866,12 @@ export const data: DataProps[] = [
     "info": {
       "soldItems": 58,
       "basePrice": "$24.99",
+      "purchasePrice": "$9.99",
       "ratings": 4.7
     },
     "stock": 142,
     "published": true,
+    "isAvailable": true,
     "action": null
   },
   {
@@ -793,10 +885,12 @@ export const data: DataProps[] = [
     "info": {
       "soldItems": 26,
       "basePrice": "$15.95",
+      "purchasePrice": "$9.99",
       "ratings": 4.6
     },
     "stock": 74,
     "published": true,
+    "isAvailable": true,
     "action": null
   },
   {
@@ -810,10 +904,12 @@ export const data: DataProps[] = [
     "info": {
       "soldItems": 37,
       "basePrice": "$12.99",
+      "purchasePrice": "$9.99",
       "ratings": 4.7
     },
     "stock": 94,
     "published": true,
+    "isAvailable": true,
     "action": null
   },
   {
@@ -827,10 +923,12 @@ export const data: DataProps[] = [
     "info": {
       "soldItems": 22,
       "basePrice": "$49.95",
+      "purchasePrice": "$9.99",
       "ratings": 4.5
     },
     "stock": 58,
     "published": true,
+    "isAvailable": true,
     "action": null
   },
   {
@@ -844,9 +942,11 @@ export const data: DataProps[] = [
     "info": {
       "soldItems": 49,
       "basePrice": "$6.49",
+      "purchasePrice": "$9.99",
       "ratings": 4.4
     },
     "stock": 127,
+    "isAvailable": true,
     "published": true,
     "action": null
   }

@@ -79,19 +79,8 @@ export const columns: ColumnDef<DataProps>[] = [
     },
   },
   {
-    accessorKey: "rating",
-    header: "Ratings",
-    cell: ({ row }) => {
-      return (
-        <Badge color="success">
-          <span>{row.getValue("rating")}</span>
-        </Badge>
-      );
-    },
-  },
-  {
     accessorKey: "amount",
-    header: "Amount",
+    header: "Wallet",
     cell: ({ row }) => {
       return <span> {row.getValue("amount")}</span>;
     },

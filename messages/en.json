@@ -123,6 +123,10 @@
     "add_to_cart": "Add to Cart"
     
   },
+  "overall": {
+    "Available": "Available",
+    "Not Available": "Not Available"
+  },
   "Menu": {
     "dashboard": "Dashboard",
     "analytics": "Analytics",
@@ -264,7 +268,7 @@
     "cart": "Cart",
     "wishlist": "Wishlist",
     "addProduct": "Add Product",
-    "customerList": "Customer List",
+    "pharmacyList": "Pharmacy List",
     "editProduct": "Edit Product",
     "orderDetails": "Order Details",
     "orderList": "Order List",

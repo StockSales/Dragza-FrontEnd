@@ -261,7 +261,7 @@
     "cart": "عربة التسوق",
     "wishlist": "قائمة الرغبات",
     "addProduct": "أضف منتج",
-    "customerList": "قائمة العملاء",
+    "pharmacyList": "قائمة الصيدليات",
     "editProduct": "تحرير المنتج",
     "orderDetails": "تفاصيل الطلب",
     "orderList": "لائحة الطلبات",
@@ -274,6 +274,10 @@
     "sellers": "البائعين",
     "typography": "الطباعة",
     "colors": "الألوان"
+  },
+  "overall": {
+    "Available": "متاح",
+    "Not Available": "غير متاح"
   },
   "Changelog": {
     "version": "النسخة",

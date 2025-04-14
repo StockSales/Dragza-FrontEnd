@@ -147,14 +147,14 @@ export const columns: ColumnDef<DataProps>[] = [
       );
     },
   },
-  // {
-  //   accessorKey: "published",
-  //   header: "Published",
-  //   cell: ({ row }) => {
-  //     const published = row.original.published;
-  //     return <Switch color="success" />;
-  //   },
-  // },
+  {
+    accessorKey: "published",
+    header: "Published",
+    cell: ({ row }) => {
+      const published = row.original.published;
+      return <Switch color="success" />;
+    },
+  },
   {
     id: "actions",
     accessorKey: "action",

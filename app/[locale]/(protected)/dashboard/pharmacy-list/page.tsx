@@ -1,7 +1,7 @@
 import { Card } from "@/components/ui/card"
 import TransactionsTable from "./transactions";
 
-const CustomerList = () => {
+const PharmacyList = () => {
   return (
     <div>
       <Card>
@@ -11,4 +11,4 @@ const CustomerList = () => {
   );
 }
 
-export default CustomerList
+export default PharmacyList

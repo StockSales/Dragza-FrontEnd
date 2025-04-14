@@ -93,9 +93,9 @@ export function getMenuList(pathname: string, t: any, role: string, locale: stri
               children: [],
             },
             {
-              href: "/dashboard/customer-list",
-              label: t("customerList"),
-              active: pathname === "/dashboard/customer-list",
+              href: "/dashboard/pharmacy-list",
+              label: t("pharmacyList"),
+              active: pathname === "/dashboard/pharmacy-list",
               children: [],
               icon: "heroicons:users",
             },
