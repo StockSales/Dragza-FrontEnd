@@ -24,7 +24,7 @@ export default function HorizontalMenu() {
   const { data: session, status } = useSession();
   const params = useParams<{ locale: string; }>();
   const locale = params?.locale || "en";
-  const [menuList, setMenuList] = useState([]);
+  const [men,setMenuList]
 
 
   const [config] = useConfig()
