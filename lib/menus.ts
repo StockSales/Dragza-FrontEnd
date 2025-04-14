@@ -210,21 +210,23 @@ export function getMenuList(pathname: string, t: any, role: string, locale: stri
   const filteredGroups: Group[] = [];
 
   for (const group of allMenus) {
-    const filteredMenus = [];
+    const filteredMenus: Menu[] = [];
 
     for (const menu of group.menus) {
-      const filteredSubmenus = menu.submenus?.filter((sub) =>
+      // Filter submenus based on permissions
+      const filteredSubmenus: Submenu[] = menu.submenus?.filter((sub) =>
           isAllowed(sub.href)
       ) ?? [];
 
-      const includeMenu =
+      // Determine if this menu should be included
+      const includeMenu: boolean =
           isAllowed(menu.href) || filteredSubmenus.length > 0;
 
       if (includeMenu) {
         filteredMenus.push({
           ...menu,
-          active:
-              menu.href && pathname.startsWith(menu.href),
+          // Fixed: Ensure menu.href is a non-empty string before using startsWith
+          active: Boolean(menu.href && pathname.startsWith(menu.href)),
           submenus: filteredSubmenus.map((sub) => ({
             ...sub,
             active: pathname === sub.href,
@@ -233,6 +235,7 @@ export function getMenuList(pathname: string, t: any, role: string, locale: stri
       }
     }
 
+    // Only include groups that have visible menus
     if (filteredMenus.length > 0) {
       filteredGroups.push({
         ...group,

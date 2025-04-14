@@ -4,7 +4,7 @@ import React, {useEffect, useRef, useState} from 'react'
 import {Ellipsis, Loader2, LogOut} from "lucide-react";
 import { usePathname } from "@/components/navigation";
 import { cn } from "@/lib/utils";
-import { getMenuList } from "@/lib/menus";
+import {getMenuList, Group} from "@/lib/menus";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import {
     Tooltip,
@@ -41,7 +41,7 @@ export function MenuClassic({ }) {
     const { hovered } = hoverConfig;
 
     const scrollableNodeRef = useRef<HTMLDivElement>(null);
-    const [menuList, setMenuList] = useState([]);
+    const [menuList, setMenuList] = useState<Group[]>([]);
     const [loading, setLoading] = useState(true);
     const [scroll, setScroll] = useState(false);
 

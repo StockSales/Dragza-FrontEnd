@@ -45,14 +45,15 @@ export function Menu() {
 
 
     // Render based on selected layout
-    switch (config.layout) {
-        case "classic":
-            return <MenuClassic />;
-        case "two-column":
-            return <MenuTwoColumn />;
-        case "drag":
-            return <MenuDragAble />;
-        default:
-            return <MenuClassic />;
+    if (config.sidebar === 'draggable') {
+        return <MenuDragAble />
     }
+
+    if (config.sidebar === 'two-column') {
+        return <MenuTwoColumn />
+    }
+
+    return (
+        <MenuClassic />
+    );
 }

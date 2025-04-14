@@ -1,13 +1,13 @@
 "use client";
 
-import React from 'react'
+import React, {useEffect, useState} from 'react'
 import Logo from '@/components/logo';
 import SidebarHoverToggle from '@/components/partials/sidebar/sidebar-hover-toggle';
 import { Ellipsis } from "lucide-react";
 import { usePathname } from "@/components/navigation";
 
 import { cn } from "@/lib/utils";
-import { getMenuList } from "@/lib/menus";
+import { getMenuList, Group} from "@/lib/menus";
 
 import { ScrollArea } from "@/components/ui/scroll-area";
 import {
@@ -46,15 +46,18 @@ import {
 import { useTranslations } from 'next-intl';
 import { useParams } from 'next/navigation'
 import { getLangDir } from 'rtl-detect';
+import {useSession} from "next-auth/react";
 
 export function MenuDragAble() {
     const t = useTranslations("Menu")
+    const params = useParams<{ locale: string; }>();
     const pathname = usePathname();
-    const menuList = getMenuList(pathname, t);
+    const { data: session, status } = useSession();
+    const locale = params?.locale || "en";
+    const [menuList, setMenuList] = useState<Group[]>([]);
     const [config, setConfig] = useConfig()
     const collapsed = config.collapsed
 
-    const params = useParams<{ locale: string; }>();
     const direction = getLangDir(params?.locale ?? '');
     // for dnd 
     // reorder rows after drag & drop
@@ -95,6 +98,21 @@ export function MenuDragAble() {
             });
         }
     }
+
+    useEffect(() => {
+        const fetchMenuData = async () => {
+            try {
+                if (status === "authenticated" && session?.user?.role) {
+                    const menu = getMenuList(pathname, t, session.user.role, locale);
+                    setMenuList(menu);
+                }
+            } catch (error) {
+                console.error("Error generating menu:", error);
+            }
+        };
+
+        fetchMenuData();
+    }, [status, session, pathname, t, locale]);
 
     const sensors = useSensors(
         useSensor(MouseSensor, {}),

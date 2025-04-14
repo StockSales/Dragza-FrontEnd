@@ -44,15 +44,7 @@ export const { auth, handlers, signIn, signOut } = NextAuth({
             }
             return session;
         },
-        async redirect({ url, baseUrl, token }) {
-            if (token?.role) {
-                const defaultRoute = defaultRouteByRole[token.role as string];
-                if (defaultRoute) {
-                    return defaultRoute;
-                } else {
-                    return baseUrl;
-                }
-            }
+        async redirect({ url, baseUrl }) {
             return baseUrl;
         },
     },
