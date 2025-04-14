@@ -1,7 +1,7 @@
 "use client";
 
 import React from 'react'
-import { Ellipsis, LogOut } from "lucide-react";
+import {Ellipsis, Loader2, LogOut} from "lucide-react";
 import { usePathname } from "@/components/navigation";
 import { cn } from "@/lib/utils";
 import { getMenuList } from "@/lib/menus";
@@ -23,9 +23,11 @@ import Logo from '@/components/logo';
 import SidebarHoverToggle from '@/components/partials/sidebar/sidebar-hover-toggle';
 import { useMenuHoverConfig } from '@/hooks/use-menu-hover';
 import { useMediaQuery } from '@/hooks/use-media-query';
+import {useSession} from "next-auth/react";
 
 
 export function MenuClassic({ }) {
+    const { data: session, status } = useSession();
     // translate
     const t = useTranslations("Menu")
     const pathname = usePathname();
@@ -35,7 +37,18 @@ export function MenuClassic({ }) {
     const isDesktop = useMediaQuery('(min-width: 1280px)')
 
 
-    const menuList = getMenuList(pathname, t);
+    const [menuList, setMenuList] = React.useState([]);
+    const locale = params?.locale || "en";
+
+// wait until authenticated
+    React.useEffect(() => {
+        console.log(session?.user?.role, status)
+        if (status === "authenticated" && session?.user?.role) {
+            const menu = getMenuList(pathname, t, session.user.role, locale);
+            setMenuList(menu);
+        }
+    }, [status, session?.user?.role, pathname, t, locale]);
+
     const [config, setConfig] = useConfig()
     const collapsed = config.collapsed
     const [hoverConfig] = useMenuHoverConfig();
@@ -54,6 +67,14 @@ export function MenuClassic({ }) {
         };
         scrollableNodeRef.current?.addEventListener("scroll", handleScroll);
     }, [scrollableNodeRef]);
+
+    if (status === "loading" || (status === "authenticated" && menuList.length === 0)) {
+        return (
+            <div className="w-full h-screen flex items-center justify-center">
+                <Loader2 className="text-blue-500 animate-spin w-6 h-6" />
+            </div>
+        );
+    }
 
     return (
         <>

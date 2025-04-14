@@ -1,32 +1,38 @@
-import createMiddleware from 'next-intl/middleware';
-import {NextRequest, NextResponse} from 'next/server';
-import {locales} from '@/config';
+import { getToken } from "next-auth/jwt";
+import { NextRequest, NextResponse } from "next/server";
+import createMiddleware from "next-intl/middleware";
+import { locales } from "@/config";
+import { roleRoutes, defaultRouteByRole } from "./lib/roleRoutes";
 
 export default async function middleware(request: NextRequest) {
-  
- 
-
-
-  // Step 1: Use the incoming request (example)
-  const defaultLocale = request.headers.get('dashcode-locale') || 'en';
- 
-  // Step 2: Create and call the next-intl middleware (example)
-  const handleI18nRouting = createMiddleware({
-    locales,
-    defaultLocale
-    
+  const token = await getToken({
+    req: request,
+    secret: process.env.AUTH_SECRET,
   });
+
+  const url = request.nextUrl.pathname;
+  const defaultLocale = request.headers.get("dashcode-locale") || "en";
+
+  const handleI18nRouting = createMiddleware({ locales, defaultLocale });
   const response = handleI18nRouting(request);
- 
-  // Step 3: Alter the response (example)
-  response.headers.set('dashcode-locale', defaultLocale);
+  response.headers.set("dashcode-locale", defaultLocale);
 
+  if (token) {
+    const role = token.role;
+    const allowedRoutes = roleRoutes[role] || [];
+    const defaultRoute = `/${defaultLocale}${defaultRouteByRole[role] || ""}`;
 
- 
+    const isAllowed =
+        allowedRoutes.includes("*") || allowedRoutes.includes(url);
+
+    if (!isAllowed) {
+      return NextResponse.redirect(new URL(defaultRoute, request.url));
+    }
+  }
+
   return response;
 }
- 
+
 export const config = {
-  // Match only internationalized pathnames
-  matcher: ['/', '/(ar|en)/:path*']
+  matcher: ["/", "/(ar|en)/:path*"],
 };

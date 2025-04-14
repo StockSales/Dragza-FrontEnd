@@ -1,16 +1,36 @@
-// user data 
-const users = [
+export type User = {
+  name: string;
+  email: string;
+  password: string;
+  image: string;
+  role: "admin" | "inventory" | "sales";
+};
+
+export const users : User[] = [
   {
     name: "Dr/ Mina Emad",
     email: "minaemad@gmail.com",
     password: "password",
     image: '/images/users/user-1.jpg',
+    role: "admin",
   },
-  
-]
+  {
+    name: "Inventory Manager",
+    email: "inventory@gmail.com",
+    password: "inventory123",
+    image: '/images/users/user-2.jpg',
+    role: "inventory",
+  },
+  {
+    name: "Sales Person",
+    email: "sales@gmail.com",
+    password: "sales123",
+    image: '/images/users/user-3.jpg',
+    role: "sales",
+  },
+];
 
-export type User = (typeof users)[number]
 
 export const getUserByEmail = (email: string) => {
-  return users.find((user) => user.email === email)
-}
+  return users.find((user) => user.email === email);
+};

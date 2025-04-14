@@ -1,4 +1,4 @@
-
+import { roleRoutes } from "@/lib/roleRoutes";
 
 export type SubChildren = {
   href: string;
@@ -30,9 +30,12 @@ export type Group = {
   id: string;
 };
 
-export function getMenuList(pathname: string, t: any): Group[] {
+export function getMenuList(pathname: string, t: any, role: string): Group[] {
+  const allowedRoutes = new Set(roleRoutes[role] || []);
+  const isAllowed = (href: string) =>
+      allowedRoutes.has("*") || allowedRoutes.has(href);
 
-  return [
+  const allMenus: Group[] = [
     {
       groupLabel: t("dashboard"),
       id: "dashboard",
@@ -41,78 +44,77 @@ export function getMenuList(pathname: string, t: any): Group[] {
           id: "dashboard",
           href: "/dashboard/analytics",
           label: t("dashboard"),
-          active: pathname.includes("/dashboard"),
           icon: "heroicons-outline:home",
           submenus: [
             {
               href: "/dashboard/analytics",
-              label: t("analytics"),
               active: pathname === "/dashboard/analytics",
-              icon: "heroicons:arrow-trending-up",
+              label: t("analytics"),
               children: [],
+              icon: "heroicons:arrow-trending-up",
             },
             {
               href: "/dashboard/customer-list",
-              label: t("customerList"),
               active: pathname === "/dashboard/customer-list",
-              children: [],
+              label: t("customerList"),
               icon: "heroicons:users",
+              children: [],
             },
             {
               href: "/dashboard/order-list",
-              label: t("orderList"),
               active: pathname === "/dashboard/order-list",
-              children: [],
+              label: t("orderList"),
               icon: "heroicons:document-text",
+              children: [],
             },
             {
               href: "/dashboard/return-list",
-              label: t("returnList"),
               active: pathname === "/dashboard/return-list",
-              children: [],
+              label: t("returnList"),
               icon: "heroicons:document-text",
+              children: [],
             },
             {
               href: "/dashboard/product-list",
-              label: t("productList"),
               active: pathname === "/dashboard/product-list",
-              children: [],
+              label: t("productList"),
               icon: "heroicons:document-text",
+              children: [],
             },
             {
               href: "/dashboard/inventory-management",
-              label: t("Inventory Management"),
               active: pathname === "/dashboard/inventory-management",
-              children: [],
+              label: t("Inventory Management"),
               icon: "heroicons:document-text",
+              children: [],
             },
             {
               href: "/dashboard/banking",
-              label: t("banking"),
               active: pathname === "/dashboard/banking",
+              label: t("banking"),
               icon: "heroicons:credit-card",
               children: [],
             },
             {
               href: "/dashboard/user-rules",
-              label: t("User Rules"),
               active: pathname === "/dashboard/user-rules",
-              children: [],
+              label: t("User Rules"),
               icon: "heroicons:document-text",
+              children: [],
             },
             {
               href: "/dashboard/sales",
-              label: t("sales"),
               active: pathname === "/dashboard/sales",
-              children: [],
+              label: t("sales"),
               icon: "heroicons:document-text",
+              children: [],
             },
             {
               href: "/dashboard/settings",
-              label: t("settings"),
               active: pathname === "/dashboard/settings",
-              children: [],
+              label: t("settings"),
               icon: "heroicons:document-text",
+              children: [],
             },
           ],
         },
@@ -125,49 +127,125 @@ export function getMenuList(pathname: string, t: any): Group[] {
         {
           id: "chat",
           href: "/app/chat",
+          active: pathname === "/app/chat",
           label: t("chat"),
-          active: pathname.includes("/app/chat"),
           icon: "heroicons-outline:chat",
           submenus: [],
         },
         {
           id: "email",
           href: "/app/email",
+          active: pathname === "/app/email",
           label: t("email"),
-          active: pathname.includes("/app/email"),
           icon: "heroicons-outline:mail",
           submenus: [],
         },
         {
           id: "kanban",
           href: "/app/kanban",
+          active: pathname === "/app/kanban",
           label: t("kanban"),
-          active: pathname.includes("/app/kanban"),
           icon: "heroicons-outline:view-boards",
           submenus: [],
         },
         {
           id: "calendar",
+          active: pathname === "/app/calendar",
           href: "/app/calendar",
           label: t("calendar"),
-          active:pathname.includes("/app/calendar"),
           icon: "heroicons-outline:calendar",
           submenus: [],
         },
         {
           id: "todo",
+          active: pathname === "/app/todo",
           href: "/app/todo",
           label: t("todo"),
-          active:pathname.includes("/app/todo"),
           icon: "heroicons-outline:clipboard-check",
           submenus: [],
         },
       ],
     },
   ];
+
+  const filteredGroups: Group[] = [];
+
+  for (const group of allMenus) {
+    const filteredMenus = [];
+
+    for (const menu of group.menus) {
+      const filteredSubmenus = menu.submenus?.filter((sub) =>
+          isAllowed(sub.href)
+      ) ?? [];
+
+      const includeMenu =
+          isAllowed(menu.href) || filteredSubmenus.length > 0;
+
+      if (includeMenu) {
+        filteredMenus.push({
+          ...menu,
+          active:
+              menu.href && pathname.startsWith(menu.href),
+          submenus: filteredSubmenus.map((sub) => ({
+            ...sub,
+            active: pathname === sub.href,
+          })),
+        });
+      }
+    }
+
+    if (filteredMenus.length > 0) {
+      filteredGroups.push({
+        ...group,
+        menus: filteredMenus,
+      });
+    }
+  }
+
+  return filteredGroups;
 }
-export function getHorizontalMenuList(pathname: string, t: any): Group[] {
-  return [
+
+export function getHorizontalMenuList(pathname: string, t: any, role: string): Group[] {
+  const allowedRoutes: Record<string, string[]> = {
+    admin: [
+      "/dashboard/analytics",
+      "/dashboard/dash-ecom",
+      "/dashboard/project",
+      "/dashboard/crm",
+      "/dashboard/banking",
+      "/app/chat",
+      "/app/email",
+      "/app/kanban",
+      "/app/calendar",
+      "/app/todo",
+    ],
+    "inventory manager": [
+      "/dashboard/analytics",
+      "/dashboard/banking",
+      "/app/calendar",
+    ],
+    sales: [
+      "/dashboard/analytics",
+      "/dashboard/project",
+      "/dashboard/crm",
+      "/app/chat",
+      "/app/email",
+    ],
+  };
+
+  const routes = allowedRoutes[role] || [];
+
+  const filterSubmenus = (submenus: Submenu[]): Submenu[] => {
+    return submenus
+        .map((submenu) => ({
+          ...submenu,
+          children: submenu.children || [],
+          active: pathname === submenu.href,
+        }))
+        .filter((submenu) => routes.includes(submenu.href));
+  };
+
+  const groups: Group[] = [
     {
       groupLabel: t("dashboard"),
       id: "dashboard",
@@ -178,7 +256,7 @@ export function getHorizontalMenuList(pathname: string, t: any): Group[] {
           label: t("dashboard"),
           active: pathname.includes("/dashboard"),
           icon: "heroicons-outline:home",
-          submenus: [
+          submenus: filterSubmenus([
             {
               href: "/dashboard/analytics",
               label: t("analytics"),
@@ -214,11 +292,10 @@ export function getHorizontalMenuList(pathname: string, t: any): Group[] {
               icon: "heroicons:credit-card",
               children: [],
             },
-          ],
+          ]),
         },
       ],
     },
-
     {
       groupLabel: t("apps"),
       id: "app",
@@ -227,9 +304,9 @@ export function getHorizontalMenuList(pathname: string, t: any): Group[] {
           id: "app",
           href: "/app/chat",
           label: t("apps"),
-          active: pathname.includes("/app/chat"),
+          active: pathname.includes("/app"),
           icon: "heroicons-outline:chat",
-          submenus: [
+          submenus: filterSubmenus([
             {
               href: "/app/chat",
               label: t("chat"),
@@ -265,11 +342,18 @@ export function getHorizontalMenuList(pathname: string, t: any): Group[] {
               icon: "heroicons-outline:clipboard-check",
               children: [],
             },
-          ],
+          ]),
         },
       ],
     },
   ];
-}
 
+  // remove empty menus
+  return groups
+      .map((group) => ({
+        ...group,
+        menus: group.menus.filter((menu) => menu.submenus.length > 0),
+      }))
+      .filter((group) => group.menus.length > 0);
+}
 
