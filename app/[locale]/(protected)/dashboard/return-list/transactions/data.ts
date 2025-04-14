@@ -10,6 +10,11 @@ export const data: DataProps[] = [
     date: "3/26/2022",
     quantity: 13,
     amount: "$1779.53",
+    reason: "Order Cancelled",
+    inventory: {
+        name: "Jenny Wilson",
+        phone: "+12345876",
+    },
     status: "paid",
     method: "Bkash",
     action: null,
@@ -20,6 +25,11 @@ export const data: DataProps[] = [
     customer: {
       name: "Jenny Wilson",
       image: "/images/all-img/customer_1.png",
+    },
+    reason: "Order Cancelled",
+    inventory: {
+      name: "Jenny Wilson",
+      phone: "+12345876",
     },
     date: "2/6/2022",
     quantity: 13,
@@ -35,6 +45,11 @@ export const data: DataProps[] = [
       name: "Jenny Wilson",
       image: "/images/all-img/customer_1.png",
     },
+    reason: "Order Cancelled",
+    inventory: {
+      name: "Jenny Wilson",
+      phone: "+12345876",
+    },
     date: "9/6/2021",
     quantity: 1,
     amount: "$3183.60",
@@ -48,6 +63,11 @@ export const data: DataProps[] = [
     customer: {
       name: "Jenny Wilson",
       image: "/images/all-img/customer_1.png",
+    },
+    reason: "Order Cancelled",
+    inventory: {
+      name: "Jenny Wilson",
+      phone: "+12345876",
     },
     date: "11/7/2021",
     quantity: 13,
@@ -63,6 +83,11 @@ export const data: DataProps[] = [
       name: "Jenny Wilson",
       image: "/images/all-img/customer_1.png",
     },
+    reason: "Order Cancelled",
+    inventory: {
+      name: "Jenny Wilson",
+      phone: "+12345876",
+    },
     date: "5/6/2022",
     quantity: 12,
     amount: "$3840.73",
@@ -76,6 +101,11 @@ export const data: DataProps[] = [
     customer: {
       name: "Jenny Wilson",
       image: "/images/all-img/customer_1.png",
+    },
+    reason: "Order Cancelled",
+    inventory: {
+      name: "Jenny Wilson",
+      phone: "+12345876",
     },
     date: "2/14/2022",
     quantity: 12,
@@ -91,6 +121,11 @@ export const data: DataProps[] = [
       name: "Jenny Wilson",
       image: "/images/all-img/customer_1.png",
     },
+    reason: "Order Cancelled",
+    inventory: {
+      name: "Jenny Wilson",
+      phone: "+12345876",
+    },
     date: "7/30/2022",
     quantity: 6,
     amount: "$2875.05",
@@ -104,6 +139,11 @@ export const data: DataProps[] = [
     customer: {
       name: "Jenny Wilson",
       image: "/images/all-img/customer_1.png",
+    },
+    reason: "Order Cancelled",
+    inventory: {
+      name: "Jenny Wilson",
+      phone: "+12345876",
     },
     date: "6/30/2022",
     quantity: 9,
@@ -119,6 +159,11 @@ export const data: DataProps[] = [
       name: "Jenny Wilson",
       image: "/images/all-img/customer_1.png",
     },
+    reason: "Order Cancelled",
+    inventory: {
+      name: "Jenny Wilson",
+      phone: "+12345876",
+    },
     date: "8/9/2022",
     quantity: 8,
     amount: "$3006.95",
@@ -132,6 +177,11 @@ export const data: DataProps[] = [
     customer: {
       name: "Jenny Wilson",
       image: "/images/all-img/customer_1.png",
+    },
+    reason: "Order Cancelled",
+    inventory: {
+      name: "Jenny Wilson",
+      phone: "+12345876",
     },
     date: "8/4/2022",
     quantity: 12,
@@ -147,6 +197,11 @@ export const data: DataProps[] = [
       name: "Jenny Wilson",
       image: "/images/all-img/customer_1.png",
     },
+    reason: "Order Cancelled",
+    inventory: {
+      name: "Jenny Wilson",
+      phone: "+12345876",
+    },
     date: "4/5/2022",
     quantity: 8,
     amount: "$1272.66",
@@ -160,6 +215,11 @@ export const data: DataProps[] = [
     customer: {
       name: "Jenny Wilson",
       image: "/images/all-img/customer_1.png",
+    },
+    reason: "Order Cancelled",
+    inventory: {
+      name: "Jenny Wilson",
+      phone: "+12345876",
     },
     date: "8/9/2022",
     quantity: 2,
@@ -175,6 +235,11 @@ export const data: DataProps[] = [
       name: "Jenny Wilson",
       image: "/images/all-img/customer_1.png",
     },
+    reason: "Order Cancelled",
+    inventory: {
+      name: "Jenny Wilson",
+      phone: "+12345876",
+    },
     date: "2/10/2022",
     quantity: 11,
     amount: "$3671.81",
@@ -188,6 +253,11 @@ export const data: DataProps[] = [
     customer: {
       name: "Jenny Wilson",
       image: "/images/all-img/customer_1.png",
+    },
+    reason: "Order Cancelled",
+    inventory: {
+      name: "Jenny Wilson",
+      phone: "+12345876",
     },
     date: "2/10/2022",
     quantity: 2,
@@ -203,6 +273,11 @@ export const data: DataProps[] = [
       name: "Jenny Wilson",
       image: "/images/all-img/customer_1.png",
     },
+    reason: "Order Cancelled",
+    inventory: {
+      name: "Jenny Wilson",
+      phone: "+12345876",
+    },
     date: "5/20/2022",
     quantity: 4,
     amount: "$2387.49",
@@ -216,6 +291,11 @@ export const data: DataProps[] = [
     customer: {
       name: "Jenny Wilson",
       image: "/images/all-img/customer_1.png",
+    },
+    reason: "Order Cancelled",
+    inventory: {
+      name: "Jenny Wilson",
+      phone: "+12345876",
     },
     date: "5/3/2022",
     quantity: 15,
@@ -231,6 +311,11 @@ export const data: DataProps[] = [
       name: "Jenny Wilson",
       image: "/images/all-img/customer_1.png",
     },
+    reason: "Order Cancelled",
+    inventory: {
+      name: "Jenny Wilson",
+      phone: "+12345876",
+    },
     date: "10/31/2021",
     quantity: 11,
     amount: "$2975.66",
@@ -244,6 +329,11 @@ export const data: DataProps[] = [
     customer: {
       name: "Jenny Wilson",
       image: "/images/all-img/customer_1.png",
+    },
+    reason: "Order Cancelled",
+    inventory: {
+      name: "Jenny Wilson",
+      phone: "+12345876",
     },
     date: "1/13/2022",
     quantity: 5,
@@ -259,6 +349,11 @@ export const data: DataProps[] = [
       name: "Jenny Wilson",
       image: "/images/all-img/customer_1.png",
     },
+    reason: "Order Cancelled",
+    inventory: {
+      name: "Jenny Wilson",
+      phone: "+12345876",
+    },
     date: "6/14/2022",
     quantity: 5,
     amount: "$1276.56",
@@ -272,6 +367,11 @@ export const data: DataProps[] = [
     customer: {
       name: "Jenny Wilson",
       image: "/images/all-img/customer_1.png",
+    },
+    reason: "Order Cancelled",
+    inventory: {
+      name: "Jenny Wilson",
+      phone: "+12345876",
     },
     date: "10/8/2021",
     quantity: 4,
@@ -287,6 +387,11 @@ export const data: DataProps[] = [
       name: "Jenny Wilson",
       image: "/images/all-img/customer_1.png",
     },
+    reason: "Order Cancelled",
+    inventory: {
+      name: "Jenny Wilson",
+      phone: "+12345876",
+    },
     date: "11/17/2021",
     quantity: 9,
     amount: "$1678.19",
@@ -300,6 +405,11 @@ export const data: DataProps[] = [
     customer: {
       name: "Jenny Wilson",
       image: "/images/all-img/customer_1.png",
+    },
+    reason: "Order Cancelled",
+    inventory: {
+      name: "Jenny Wilson",
+      phone: "+12345876",
     },
     date: "4/4/2022",
     quantity: 9,
@@ -315,6 +425,11 @@ export const data: DataProps[] = [
       name: "Jenny Wilson",
       image: "/images/all-img/customer_1.png",
     },
+    reason: "Order Cancelled",
+    inventory: {
+      name: "Jenny Wilson",
+      phone: "+12345876",
+    },
     date: "3/21/2022",
     quantity: 5,
     amount: "$1578.39",
@@ -328,6 +443,11 @@ export const data: DataProps[] = [
     customer: {
       name: "Jenny Wilson",
       image: "/images/all-img/customer_1.png",
+    },
+    reason: "Order Cancelled",
+    inventory: {
+      name: "Jenny Wilson",
+      phone: "+12345876",
     },
     date: "6/18/2022",
     quantity: 12,
@@ -343,6 +463,11 @@ export const data: DataProps[] = [
       name: "Jenny Wilson",
       image: "/images/all-img/customer_1.png",
     },
+    reason: "Order Cancelled",
+    inventory: {
+      name: "Jenny Wilson",
+      phone: "+12345876",
+    },
     date: "8/15/2022",
     quantity: 8,
     amount: "$3721.11",
@@ -356,6 +481,11 @@ export const data: DataProps[] = [
     customer: {
       name: "Jenny Wilson",
       image: "/images/all-img/customer_1.png",
+    },
+    reason: "Order Cancelled",
+    inventory: {
+      name: "Jenny Wilson",
+      phone: "+12345876",
     },
     date: "4/28/2022",
     quantity: 8,
@@ -371,6 +501,11 @@ export const data: DataProps[] = [
       name: "Jenny Wilson",
       image: "/images/all-img/customer_1.png",
     },
+    reason: "Order Cancelled",
+    inventory: {
+      name: "Jenny Wilson",
+      phone: "+12345876",
+    },
     date: "9/6/2021",
     quantity: 7,
     amount: "$2863.71",
@@ -384,6 +519,11 @@ export const data: DataProps[] = [
     customer: {
       name: "Jenny Wilson",
       image: "/images/all-img/customer_1.png",
+    },
+    reason: "Order Cancelled",
+    inventory: {
+      name: "Jenny Wilson",
+      phone: "+12345876",
     },
     date: "9/11/2021",
     quantity: 4,
@@ -399,6 +539,11 @@ export const data: DataProps[] = [
       name: "Jenny Wilson",
       image: "/images/all-img/customer_1.png",
     },
+    reason: "Order Cancelled",
+    inventory: {
+      name: "Jenny Wilson",
+      phone: "+12345876",
+    },
     date: "1/27/2022",
     quantity: 5,
     amount: "$4660.81",
@@ -412,6 +557,11 @@ export const data: DataProps[] = [
     customer: {
       name: "Jenny Wilson",
       image: "/images/all-img/customer_1.png",
+    },
+    reason: "Order Cancelled",
+    inventory: {
+      name: "Jenny Wilson",
+      phone: "+12345876",
     },
     date: "9/16/2021",
     quantity: 6,
@@ -427,6 +577,11 @@ export const data: DataProps[] = [
       name: "Jenny Wilson",
       image: "/images/all-img/customer_1.png",
     },
+    reason: "Order Cancelled",
+    inventory: {
+      name: "Jenny Wilson",
+      phone: "+12345876",
+    },
     date: "1/8/2022",
     quantity: 1,
     amount: "$2299.05",
@@ -440,6 +595,11 @@ export const data: DataProps[] = [
     customer: {
       name: "Jenny Wilson",
       image: "/images/all-img/customer_1.png",
+    },
+    reason: "Order Cancelled",
+    inventory: {
+      name: "Jenny Wilson",
+      phone: "+12345876",
     },
     date: "11/18/2021",
     quantity: 1,
@@ -455,6 +615,11 @@ export const data: DataProps[] = [
       name: "Jenny Wilson",
       image: "/images/all-img/customer_1.png",
     },
+    reason: "Order Cancelled",
+    inventory: {
+      name: "Jenny Wilson",
+      phone: "+12345876",
+    },
     date: "3/30/2022",
     quantity: 13,
     amount: "$1996.06",
@@ -468,6 +633,11 @@ export const data: DataProps[] = [
     customer: {
       name: "Jenny Wilson",
       image: "/images/all-img/customer_1.png",
+    },
+    reason: "Order Cancelled",
+    inventory: {
+      name: "Jenny Wilson",
+      phone: "+12345876",
     },
     date: "11/13/2021",
     quantity: 5,
@@ -483,6 +653,11 @@ export const data: DataProps[] = [
       name: "Jenny Wilson",
       image: "/images/all-img/customer_1.png",
     },
+    reason: "Order Cancelled",
+    inventory: {
+      name: "Jenny Wilson",
+      phone: "+12345876",
+    },
     date: "12/7/2021",
     quantity: 11,
     amount: "$4353.01",
@@ -496,6 +671,11 @@ export const data: DataProps[] = [
     customer: {
       name: "Jenny Wilson",
       image: "/images/all-img/customer_1.png",
+    },
+    reason: "Order Cancelled",
+    inventory: {
+      name: "Jenny Wilson",
+      phone: "+12345876",
     },
     date: "9/9/2021",
     quantity: 15,
@@ -511,6 +691,11 @@ export const data: DataProps[] = [
       name: "Jenny Wilson",
       image: "/images/all-img/customer_1.png",
     },
+    reason: "Order Cancelled",
+    inventory: {
+      name: "Jenny Wilson",
+      phone: "+12345876",
+    },
     date: "2/12/2022",
     quantity: 5,
     amount: "$4044.10",
@@ -524,6 +709,11 @@ export const data: DataProps[] = [
     customer: {
       name: "Jenny Wilson",
       image: "/images/all-img/customer_1.png",
+    },
+    reason: "Order Cancelled",
+    inventory: {
+      name: "Jenny Wilson",
+      phone: "+12345876",
     },
     date: "3/6/2022",
     quantity: 5,
@@ -539,6 +729,11 @@ export const data: DataProps[] = [
       name: "Jenny Wilson",
       image: "/images/all-img/customer_1.png",
     },
+    reason: "Order Cancelled",
+    inventory: {
+      name: "Jenny Wilson",
+      phone: "+12345876",
+    },
     date: "7/25/2022",
     quantity: 14,
     amount: "$1652.47",
@@ -552,6 +747,11 @@ export const data: DataProps[] = [
     customer: {
       name: "Jenny Wilson",
       image: "/images/all-img/customer_1.png",
+    },
+    reason: "Order Cancelled",
+    inventory: {
+      name: "Jenny Wilson",
+      phone: "+12345876",
     },
     date: "3/2/2022",
     quantity: 8,
@@ -567,6 +767,11 @@ export const data: DataProps[] = [
       name: "Jenny Wilson",
       image: "/images/all-img/customer_1.png",
     },
+    reason: "Order Cancelled",
+    inventory: {
+      name: "Jenny Wilson",
+      phone: "+12345876",
+    },
     date: "12/8/2021",
     quantity: 8,
     amount: "$4508.13",
@@ -580,6 +785,11 @@ export const data: DataProps[] = [
     customer: {
       name: "Jenny Wilson",
       image: "/images/all-img/customer_1.png",
+    },
+    reason: "Order Cancelled",
+    inventory: {
+      name: "Jenny Wilson",
+      phone: "+12345876",
     },
     date: "11/22/2021",
     quantity: 11,
@@ -595,6 +805,11 @@ export const data: DataProps[] = [
       name: "Jenny Wilson",
       image: "/images/all-img/customer_1.png",
     },
+    reason: "Order Cancelled",
+    inventory: {
+      name: "Jenny Wilson",
+      phone: "+12345876",
+    },
     date: "4/6/2022",
     quantity: 1,
     amount: "$3471.32",
@@ -608,6 +823,11 @@ export const data: DataProps[] = [
     customer: {
       name: "Jenny Wilson",
       image: "/images/all-img/customer_1.png",
+    },
+    reason: "Order Cancelled",
+    inventory: {
+      name: "Jenny Wilson",
+      phone: "+12345876",
     },
     date: "2/4/2022",
     quantity: 4,
@@ -623,6 +843,11 @@ export const data: DataProps[] = [
       name: "Jenny Wilson",
       image: "/images/all-img/customer_1.png",
     },
+    reason: "Order Cancelled",
+    inventory: {
+      name: "Jenny Wilson",
+      phone: "+12345876",
+    },
     date: "3/30/2022",
     quantity: 15,
     amount: "$3723.64",
@@ -636,6 +861,11 @@ export const data: DataProps[] = [
     customer: {
       name: "Jenny Wilson",
       image: "/images/all-img/customer_1.png",
+    },
+    reason: "Order Cancelled",
+    inventory: {
+      name: "Jenny Wilson",
+      phone: "+12345876",
     },
     date: "11/20/2021",
     quantity: 2,
@@ -651,6 +881,11 @@ export const data: DataProps[] = [
       name: "Jenny Wilson",
       image: "/images/all-img/customer_1.png",
     },
+    reason: "Order Cancelled",
+    inventory: {
+      name: "Jenny Wilson",
+      phone: "+12345876",
+    },
     date: "10/24/2021",
     quantity: 11,
     amount: "$1196.76",
@@ -664,6 +899,11 @@ export const data: DataProps[] = [
     customer: {
       name: "Jenny Wilson",
       image: "/images/all-img/customer_1.png",
+    },
+    reason: "Order Cancelled",
+    inventory: {
+      name: "Jenny Wilson",
+      phone: "+12345876",
     },
     date: "6/30/2022",
     quantity: 10,
@@ -679,6 +919,11 @@ export const data: DataProps[] = [
       name: "Jenny Wilson",
       image: "/images/all-img/customer_1.png",
     },
+    reason: "Order Cancelled",
+    inventory: {
+      name: "Jenny Wilson",
+      phone: "+12345876",
+    },
     date: "11/16/2021",
     quantity: 4,
     amount: "$2657.84",
@@ -692,6 +937,11 @@ export const data: DataProps[] = [
     customer: {
       name: "Jenny Wilson",
       image: "/images/all-img/customer_1.png",
+    },
+    reason: "Order Cancelled",
+    inventory: {
+      name: "Jenny Wilson",
+      phone: "+12345876",
     },
     date: "8/15/2022",
     quantity: 6,

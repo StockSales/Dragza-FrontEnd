@@ -17,9 +17,14 @@ export type DataProps = {
     name: string;
     image: string;
   };
+  inventory: {
+    name: string;
+    phone: string;
+  }
   date: string;
   quantity: number;
   amount: string;
+  reason: string;
   method: string;
   status: "paid" | "due" | "canceled";
   action: React.ReactNode;
@@ -53,13 +58,39 @@ export const columns: ColumnDef<DataProps>[] = [
   },
 
   {
+    accessorKey:"name",
+    header: "Inventory Name",
+    cell: ({ row }) => {
+      const inventory = row.original.inventory;
+      return (
+          <span className="text-sm text-default-600 whitespace-nowrap">
+            {inventory?.name ?? "Unknown Inventory"}
+          </span>
+      );
+    }
+  },
+
+  {
+    accessorKey:"phone",
+    header: "Inventory phone",
+    cell: ({ row }) => {
+      const inventory = row.original.inventory;
+      return (
+          <span className="text-sm text-default-600 whitespace-nowrap">
+            {inventory?.phone ?? "Unknown Inventory"}
+          </span>
+      );
+    }
+  },
+
+  {
     accessorKey: "order",
-    header: "Order",
+    header: "Order Number",
     cell: ({ row }) => <span>{row.getValue("order")}</span>,
   },
   {
     accessorKey: "customer",
-    header: "Billing Name",
+    header: "Pharmacy Name",
     cell: ({ row }) => {
       const user = row.original.customer;
       return (
@@ -81,26 +112,10 @@ export const columns: ColumnDef<DataProps>[] = [
     },
   },
   {
-    accessorKey: "date",
-    header: "Date",
+    accessorKey: "reason",
+    header: "Reason",
     cell: ({ row }) => {
-      return <span>{row.getValue("date")}</span>;
-    },
-  },
-  {
-    accessorKey: "amount",
-    header: "Amount",
-    cell: ({ row }) => {
-      return <span>{row.getValue("amount")}</span>;
-    },
-  },
-  {
-    accessorKey: "method",
-    header: "Payment Method",
-    cell: ({ row }) => {
-
-      return <span> {row.getValue("method")}</span>;
-
+      return <span>{row.getValue("reason")}</span>;
     },
   },
   {
@@ -121,34 +136,34 @@ export const columns: ColumnDef<DataProps>[] = [
       );
     },
   },
-  {
-    id: "actions",
-    accessorKey: "action",
-    header: "Actions",
-    enableHiding: false,
-    cell: ({ row }) => {
-      return (
-        <div className="flex items-center gap-1">
-          <Link
-            href="/utility/invoice/preview/1"
-            className="flex items-center p-2 border-b text-warning hover:text-warning-foreground bg-warning/20 hover:bg-warning duration-200 transition-all rounded-full"
-          >
-            <Eye className="w-4 h-4" />
-          </Link>
-          <Link
-            href="#"
-            className="flex items-center p-2 border-b text-info hover:text-info-foreground bg-info/20 hover:bg-info duration-200 transition-all rounded-full"
-          >
-            <Download className="w-4 h-4" />
-          </Link>
-          <Link
-            href="#"
-            className="flex items-center p-2 text-destructive bg-destructive/40 duration-200 transition-all hover:bg-destructive/80 hover:text-destructive-foreground rounded-full"
-          >
-            <Trash2 className="w-4 h-4" />
-          </Link>
-        </div>
-      );
-    },
-  },
+  // {
+  //   id: "actions",
+  //   accessorKey: "action",
+  //   header: "Actions",
+  //   enableHiding: false,
+  //   cell: ({ row }) => {
+  //     return (
+  //       <div className="flex items-center gap-1">
+  //         <Link
+  //           href="/utility/invoice/preview/1"
+  //           className="flex items-center p-2 border-b text-warning hover:text-warning-foreground bg-warning/20 hover:bg-warning duration-200 transition-all rounded-full"
+  //         >
+  //           <Eye className="w-4 h-4" />
+  //         </Link>
+  //         <Link
+  //           href="#"
+  //           className="flex items-center p-2 border-b text-info hover:text-info-foreground bg-info/20 hover:bg-info duration-200 transition-all rounded-full"
+  //         >
+  //           <Download className="w-4 h-4" />
+  //         </Link>
+  //         <Link
+  //           href="#"
+  //           className="flex items-center p-2 text-destructive bg-destructive/40 duration-200 transition-all hover:bg-destructive/80 hover:text-destructive-foreground rounded-full"
+  //         >
+  //           <Trash2 className="w-4 h-4" />
+  //         </Link>
+  //       </div>
+  //     );
+  //   },
+  // },
 ];
