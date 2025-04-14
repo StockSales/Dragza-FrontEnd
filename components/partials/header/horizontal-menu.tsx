@@ -1,10 +1,10 @@
 'use client'
-import React from "react";
+import React, {useEffect, useState} from "react";
 import { ChevronDown } from "lucide-react";
 import { Link, usePathname } from "@/components/navigation";
 import { useConfig } from '@/hooks/use-config'
 import { useTranslations } from 'next-intl';
-import { getHorizontalMenuList } from "@/lib/menus";
+import {getHorizontalMenuList, getMenuList} from "@/lib/menus";
 import { Icon } from "@/components/ui/icon";
 import {
   Menubar,
@@ -17,15 +17,37 @@ import {
   MenubarTrigger,
 } from "@/components/ui/menubar"
 import { useMediaQuery } from "@/hooks/use-media-query";
+import {useSession} from "next-auth/react";
+import {useParams} from "next/navigation";
 
 export default function HorizontalMenu() {
+  const { data: session, status } = useSession();
+  const params = useParams<{ locale: string; }>();
+  const locale = params?.locale || "en";
+
 
   const [config] = useConfig()
 
   const t = useTranslations("Menu");
   const pathname = usePathname();
+  const [loading, setLoading] = useState(true);
 
-  const menuList = getHorizontalMenuList(pathname, t)
+  useEffect(() => {
+    const fetchMenuData = async () => {
+      try {
+        if (status === "authenticated" && session?.user?.role) {
+          const menu = getHorizontalMenuList(pathname, t, session.user.role, locale);
+          getHorizontalMenuList(menu);
+        }
+      } catch (error) {
+        console.error("Error generating menu:", error);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchMenuData();
+  }, [status, session, pathname, t, locale]);
 
   const [openDropdown, setOpenDropdown] = React.useState<boolean>(false);
 
