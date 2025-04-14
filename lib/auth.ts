@@ -49,6 +49,8 @@ export const { auth, handlers, signIn, signOut } = NextAuth({
                 const defaultRoute = defaultRouteByRole[token.role as string];
                 if (defaultRoute) {
                     return defaultRoute;
+                } else {
+                    return baseUrl;
                 }
             }
             return baseUrl;

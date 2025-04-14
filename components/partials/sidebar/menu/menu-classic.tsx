@@ -1,6 +1,6 @@
 "use client";
 
-import React from 'react'
+import React, {useEffect, useRef, useState} from 'react'
 import {Ellipsis, Loader2, LogOut} from "lucide-react";
 import { usePathname } from "@/components/navigation";
 import { cn } from "@/lib/utils";
@@ -23,41 +23,47 @@ import Logo from '@/components/logo';
 import SidebarHoverToggle from '@/components/partials/sidebar/sidebar-hover-toggle';
 import { useMenuHoverConfig } from '@/hooks/use-menu-hover';
 import { useMediaQuery } from '@/hooks/use-media-query';
-import {useSession} from "next-auth/react";
-
+import {getSession, useSession} from "next-auth/react";
 
 export function MenuClassic({ }) {
     const { data: session, status } = useSession();
     // translate
-    const t = useTranslations("Menu")
+    const t = useTranslations("Menu");
     const pathname = usePathname();
     const params = useParams<{ locale: string; }>();
     const direction = getLangDir(params?.locale ?? '');
-
-    const isDesktop = useMediaQuery('(min-width: 1280px)')
-
-
-    const [menuList, setMenuList] = React.useState([]);
+    const isDesktop = useMediaQuery('(min-width: 1280px)');
     const locale = params?.locale || "en";
 
-// wait until authenticated
-    React.useEffect(() => {
-        console.log(session?.user?.role, status)
-        if (status === "authenticated" && session?.user?.role) {
-            const menu = getMenuList(pathname, t, session.user.role, locale);
-            setMenuList(menu);
-        }
-    }, [status, session?.user?.role, pathname, t, locale]);
-
-    const [config, setConfig] = useConfig()
-    const collapsed = config.collapsed
+    const [config, setConfig] = useConfig();
+    const collapsed = config.collapsed;
     const [hoverConfig] = useMenuHoverConfig();
     const { hovered } = hoverConfig;
 
-    const scrollableNodeRef = React.useRef<HTMLDivElement>(null);
-    const [scroll, setScroll] = React.useState(false);
+    const scrollableNodeRef = useRef<HTMLDivElement>(null);
+    const [menuList, setMenuList] = useState([]);
+    const [loading, setLoading] = useState(true);
+    const [scroll, setScroll] = useState(false);
 
-    React.useEffect(() => {
+    // Generate menu list after authentication
+    useEffect(() => {
+        const fetchMenuData = async () => {
+            try {
+                if (status === "authenticated" && session?.user?.role) {
+                    const menu = getMenuList(pathname, t, session.user.role, locale);
+                    setMenuList(menu);
+                }
+            } catch (error) {
+                console.error("Error generating menu:", error);
+            } finally {
+                setLoading(false);
+            }
+        };
+
+        fetchMenuData();
+    }, [status, session, pathname, t, locale]);
+
+    useEffect(() => {
         const handleScroll = () => {
             if (scrollableNodeRef.current && scrollableNodeRef.current.scrollTop > 0) {
                 setScroll(true);
@@ -66,9 +72,14 @@ export function MenuClassic({ }) {
             }
         };
         scrollableNodeRef.current?.addEventListener("scroll", handleScroll);
+
+        return () => {
+            scrollableNodeRef.current?.removeEventListener("scroll", handleScroll);
+        };
     }, [scrollableNodeRef]);
 
-    if (status === "loading" || (status === "authenticated" && menuList.length === 0)) {
+    // Show loading state while authentication is in progress or role data is loading
+    if (status === "loading" || (status === "authenticated" && loading)) {
         return (
             <div className="w-full h-screen flex items-center justify-center">
                 <Loader2 className="text-blue-500 animate-spin w-6 h-6" />
@@ -76,33 +87,76 @@ export function MenuClassic({ }) {
         );
     }
 
+    // Show empty menu if not authenticated
+    if (status === "unauthenticated") {
+        return (
+            <div className="flex flex-col h-full">
+                {isDesktop && (
+                    <div className="flex items-center justify-between px-4 py-4">
+                        <Logo />
+                    </div>
+                )}
+                <div className="flex-1 flex items-center justify-center">
+                    <p className="text-gray-500">Please log in to view the menu</p>
+                </div>
+            </div>
+        );
+    }
+
+    // Show specific message if authenticated but no role is present
+    if (status === "authenticated" && !session?.user?.role) {
+        return (
+            <div className="flex flex-col h-full">
+                {isDesktop && (
+                    <div className="flex items-center justify-between px-4 py-4">
+                        <Logo />
+                    </div>
+                )}
+                <div className="flex-1 flex items-center justify-center">
+                    <p className="text-gray-500">User role not available. Please try logging in again.</p>
+                </div>
+            </div>
+        );
+    }
+
+    // Show empty menu if there are no menu items after authentication
+    if (menuList.length === 0) {
+        return (
+            <div className="flex flex-col h-full">
+                {isDesktop && (
+                    <div className="flex items-center justify-between px-4 py-4">
+                        <Logo />
+                    </div>
+                )}
+                <div className="flex-1 flex items-center justify-center">
+                    <p className="text-gray-500">No menu items available for your role</p>
+                </div>
+            </div>
+        );
+    }
+
     return (
         <>
             {isDesktop && (
-                <div className="flex items-center justify-between  px-4 py-4">
+                <div className="flex items-center justify-between px-4 py-4">
                     <Logo />
                     {/*<SidebarHoverToggle />*/}
                 </div>
             )}
 
-
-
-
-            <ScrollArea className="[&>div>div[style]]:block!" dir={direction}>
+            <ScrollArea className="[&>div>div[style]]:block!" dir={direction} ref={scrollableNodeRef}>
                 {isDesktop && (
-                    <div className={cn(' space-y-3 ', {
+                    <div className={cn('space-y-3', {
                         'px-4': !collapsed || hovered,
                         'text-center': collapsed || !hovered
                     })}>
-
                         {/*<TeamSwitcher />*/}
                         {/*<SearchBar />*/}
                     </div>
-
                 )}
 
                 <nav className="mt-8 h-full w-full">
-                    <ul className=" h-full flex flex-col min-h-[calc(100vh-48px-36px-16px-32px)] lg:min-h-[calc(100vh-32px-40px-32px)] items-start space-y-1 px-4">
+                    <ul className="h-full flex flex-col min-h-[calc(100vh-48px-36px-16px-32px)] lg:min-h-[calc(100vh-32px-40px-32px)] items-start space-y-1 px-4">
                         {menuList?.map(({ groupLabel, menus }, index) => (
                             <li className={cn("w-full", groupLabel ? "" : "")} key={index}>
                                 {(!collapsed || hovered) && groupLabel || !collapsed === undefined ? (
@@ -131,9 +185,7 @@ export function MenuClassic({ }) {
                                                 <TooltipProvider disableHoverableContent>
                                                     <Tooltip delayDuration={100}>
                                                         <TooltipTrigger asChild>
-
                                                             <div>
-
                                                                 <MenuItem label={label} icon={icon} href={href} active={active} id={id} collapsed={collapsed} />
                                                             </div>
                                                         </TooltipTrigger>
@@ -154,17 +206,14 @@ export function MenuClassic({ }) {
                                                     submenus={submenus}
                                                     collapsed={collapsed}
                                                     id={id}
-
                                                 />
                                             </div>
                                         )
                                 )}
-
                             </li>
                         ))}
                     </ul>
                 </nav>
-
             </ScrollArea>
         </>
     );
