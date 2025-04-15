@@ -1,9 +1,6 @@
-import { Link } from '@/i18n/routing';
 import RegForm from "@/components/partials/auth/reg-form";
 import Image from "next/image";
-import Copyright from "@/components/partials/auth/copyright";
 import Logo from "@/components/partials/auth/logo";
-import Social from "@/components/partials/auth/social";
 const Register = () => {
   return (
     <>
