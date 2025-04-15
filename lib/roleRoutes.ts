@@ -5,16 +5,18 @@ export const roleRoutes: Record<string, string[]> = {
     inventory: [
         "/en/dashboard/product-list",
         "/ar/dashboard/product-list",
-        "/en/dashboard/inventory-management",
-        "/ar/dashboard/inventory-management",
         "/en/dashboard/order-list",
-        "/ar/dashboard/order-list"
+        "/ar/dashboard/order-list",
+        "/ar/dashboard/return-list",
+        "/en/dashboard/return-list",
+        "/en/dashboard/sales",
+        "/ar/dashboard/sales",
     ],
-    sales: ["/en/dashboard/sales", "/en/dashboard/customer-list", "/ar/dashboard/sales", "/ar/dashboard/customer-list"]
+    sales: ["/en/dashboard/sales", "/en/dashboard/register", "/ar/dashboard/sales", "/ar/dashboard/register"]
 };
 
 export const defaultRouteByRole: Record<string, string> = {
     admin: "/dashboard/analytics",
-    inventory: "/dashboard/inventory-management",
+    inventory: "/dashboard/order-list",
     sales: "/dashboard/sales",
 };

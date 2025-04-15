@@ -7,6 +7,8 @@ export const data: DataProps[] = [
       image: "/images/all-img/customer_1.png",
     },
     status: "admin",
+    email: "hello@example.com",
+    phone: "+123456789",
     action: null,
   },
   {
@@ -16,6 +18,8 @@ export const data: DataProps[] = [
       image: "/images/all-img/customer_1.png",
     },
     status: "manager",
+    email: "hello@example.com",
+    phone: "+123456789",
     action: null,
   },
   {
@@ -25,6 +29,8 @@ export const data: DataProps[] = [
       image: "/images/all-img/customer_1.png",
     },
     status: "manager",
+    email: "hello@example.com",
+    phone: "+123456789",
     action: null,
   },
   {
@@ -34,6 +40,8 @@ export const data: DataProps[] = [
       image: "/images/all-img/customer_1.png",
     },
     status: "user",
+    email: "hello@example.com",
+    phone: "+123456789",
     action: null,
   },
   {
@@ -42,7 +50,8 @@ export const data: DataProps[] = [
       name: "Jenny Wilson",
       image: "/images/all-img/customer_1.png",
     },
-
+    email: "hello@example.com",
+    phone: "+123456789",
     status: "admin",
     action: null,
   },
@@ -53,6 +62,8 @@ export const data: DataProps[] = [
       image: "/images/all-img/customer_1.png",
     },
     status: "user",
+    email: "hello@example.com",
+    phone: "+123456789",
     action: null,
   },
   {
@@ -61,6 +72,8 @@ export const data: DataProps[] = [
       name: "Jenny Wilson",
       image: "/images/all-img/customer_1.png",
     },
+    email: "hello@example.com",
+    phone: "+123456789",
     status: "admin",
     action: null,
   },
@@ -70,6 +83,8 @@ export const data: DataProps[] = [
       name: "Jenny Wilson",
       image: "/images/all-img/customer_1.png",
     },
+    email: "hello@example.com",
+    phone: "+123456789",
     status: "manager",
     action: null,
   },
@@ -80,6 +95,8 @@ export const data: DataProps[] = [
       image: "/images/all-img/customer_1.png",
     },
     status: "manager",
+    email: "hello@example.com",
+    phone: "+123456789",
     action: null,
   },
   {
@@ -89,6 +106,8 @@ export const data: DataProps[] = [
       image: "/images/all-img/customer_1.png",
     },
     status: "admin",
+    email: "hello@example.com",
+    phone: "+123456789",
     action: null,
   },
   {
@@ -98,6 +117,8 @@ export const data: DataProps[] = [
       image: "/images/all-img/customer_1.png",
     },
     status: "admin",
+    email: "hello@example.com",
+    phone: "+123456789",
     action: null,
   },
   {
@@ -107,6 +128,8 @@ export const data: DataProps[] = [
       image: "/images/all-img/customer_1.png",
     },
     status: "user",
+    email: "hello@example.com",
+    phone: "+123456789",
     action: null,
   },
   {
@@ -115,6 +138,8 @@ export const data: DataProps[] = [
       name: "Jenny Wilson",
       image: "/images/all-img/customer_1.png",
     },
+    email: "hello@example.com",
+    phone: "+123456789",
     status: "user",
     action: null,
   },
@@ -124,6 +149,8 @@ export const data: DataProps[] = [
       name: "Jenny Wilson",
       image: "/images/all-img/customer_1.png",
     },
+    email: "hello@example.com",
+    phone: "+123456789",
     status: "admin",
     action: null,
   },
@@ -134,6 +161,8 @@ export const data: DataProps[] = [
       image: "/images/all-img/customer_1.png",
     },
     status: "user",
+    email: "hello@example.com",
+    phone: "+123456789",
     action: null,
   },
   {
@@ -143,6 +172,8 @@ export const data: DataProps[] = [
       image: "/images/all-img/customer_1.png",
     },
     status: "manager",
+    email: "hello@example.com",
+    phone: "+123456789",
     action: null,
   },
   {
@@ -152,6 +183,8 @@ export const data: DataProps[] = [
       image: "/images/all-img/customer_1.png",
     },
     status: "admin",
+    email: "hello@example.com",
+    phone: "+123456789",
     action: null,
   },
   {
@@ -161,6 +194,8 @@ export const data: DataProps[] = [
       image: "/images/all-img/customer_1.png",
     },
     status: "user",
+    email: "hello@example.com",
+    phone: "+123456789",
     action: null,
   },
   {
@@ -170,6 +205,8 @@ export const data: DataProps[] = [
       image: "/images/all-img/customer_1.png",
     },
     status: "user",
+    email: "hello@example.com",
+    phone: "+123456789",
     action: null,
   },
   {
@@ -179,6 +216,8 @@ export const data: DataProps[] = [
       image: "/images/all-img/customer_1.png",
     },
     status: "manager",
+    email: "hello@example.com",
+    phone: "+123456789",
     action: null,
   },
   {
@@ -188,6 +227,8 @@ export const data: DataProps[] = [
       image: "/images/all-img/customer_1.png",
     },
     status: "admin",
+    email: "hello@example.com",
+    phone: "+123456789",
     action: null,
   },
   {
@@ -197,6 +238,8 @@ export const data: DataProps[] = [
       image: "/images/all-img/customer_1.png",
     },
     status: "user",
+    email: "hello@example.com",
+    phone: "+123456789",
     action: null,
   },
   {
@@ -206,6 +249,8 @@ export const data: DataProps[] = [
       image: "/images/all-img/customer_1.png",
     },
     status: "manager",
+    email: "hello@example.com",
+    phone: "+123456789",
     action: null,
   },
   {
@@ -215,6 +260,8 @@ export const data: DataProps[] = [
       image: "/images/all-img/customer_1.png",
     },
     status: "user",
+    email: "hello@example.com",
+    phone: "+123456789",
     action: null,
   },
   {
@@ -224,6 +271,8 @@ export const data: DataProps[] = [
       image: "/images/all-img/customer_1.png",
     },
     status: "manager",
+    email: "hello@example.com",
+    phone: "+123456789",
     action: null,
   },
   {
@@ -233,6 +282,8 @@ export const data: DataProps[] = [
       image: "/images/all-img/customer_1.png",
     },
     status: "admin",
+    email: "hello@example.com",
+    phone: "+123456789",
     action: null,
   },
   {
@@ -242,6 +293,8 @@ export const data: DataProps[] = [
       image: "/images/all-img/customer_1.png",
     },
     status: "admin",
+    email: "hello@example.com",
+    phone: "+123456789",
     action: null,
   },
   {
@@ -251,6 +304,8 @@ export const data: DataProps[] = [
       image: "/images/all-img/customer_1.png",
     },
     status: "user",
+    email: "hello@example.com",
+    phone: "+123456789",
     action: null,
   },
   {
@@ -260,6 +315,8 @@ export const data: DataProps[] = [
       image: "/images/all-img/customer_1.png",
     },
     status: "admin",
+    email: "hello@example.com",
+    phone: "+123456789",
     action: null,
   },
   {
@@ -269,6 +326,8 @@ export const data: DataProps[] = [
       image: "/images/all-img/customer_1.png",
     },
     status: "manager",
+    email: "hello@example.com",
+    phone: "+123456789",
     action: null,
   },
   {
@@ -278,6 +337,8 @@ export const data: DataProps[] = [
       image: "/images/all-img/customer_1.png",
     },
     status: "user",
+    email: "hello@example.com",
+    phone: "+123456789",
     action: null,
   },
   {
@@ -287,6 +348,8 @@ export const data: DataProps[] = [
       image: "/images/all-img/customer_1.png",
     },
     status: "admin",
+    email: "hello@example.com",
+    phone: "+123456789",
     action: null,
   },
   {
@@ -296,6 +359,8 @@ export const data: DataProps[] = [
       image: "/images/all-img/customer_1.png",
     },
     status: "user",
+    email: "hello@example.com",
+    phone: "+123456789",
     action: null,
   },
   {
@@ -305,6 +370,8 @@ export const data: DataProps[] = [
       image: "/images/all-img/customer_1.png",
     },
     status: "manager",
+    email: "hello@example.com",
+    phone: "+123456789",
     action: null,
   },
   {
@@ -314,6 +381,8 @@ export const data: DataProps[] = [
       image: "/images/all-img/customer_1.png",
     },
     status: "admin",
+    email: "hello@example.com",
+    phone: "+123456789",
     action: null,
   },
   {
@@ -323,6 +392,8 @@ export const data: DataProps[] = [
       image: "/images/all-img/customer_1.png",
     },
     status: "manager",
+    email: "hello@example.com",
+    phone: "+123456789",
     action: null,
   },
   {
@@ -332,6 +403,8 @@ export const data: DataProps[] = [
       image: "/images/all-img/customer_1.png",
     },
     status: "manager",
+    email: "hello@example.com",
+    phone: "+123456789",
     action: null,
   },
   {
@@ -341,6 +414,8 @@ export const data: DataProps[] = [
       image: "/images/all-img/customer_1.png",
     },
     status: "admin",
+    email: "hello@example.com",
+    phone: "+123456789",
     action: null,
   },
   {
@@ -350,6 +425,8 @@ export const data: DataProps[] = [
       image: "/images/all-img/customer_1.png",
     },
     status: "admin",
+    email: "hello@example.com",
+    phone: "+123456789",
     action: null,
   },
   {
@@ -359,6 +436,8 @@ export const data: DataProps[] = [
       image: "/images/all-img/customer_1.png",
     },
     status: "user",
+    email: "hello@example.com",
+    phone: "+123456789",
     action: null,
   },
   {
@@ -368,6 +447,8 @@ export const data: DataProps[] = [
       image: "/images/all-img/customer_1.png",
     },
     status: "user",
+    email: "hello@example.com",
+    phone: "+123456789",
     action: null,
   },
   {
@@ -377,6 +458,8 @@ export const data: DataProps[] = [
       image: "/images/all-img/customer_1.png",
     },
     status: "manager",
+    email: "hello@example.com",
+    phone: "+123456789",
     action: null,
   },
   {
@@ -386,6 +469,8 @@ export const data: DataProps[] = [
       image: "/images/all-img/customer_1.png",
     },
     status: "manager",
+    email: "hello@example.com",
+    phone: "+123456789",
     action: null,
   },
   {
@@ -395,6 +480,8 @@ export const data: DataProps[] = [
       image: "/images/all-img/customer_1.png",
     },
     status: "admin",
+    email: "hello@example.com",
+    phone: "+123456789",
     action: null,
   },
   {
@@ -404,6 +491,8 @@ export const data: DataProps[] = [
       image: "/images/all-img/customer_1.png",
     },
     status: "manager",
+    email: "hello@example.com",
+    phone: "+123456789",
     action: null,
   },
   {
@@ -413,6 +502,8 @@ export const data: DataProps[] = [
       image: "/images/all-img/customer_1.png",
     },
     status: "user",
+    email: "hello@example.com",
+    phone: "+123456789",
     action: null,
   },
   {
@@ -422,6 +513,8 @@ export const data: DataProps[] = [
       image: "/images/all-img/customer_1.png",
     },
     status: "user",
+    email: "hello@example.com",
+    phone: "+123456789",
     action: null,
   },
   {
@@ -431,6 +524,8 @@ export const data: DataProps[] = [
       image: "/images/all-img/customer_1.png",
     },
     status: "user",
+    email: "hello@example.com",
+    phone: "+123456789",
     action: null,
   },
   {
@@ -440,6 +535,8 @@ export const data: DataProps[] = [
       image: "/images/all-img/customer_1.png",
     },
     status: "manager",
+    email: "hello@example.com",
+    phone: "+123456789",
     action: null,
   },
   {
@@ -449,6 +546,8 @@ export const data: DataProps[] = [
       image: "/images/all-img/customer_1.png",
     },
     status: "admin",
+    email: "hello@example.com",
+    phone: "+123456789",
     action: null,
   },
 ];

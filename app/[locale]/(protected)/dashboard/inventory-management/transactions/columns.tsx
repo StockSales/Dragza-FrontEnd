@@ -8,10 +8,12 @@ export type DataProps = {
   id: string | number;
   phone: string;
   seller: string;
+  address: string;
   date: string;
   email: string;
   store: string;
   quantity: number;
+  revenue: string;
   action: React.ReactNode;
 };
 export const columns: ColumnDef<DataProps>[] = [
@@ -63,31 +65,36 @@ export const columns: ColumnDef<DataProps>[] = [
     cell: ({ row }) => <span>{row.getValue("phone")}</span>,
   },
   {
+    accessorKey: "address",
+    header: "Address",
+    cell: ({ row }) => <span>{row.getValue("address")}</span>,
+  },
+  {
     accessorKey: "email",
     header: "Email",
     cell: ({ row }) => <span>{row.getValue("email")}</span>,
   },
   {
-    accessorKey: "date",
-    header: "Create Date",
+    accessorKey: "revenue",
+    header: "Revenue",
     cell: ({ row }) => {
-      return <span>{row.getValue("date")}</span>;
+      return <span>{row.getValue("revenue")}</span>;
     },
   },
   {
     accessorKey: "quantity",
-    header: "Products",
+    header: "Orders",
     cell: ({ row }) => {
       return <span>{row.getValue("quantity")}</span>;
     },
   },
-  {
-    accessorKey: "store",
-    header: "Store",
-    cell: ({ row }) => {
-      return <span> {row.getValue("store")}</span>;
-    },
-  },
+  // {
+  //   accessorKey: "store",
+  //   header: "Store",
+  //   cell: ({ row }) => {
+  //     return <span> {row.getValue("store")}</span>;
+  //   },
+  // },
   {
     id: "actions",
     accessorKey: "action",

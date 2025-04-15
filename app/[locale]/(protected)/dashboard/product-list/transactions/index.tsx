@@ -74,7 +74,7 @@ const TransactionsTable = () => {
         <div className="#flex-none">
           <div className="flex items-center gap-4 flex-wrap">
             <Link href="/dashboard/add-product">
-              <Button size={"md"} variant="ghost">
+              <Button size={"md"} variant="outline" color="secondary">
                 Add Product
               </Button>
             </Link>

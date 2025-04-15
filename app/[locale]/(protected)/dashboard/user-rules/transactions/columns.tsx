@@ -16,6 +16,8 @@ export type DataProps = {
     name: string;
     image: string;
   };
+  phone: string;
+  email: string;
   status: "admin" | "manager" | "user";
   action: React.ReactNode;
 };
@@ -67,6 +69,22 @@ export const columns: ColumnDef<DataProps>[] = [
           </div>
         </div>
       );
+    },
+  },
+  {
+    accessorKey: "phone",
+    header: "Phone",
+    cell: ({ row }) => {
+      const phone = row.original.phone;
+      return <div className="text-sm text-default-600">{phone}</div>;
+    },
+  },
+  {
+    accessorKey: "email",
+    header: "Email",
+    cell: ({ row }) => {
+      const email = row.original.email;
+      return <div className="text-sm text-default-600">{email}</div>;
     },
   },
   {

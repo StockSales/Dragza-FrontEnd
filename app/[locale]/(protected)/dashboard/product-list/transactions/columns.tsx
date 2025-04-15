@@ -86,23 +86,6 @@ export const columns: ColumnDef<DataProps>[] = [
     cell: ({ row }) => <span>{row.getValue("category")}</span>,
   },
   {
-    accessorKey: "info",
-    header: "Info",
-    cell: ({ row }) => {
-      const info = row.original.info;
-      return (
-        <div className="font-medium text-card-foreground/80">
-          <div className="flex gap-3 items-center">
-            <p>
-              <span>No of sale:</span> {info?.soldItems}
-              <br />
-            </p>
-          </div>
-        </div>
-      );
-    },
-  },
-  {
     accessorKey: "stock",
     header: "Stock",
     cell: ({ row }) => <span>{row.getValue("stock")}</span>,

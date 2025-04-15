@@ -1,8 +1,10 @@
 import { getToken } from "next-auth/jwt";
 import { NextRequest, NextResponse } from "next/server";
 import createMiddleware from "next-intl/middleware";
-import { locales } from "@/config";
+
+// routes config for each role
 import { roleRoutes, defaultRouteByRole } from "./lib/roleRoutes";
+import { locales } from "@/config";
 
 // Define your allowed roles based on roleRoutes keys
 type Role = keyof typeof roleRoutes;
@@ -30,6 +32,11 @@ export default async function middleware(request: NextRequest) {
     const role = token.role;
     const allowedRoutes = roleRoutes[role] || [];
     const defaultRoute = `/${defaultLocale}${defaultRouteByRole[role] || ""}`;
+
+    // 🆕 Redirect /en or /ar directly if user is authenticated
+    if (url === `/${defaultLocale}`) {
+      return NextResponse.redirect(new URL(defaultRoute, request.url));
+    }
 
     const isAllowed =
         allowedRoutes.includes("*") || allowedRoutes.includes(url);
