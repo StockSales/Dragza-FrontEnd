@@ -9,11 +9,7 @@ interface DataTablePaginationProps {
 const TablePagination = ({ table }: DataTablePaginationProps) => {
   return (
     <div className="flex flex-col sm:flex-row items-center justify-between p-4 gap-4">
-      <div className="flex-1 text-sm text-muted-foreground">
-        {table.getFilteredSelectedRowModel().rows.length} of{" "}
-        {table.getFilteredRowModel().rows.length} row(s) selected.
-      </div>
-      <div className="flex items-center gap-1 md:gap-2 flex-none">
+      <div className="flex items-center justify-center gap-1 md:gap-2 mx-auto">
         <Button
           variant="outline"
           size="icon"

@@ -28,15 +28,6 @@ import { data } from "./data";
 import TablePagination from "./table-pagination";
 
 import { CardContent } from "@/components/ui/card";
-import {
-  Select,
-  SelectContent,
-  SelectGroup,
-  SelectItem,
-  SelectLabel,
-  SelectTrigger,
-  SelectValue,
-} from "@/components/ui/select";
 import { Link } from '@/i18n/routing';
 import {Button} from "@/components/ui/button";
 
@@ -73,49 +64,11 @@ const TransactionsTable = () => {
       <div className="flex flex-wrap justify-end items-center py-4 px-6 border-b border-solid border-default-200">
         <div className="#flex-none">
           <div className="flex items-center gap-4 flex-wrap">
-            <Link href="/dashboard/add-product">
-              <Button size={"md"} variant="outline" color="secondary">
-                Add Product
+            <Link href="/dashboard/add-category">
+              <Button size={"md"} variant="outline" >
+                Add Category
               </Button>
             </Link>
-            <Select>
-              <SelectTrigger className=" w-[150px] cursor-pointer">
-                <SelectValue placeholder="Bulk Action" />
-              </SelectTrigger>
-              <SelectContent>
-                <SelectGroup>
-                  <SelectLabel>Bulk Action</SelectLabel>
-                  <SelectItem value="all">All</SelectItem>
-                  <SelectItem value="paid">Paid</SelectItem>
-                  <SelectItem value="pending">Pending</SelectItem>
-                  <SelectItem value="failed">Failed</SelectItem>
-                </SelectGroup>
-              </SelectContent>
-            </Select>
-            <Select>
-              <SelectTrigger className=" w-[80px] cursor-pointer">
-                <SelectValue placeholder="Date" />
-              </SelectTrigger>
-              <SelectContent>
-                <SelectGroup>
-                  <SelectLabel>Date</SelectLabel>
-                  <SelectItem value="all">All</SelectItem>
-                  <SelectItem value="paid">Paid</SelectItem>
-                  <SelectItem value="pending">Pending</SelectItem>
-                  <SelectItem value="failed">Failed</SelectItem>
-                </SelectGroup>
-              </SelectContent>
-            </Select>
-            <Input
-              placeholder="Search..."
-              value={
-                (table.getColumn("status")?.getFilterValue() as string) ?? ""
-              }
-              onChange={(event) =>
-                table.getColumn("status")?.setFilterValue(event.target.value)
-              }
-              className="w-full "
-            />
           </div>
         </div>
       </div>
