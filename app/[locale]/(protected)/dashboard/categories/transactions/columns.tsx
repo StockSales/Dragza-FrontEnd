@@ -22,6 +22,8 @@ export type DataProps = {
     purchasePrice: string;
     ratings: number;
   };
+  pref: string;
+  disc: string;
   isAvailable: boolean;
   published: boolean;
   action: React.ReactNode;
@@ -29,114 +31,22 @@ export type DataProps = {
 
 export const columns: ColumnDef<DataProps>[] = [
   {
-    id: "select",
-    header: ({ table }) => (
-      <Checkbox
-        checked={
-          table.getIsAllPageRowsSelected() ||
-          (table.getIsSomePageRowsSelected() && "indeterminate")
-        }
-        onCheckedChange={(value) => table.toggleAllPageRowsSelected(!!value)}
-        aria-label="Select all"
-        className="bg-default-100"
-      />
-    ),
-    cell: ({ row }) => (
-      <div className="xl:w-16">
-        <Checkbox
-          checked={row.getIsSelected()}
-          onCheckedChange={(value) => row.toggleSelected(!!value)}
-          aria-label="Select row"
-          className="bg-default-100"
-        />
-      </div>
-    ),
-    enableSorting: false,
-    enableHiding: false,
-  },
-
-  // {
-  //   accessorKey: "product",
-  //   header: "Product",
-  //   cell: ({ row }) => {
-  //     const product = row.original.product;
-  //     return (
-  //       <div className="font-medium text-card-foreground/80">
-  //         <div className="flex gap-3 items-center">
-  //           <Image
-  //             src={product.image}
-  //             alt=""
-  //             height={32}
-  //             width={32}
-  //             className=" w-8 h-8"
-  //           />
-  //
-  //           <span className="text-sm text-default-600">
-  //             {product?.name ?? "Unknown User"}
-  //           </span>
-  //         </div>
-  //       </div>
-  //     );
-  //   },
-  // },
-  {
     accessorKey: "category",
     header: "Category",
     cell: ({ row }) => <span>{row.getValue("category")}</span>,
   },
-  // {
-  //   accessorKey: "stock",
-  //   header: "Stock",
-  //   cell: ({ row }) => <span>{row.getValue("stock")}</span>,
-  // },
-  // {
-  //   accessorKey: "seller",
-  //   header: "Seller",
-  //   cell: ({ row }) => {
-  //     return <span>{row.getValue("seller")}</span>;
-  //   },
-  // },
-  // {
-  //   accessorKey: "basePrice",
-  //   header: "Selling Price",
-  //   cell: ({ row }) => {
-  //     const info = row.original.info;
-  //     return <span>{info.basePrice}</span>;
-  //   }
-  // },
-  // {
-  //   accessorKey: "purchasePrice",
-  //   header: "Purchase Price",
-  //   cell: ({ row }) => {
-  //     const info = row.original.info;
-  //     return <span>{info.purchasePrice}</span>;
-  //   }
-  // },
   {
-    accessorKey: "isAvailable",
-    header: "Availability",
+    accessorKey: "pref",
+    header: "Pref",
+    cell: ({ row }) => <span>{row.getValue("pref")}</span>,
+  },
+  {
+    accessorKey: "disc",
+    header: "Discription",
     cell: ({ row }) => {
-      const Colors: Record<string, string> = {
-        true: "bg-success/20 text-success",
-        false: "bg-destructive/20 text-destructive text-center",
-      };
-      const isAvailable = row?.original.isAvailable;
-      const statusStyles = Colors[`${isAvailable}`] || "default";
-      return (
-          <Badge className={cn("rounded-full px-5", statusStyles)}>
-            {isAvailable === true ? "Available" : "Not Available"}{" "}
-          </Badge>
-      );
+      return <span>{row.getValue("disc")}</span>;
     },
   },
-  // {
-  //   accessorKey: "published",
-  //   header: "Published",
-  //   cell: ({ row }) => {
-  //     const published = row.original.published;
-  //     return <Switch color="success" />;
-  //   },
-  // },
   {
     id: "actions",
     accessorKey: "action",
@@ -145,10 +55,10 @@ export const columns: ColumnDef<DataProps>[] = [
     cell: ({ row }) => {
       const pathname = usePathname();
       const getHref = () => {
-        if (pathname?.includes('/product-list')) {
-          return '/dashboard/edit-product';
+        if (pathname?.includes('/categories')) {
+          return '/dashboard/edit-category';
         } else {
-          return '/utility/invoice/preview/1'; // Default path
+          return '/utility/invoice/preview/1';
         }
       };
       return (
@@ -159,12 +69,12 @@ export const columns: ColumnDef<DataProps>[] = [
           >
             <SquarePen className="w-4 h-4" />
           </Link>
-          <Link
-            href="#"
+          <div
+              onClick={() => console.log('delete')}
             className="flex items-center p-2 text-destructive bg-destructive/40 duration-200 transition-all hover:bg-destructive/80 hover:text-destructive-foreground rounded-full"
           >
             <Trash2 className="w-4 h-4" />
-          </Link>
+          </div>
         </div>
       );
     },

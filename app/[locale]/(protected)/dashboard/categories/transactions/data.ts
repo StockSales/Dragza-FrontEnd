@@ -8,6 +8,8 @@ export const data: DataProps[] = [
     },
     "seller": "PharmaCare Inc.",
     "category": "pain-relief",
+    pref: "1",
+    disc: "hello everyone",
     "info": {
       "soldItems": 128,
       "basePrice": "$12.99",
@@ -27,6 +29,8 @@ export const data: DataProps[] = [
     },
     "seller": "MediHealth Labs",
     "category": "pain-relief",
+    pref: "1",
+    disc: "hello everyone",
     "info": {
       "soldItems": 93,
       "basePrice": "$8.49",
@@ -46,6 +50,8 @@ export const data: DataProps[] = [
     },
     "seller": "AllClear Pharma",
     "category": "allergy",
+    pref: "1",
+    disc: "hello everyone",
     "info": {
       "soldItems": 57,
       "basePrice": "$15.99",
@@ -65,6 +71,8 @@ export const data: DataProps[] = [
     },
     "seller": "MediTech Devices",
     "category": "medical-devices",
+    pref: "1",
+    disc: "hello everyone",
     "info": {
       "soldItems": 42,
       "basePrice": "$19.95",
@@ -84,6 +92,8 @@ export const data: DataProps[] = [
     },
     "seller": "SafeGuard Medical",
     "category": "first-aid",
+    pref: "1",
+    disc: "hello everyone",
     "info": {
       "soldItems": 31,
       "basePrice": "$29.99",
@@ -111,6 +121,8 @@ export const data: DataProps[] = [
     },
     "stock": 240,
     "published": true,
+    pref: "1",
+    disc: "hello everyone",
     "isAvailable": false,
     "action": null
   },
@@ -130,6 +142,8 @@ export const data: DataProps[] = [
     },
     "stock": 152,
     "published": true,
+    pref: "1",
+    disc: "hello everyone",
     "isAvailable": true,
     "action": null
   },
@@ -147,6 +161,8 @@ export const data: DataProps[] = [
       "purchasePrice": "$9.99",
       "ratings": 4.8
     },
+    pref: "1",
+    disc: "hello everyone",
     "stock": 68,
     "published": true,
     "isAvailable": true,
@@ -167,6 +183,8 @@ export const data: DataProps[] = [
       "ratings": 4.6
     },
     "stock": 47,
+    pref: "1",
+    disc: "hello everyone",
     "published": true,
     "isAvailable": true,
     "action": null
@@ -187,6 +205,8 @@ export const data: DataProps[] = [
     },
     "stock": 185,
     "published": true,
+    pref: "1",
+    disc: "hello everyone",
     "isAvailable": false,
     "action": null
   },
@@ -205,6 +225,8 @@ export const data: DataProps[] = [
       "ratings": 4.4
     },
     "stock": 132,
+    pref: "1",
+    disc: "hello everyone",
     "published": true,
     "isAvailable": true,
     "action": null
@@ -224,6 +246,8 @@ export const data: DataProps[] = [
       "ratings": 4.3
     },
     "stock": 97,
+    pref: "1",
+    disc: "hello everyone",
     "published": true,
     "isAvailable": true,
     "action": null
@@ -243,6 +267,8 @@ export const data: DataProps[] = [
       "ratings": 4.6
     },
     "stock": 143,
+    pref: "1",
+    disc: "hello everyone",
     "published": true,
     "isAvailable": true,
     "action": null
@@ -262,6 +288,8 @@ export const data: DataProps[] = [
       "ratings": 4.7
     },
     "stock": 86,
+    pref: "1",
+    disc: "hello everyone",
     "published": true,
     "isAvailable": true,
     "action": null
@@ -281,6 +309,8 @@ export const data: DataProps[] = [
       "ratings": 4.5
     },
     "stock": 124,
+    pref: "1",
+    disc: "hello everyone",
     "published": true,
     "isAvailable": true,
     "action": null
@@ -300,6 +330,8 @@ export const data: DataProps[] = [
       "ratings": 4.8
     },
     "stock": 92,
+    pref: "1",
+    disc: "hello everyone",
     "published": true,
     "isAvailable": true,
     "action": null
@@ -319,6 +351,8 @@ export const data: DataProps[] = [
       "ratings": 4.6
     },
     "stock": 158,
+    pref: "1",
+    disc: "hello everyone",
     "published": true,
     "isAvailable": true,
     "action": null
@@ -338,6 +372,8 @@ export const data: DataProps[] = [
       "ratings": 4.4
     },
     "stock": 215,
+    pref: "1",
+    disc: "hello everyone",
     "published": true,
     "isAvailable": true,
     "action": null
@@ -357,6 +393,8 @@ export const data: DataProps[] = [
       "ratings": 4.7
     },
     "stock": 173,
+    pref: "1",
+    disc: "hello everyone",
     "published": true,
     "isAvailable": true,
     "action": null
@@ -376,6 +414,8 @@ export const data: DataProps[] = [
       "ratings": 4.5
     },
     "stock": 112,
+    pref: "1",
+    disc: "hello everyone",
     "published": true,
     "isAvailable": true,
     "action": null
@@ -395,6 +435,8 @@ export const data: DataProps[] = [
       "ratings": 4.6
     },
     "stock": 89,
+    pref: "1",
+    disc: "hello everyone",
     "published": true,
     "isAvailable": true,
     "action": null
@@ -414,6 +456,8 @@ export const data: DataProps[] = [
       "ratings": 4.5
     },
     "stock": 104,
+    pref: "1",
+    disc: "hello everyone",
     "published": true,
     "isAvailable": true,
     "action": null
@@ -433,6 +477,8 @@ export const data: DataProps[] = [
       "ratings": 4.7
     },
     "stock": 267,
+    pref: "1",
+    disc: "hello everyone",
     "published": true,
     "isAvailable": true,
     "action": null
@@ -452,6 +498,8 @@ export const data: DataProps[] = [
       "ratings": 4.9
     },
     "stock": 65,
+    pref: "1",
+    disc: "hello everyone",
     "published": true,
     "isAvailable": true,
     "action": null
@@ -471,6 +519,8 @@ export const data: DataProps[] = [
       "ratings": 4.4
     },
     "stock": 92,
+    pref: "1",
+    disc: "hello everyone",
     "published": true,
     "isAvailable": true,
     "action": null
@@ -490,6 +540,8 @@ export const data: DataProps[] = [
       "ratings": 4.8
     },
     "stock": 73,
+    pref: "1",
+    disc: "hello everyone",
     "published": true,
     "isAvailable": true,
     "action": null
@@ -509,6 +561,8 @@ export const data: DataProps[] = [
       "ratings": 4.6
     },
     "stock": 87,
+    pref: "1",
+    disc: "hello everyone",
     "published": true,
     "isAvailable": true,
     "action": null
@@ -528,6 +582,8 @@ export const data: DataProps[] = [
       "ratings": 4.3
     },
     "stock": 183,
+    pref: "1",
+    disc: "hello everyone",
     "published": true,
     "isAvailable": true,
     "action": null
@@ -547,6 +603,8 @@ export const data: DataProps[] = [
       "ratings": 4.7
     },
     "stock": 128,
+    pref: "1",
+    disc: "hello everyone",
     "published": true,
     "isAvailable": true,
     "action": null
@@ -566,6 +624,8 @@ export const data: DataProps[] = [
       "ratings": 4.5
     },
     "stock": 82,
+    pref: "1",
+    disc: "hello everyone",
     "published": true,
     "isAvailable": true,
     "action": null
@@ -585,6 +645,8 @@ export const data: DataProps[] = [
       "ratings": 4.8
     },
     "stock": 58,
+    pref: "1",
+    disc: "hello everyone",
     "published": true,
     "isAvailable": true,
     "action": null
@@ -604,6 +666,8 @@ export const data: DataProps[] = [
       "ratings": 4.5
     },
     "stock": 142,
+    pref: "1",
+    disc: "hello everyone",
     "published": true,
     "isAvailable": true,
     "action": null
@@ -623,6 +687,8 @@ export const data: DataProps[] = [
       "ratings": 4.7
     },
     "stock": 67,
+    pref: "1",
+    disc: "hello everyone",
     "published": true,
     "isAvailable": true,
     "action": null
@@ -642,6 +708,8 @@ export const data: DataProps[] = [
       "ratings": 4.6
     },
     "stock": 115,
+    pref: "1",
+    disc: "hello everyone",
     "published": true,
     "isAvailable": true,
     "action": null
@@ -661,6 +729,8 @@ export const data: DataProps[] = [
       "ratings": 4.4
     },
     "stock": 78,
+    pref: "1",
+    disc: "hello everyone",
     "published": true,
     "isAvailable": true,
     "action": null
@@ -680,6 +750,8 @@ export const data: DataProps[] = [
       "ratings": 4.6
     },
     "stock": 123,
+    pref: "1",
+    disc: "hello everyone",
     "published": true,
     "isAvailable": true,
     "action": null
@@ -699,6 +771,8 @@ export const data: DataProps[] = [
       "ratings": 4.7
     },
     "stock": 235,
+    pref: "1",
+    disc: "hello everyone",
     "published": true,
     "isAvailable": true,
     "action": null
@@ -718,6 +792,8 @@ export const data: DataProps[] = [
       "ratings": 4.5
     },
     "stock": 79,
+    pref: "1",
+    disc: "hello everyone",
     "published": true,
     "isAvailable": true,
     "action": null
@@ -737,6 +813,8 @@ export const data: DataProps[] = [
       "ratings": 4.6
     },
     "stock": 83,
+    pref: "1",
+    disc: "hello everyone",
     "published": true,
     "isAvailable": true,
     "action": null
@@ -756,6 +834,8 @@ export const data: DataProps[] = [
       "ratings": 4.5
     },
     "stock": 97,
+    pref: "1",
+    disc: "hello everyone",
     "published": true,
     "isAvailable": true,
     "action": null
@@ -775,6 +855,8 @@ export const data: DataProps[] = [
       "ratings": 4.7
     },
     "stock": 134,
+    pref: "1",
+    disc: "hello everyone",
     "published": true,
     "isAvailable": true,
     "action": null
@@ -794,6 +876,8 @@ export const data: DataProps[] = [
       "ratings": 4.4
     },
     "stock": 96,
+    pref: "1",
+    disc: "hello everyone",
     "published": true,
     "isAvailable": true,
     "action": null
@@ -813,6 +897,8 @@ export const data: DataProps[] = [
       "ratings": 4.6
     },
     "stock": 172,
+    pref: "1",
+    disc: "hello everyone",
     "published": true,
     "isAvailable": true,
     "action": null
@@ -832,6 +918,8 @@ export const data: DataProps[] = [
       "ratings": 4.8
     },
     "stock": 54,
+    pref: "1",
+    disc: "hello everyone",
     "published": true,
     "isAvailable": true,
     "action": null
@@ -851,6 +939,8 @@ export const data: DataProps[] = [
       "ratings": 4.5
     },
     "stock": 87,
+    pref: "1",
+    disc: "hello everyone",
     "published": true,
     "isAvailable": true,
     "action": null
@@ -870,6 +960,8 @@ export const data: DataProps[] = [
       "ratings": 4.7
     },
     "stock": 142,
+    pref: "1",
+    disc: "hello everyone",
     "published": true,
     "isAvailable": true,
     "action": null
@@ -889,6 +981,8 @@ export const data: DataProps[] = [
       "ratings": 4.6
     },
     "stock": 74,
+    pref: "1",
+    disc: "hello everyone",
     "published": true,
     "isAvailable": true,
     "action": null
@@ -908,6 +1002,8 @@ export const data: DataProps[] = [
       "ratings": 4.7
     },
     "stock": 94,
+    pref: "1",
+    disc: "hello everyone",
     "published": true,
     "isAvailable": true,
     "action": null
@@ -927,6 +1023,8 @@ export const data: DataProps[] = [
       "ratings": 4.5
     },
     "stock": 58,
+    pref: "1",
+    disc: "hello everyone",
     "published": true,
     "isAvailable": true,
     "action": null
@@ -946,6 +1044,8 @@ export const data: DataProps[] = [
       "ratings": 4.4
     },
     "stock": 127,
+    pref: "1",
+    disc: "hello everyone",
     "isAvailable": true,
     "published": true,
     "action": null
