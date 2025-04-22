@@ -76,7 +76,7 @@ const TransactionsTable = () => {
       <CardContent className="pt-6">
         <div className="border border-solid border-default-200 rounded-lg overflow-hidden border-t-0">
           <Table>
-            <TableHeader>
+            <TableHeader className="bg-default-200">
               {table.getHeaderGroups().map((headerGroup) => (
                 <TableRow key={headerGroup.id}>
                   {headerGroup.headers.map((header) => {

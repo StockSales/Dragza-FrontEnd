@@ -4,8 +4,8 @@ import { ColumnDef } from "@tanstack/react-table";
 import { SquarePen, Trash2 } from "lucide-react";
 import { Link } from '@/i18n/routing';
 import {usePathname} from "next/navigation";
-import {toast} from "sonner";
 import {Button} from "@/components/ui/button";
+import {toast} from "sonner";
 
 export type DataProps = {
   id: string | number;
@@ -64,29 +64,38 @@ export const columns: ColumnDef<DataProps>[] = [
       };
 
 
-      const handleDelete = (id: string | number) => {
-        toast("Delete Category", {
-          description: "Are you sure you want to delete this category?",
-          action: (
-              <Button
-                  variant="shadow"
-                  className="text-white px-3 py-1 rounded-md"
-                  onClick={() => {
-                    // Actual delete logic here (API call, etc.)
-                    // we`ll use the id to delete specific category
-                    console.log("deleted category", id);
-                    toast.success("Category deleted", {
-                      description: "The category was deleted successfully.",
-                    });
-                  }}
-              >
-                Confirm
-              </Button>
-          ),
-        });
-      }
+        const handleDelete = (id: string | number) => {
+            const toastId = toast("Delete Category", {
+                description: "Are you sure you want to delete this category?",
+                action: (
+                    <div className="flex justify-end mx-auto items-center my-auto gap-2">
+                        <Button
+                            size="sm"
+                            onClick={() => toast.dismiss(toastId)}
+                            className="text-white px-3 py-1 rounded-md"
+                        >
+                            Cancel
+                        </Button>
+                        <Button
+                            size="sm"
+                            variant="shadow"
+                            className="text-white px-3 py-1 rounded-md"
+                            onClick={() => {
+                                console.log("deleted category", id);
+                                toast.dismiss(toastId); // Dismiss confirmation toast
+                                toast("Category deleted", {
+                                    description: "The category was deleted successfully.",
+                                });
+                            }}
+                        >
+                            Confirm
+                        </Button>
+                    </div>
+                ),
+            });
+        };
 
-      return (
+        return (
         <div className="flex items-center gap-1">
           <Link
               href={`${getHref()}/${id}`}
