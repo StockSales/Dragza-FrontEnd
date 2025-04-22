@@ -64,7 +64,7 @@ export const columns: ColumnDef<DataProps>[] = [
       };
 
 
-      const handleDelete = (id: string) => {
+      const handleDelete = (id: string | number) => {
         toast("Delete Category", {
           description: "Are you sure you want to delete this category?",
           action: (
