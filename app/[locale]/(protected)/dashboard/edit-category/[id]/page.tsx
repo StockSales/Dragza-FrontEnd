@@ -10,25 +10,26 @@ import {useState} from "react";
 import {useRouter} from "@/i18n/routing";
 import { useParams } from "next/navigation";
 import {data} from "@/app/[locale]/(protected)/dashboard/categories/transactions/data";
+import {CategoryType} from "@/types/category";
 
 const EditCategory = () => {
+  // Router navigator
+  const router = useRouter()
+
   // handling to get id of the category
   const params = useParams();
-  const id = params?.id;
-
+  const id: string | string[] | undefined = params?.id;
   // handling to get category data
-  const gettingCategory = (id) => {
-    const category = data.filter((item) => item.id == id);
-    return category[0];
-  }
+  const gettingCategory = (id: string | string[] | undefined): CategoryType | undefined => {
+    return data.find((item) => item.id == id);
+  };
 
-  // Router navigator
-  const router = useRouter();
+  const category = gettingCategory(id);
 
   // states for the form
-  const [name, setName] = useState(gettingCategory(id).category);
-  const [pref, setPref] = useState(gettingCategory(id).pref);
-  const [description, setDescription] = useState(gettingCategory(id).disc);
+  const [name, setName] = useState(category?.category || "");
+  const [pref, setPref] = useState(category?.pref || "");
+  const [description, setDescription] = useState(category?.disc || "");
 
   // handle update category
   const updateCategory = () => {
