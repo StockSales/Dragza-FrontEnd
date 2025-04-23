@@ -1,14 +1,14 @@
 import { ColumnDef } from "@tanstack/react-table";
 import {
-  Download,
   Eye,
   Trash2,
 } from "lucide-react";
-import { Checkbox } from "@/components/ui/checkbox";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Badge } from "@/components/ui/badge";
 import { cn } from "@/lib/utils";
-import { Link } from '@/i18n/routing';
+import {Link, useRouter} from '@/i18n/routing';
+import {toast} from "sonner";
+import {Button} from "@/components/ui/button";
 
 export type DataProps = {
   id: string | number;
@@ -21,37 +21,11 @@ export type DataProps = {
   quantity: number;
   amount: string;
   method: string;
+  order_status: "accepted" | "pending" | "rejected";
   status: "paid" | "due" | "canceled";
   action: React.ReactNode;
 };
 export const columns: ColumnDef<DataProps>[] = [
-  {
-    id: "select",
-    header: ({ table }) => (
-      <Checkbox
-        checked={
-          table.getIsAllPageRowsSelected() ||
-          (table.getIsSomePageRowsSelected() && "indeterminate")
-        }
-        onCheckedChange={(value) => table.toggleAllPageRowsSelected(!!value)}
-        aria-label="Select all"
-        className="bg-default-100"
-      />
-    ),
-    cell: ({ row }) => (
-      <div className="xl:w-16">
-        <Checkbox
-          checked={row.getIsSelected()}
-          onCheckedChange={(value) => row.toggleSelected(!!value)}
-          aria-label="Select row"
-          className="bg-default-100"
-        />
-      </div>
-    ),
-    enableSorting: false,
-    enableHiding: false,
-  },
-
   {
     accessorKey: "order",
     header: "Order",
@@ -59,7 +33,7 @@ export const columns: ColumnDef<DataProps>[] = [
   },
   {
     accessorKey: "customer",
-    header: "Billing Name",
+    header: "Customer Name",
     cell: ({ row }) => {
       const user = row.original.customer;
       return (
@@ -122,31 +96,78 @@ export const columns: ColumnDef<DataProps>[] = [
     },
   },
   {
+    accessorKey: "order_status",
+    header: "Order Status",
+    cell: ({ row }) => {
+      const statusColors: Record<string, string> = {
+        accepted: "bg-success/20 text-success",
+        pending: "bg-warning/20 text-warning",
+        canceled: "bg-destructive/20 text-destructive",
+      };
+      const status = row.getValue<string>("order_status");
+      const statusStyles = statusColors[status] || "default";
+      return (
+        <Badge className={cn("rounded-full px-5", statusStyles)}>
+          {status}
+        </Badge>
+      );
+    }
+  },
+  {
     id: "actions",
     accessorKey: "action",
     header: "Actions",
     enableHiding: false,
     cell: ({ row }) => {
+
+      const deleteOrder = (id: any) => {
+        return () => {
+          toast.success("Order Deleted", {
+            description: "Order Deleted Successfully",
+            action: (
+              <div className="flex justify-end mx-auto items-center my-auto gap-2">
+                <Button
+                  size="sm"
+                  variant="shadow"
+                  onClick={() => toast.dismiss()}
+                  className="text-white px-3 py-1 rounded-md"
+                >
+                  Cancel
+                </Button>
+                <Button
+                  size="sm"
+                  variant="shadow"
+                  onClick={() => {
+                    console.log("deleted order", id);
+                    toast.dismiss(); // Dismiss confirmation toast
+                    toast("Order deleted", {
+                      description: "The order was deleted successfully.",
+                    });
+                  }}
+                  className="text-white px-3 py-1 rounded-md"
+                >
+                  Confirm
+                </Button>
+              </div>
+            )
+          });
+        };
+      }
+
       return (
         <div className="flex items-center gap-1">
           <Link
-            href="/utility/invoice/preview/1"
-            className="flex items-center p-2 border-b text-warning hover:text-warning-foreground bg-warning/20 hover:bg-warning duration-200 transition-all rounded-full"
+            href={`/dashboard/order-details/${row.original.id}`}
+            className="flex items-center p-2 border-b text-warning hover:text-warning-foreground bg-warning/20 hover:bg-warning duration-200 transition-all rounded-full cursor-pointer"
           >
             <Eye className="w-4 h-4" />
           </Link>
-          <Link
-            href="#"
-            className="flex items-center p-2 border-b text-info hover:text-info-foreground bg-info/20 hover:bg-info duration-200 transition-all rounded-full"
-          >
-            <Download className="w-4 h-4" />
-          </Link>
-          <Link
-            href="#"
-            className="flex items-center p-2 text-destructive bg-destructive/40 duration-200 transition-all hover:bg-destructive/80 hover:text-destructive-foreground rounded-full"
+          <div
+              onClick={deleteOrder(row.original.id)}
+              className="flex items-center p-2 text-destructive bg-destructive/40 duration-200 transition-all hover:bg-destructive/80 hover:text-destructive-foreground rounded-full cursor-pointer"
           >
             <Trash2 className="w-4 h-4" />
-          </Link>
+          </div>
         </div>
       );
     },
