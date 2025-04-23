@@ -35,7 +35,6 @@ export const { auth, handlers, signIn, signOut } = NextAuth({
             if (user) {
                 token.role = (user as User).role;
             }
-            console.log("JWT Token:", token);
             return token;
         },
         async session({ session, token }) {
