@@ -96,9 +96,9 @@ const TransactionsTable = () => {
                   variant="ghost"
                   color="default"
                   className="ring-0 outline-0 hover:ring-0 hover:ring-offset-0 font-normal border-default-200 rounded-none cursor-pointer"
-                  onClick={() => filteringOrders("accepted")}
+                  onClick={() => filteringOrders("approve")}
               >
-                Accepted
+                Approve
               </Button>
 
               <Button
@@ -106,9 +106,9 @@ const TransactionsTable = () => {
                   variant="ghost"
                   color="default"
                   className="ring-0 outline-0 hover:ring-0 hover:ring-offset-0 font-normal border-default-200 rounded-none cursor-pointer"
-                  onClick={() => filteringOrders("pending")}
+                  onClick={() => filteringOrders("prepare")}
               >
-                Pending
+                Prepare
               </Button>
 
               <Button
@@ -116,20 +116,42 @@ const TransactionsTable = () => {
                   variant="ghost"
                   color="default"
                   className="ring-0 outline-0 hover:ring-0 hover:ring-offset-0 font-normal border-default-200 rounded-none cursor-pointer"
-                  onClick={() => filteringOrders("rejected")}
+                  onClick={() => filteringOrders("reject")}
               >
-                Rejected
+                Reject
+              </Button>
+
+              <Button
+                  size="md"
+                  variant="ghost"
+                  color="default"
+                  className="ring-0 outline-0 hover:ring-0 hover:ring-offset-0 font-normal border-default-200 rounded-none cursor-pointer"
+                  onClick={() => filteringOrders("ship")}
+              >
+                Ship
+              </Button>
+
+              <Button
+                  size="md"
+                  variant="ghost"
+                  color="default"
+                  className="ring-0 outline-0 hover:ring-0 hover:ring-offset-0 font-normal border-default-200 rounded-none cursor-pointer"
+                  onClick={() => filteringOrders("deliver")}
+              >
+                Deliver
+              </Button>
+
+              <Button
+                  size="md"
+                  variant="ghost"
+                  color="default"
+                  className="ring-0 outline-0 hover:ring-0 hover:ring-offset-0 font-normal border-default-200 rounded-none cursor-pointer"
+                  onClick={() => filteringOrders("complete")}
+              >
+                Complete
               </Button>
             </div>
           </div>
-          <Button
-            variant="shadow"
-            size="md"
-            className="flex items-center gap-2"
-            onClick={() => router.push("/dashboard/add-order") }
-          >
-            Add Order
-          </Button>
         </div>
 
         <CardContent>

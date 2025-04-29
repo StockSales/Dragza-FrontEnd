@@ -21,7 +21,7 @@ export type DataProps = {
   quantity: number;
   amount: string;
   method: string;
-  order_status: "accepted" | "pending" | "rejected";
+  order_status: "approve" | "prepare" | "reject" | "ship" | "deliver" | "complete";
   status: "paid" | "due" | "canceled";
   action: React.ReactNode;
 };
@@ -100,9 +100,12 @@ export const columns: ColumnDef<DataProps>[] = [
     header: "Order Status",
     cell: ({ row }) => {
       const statusColors: Record<string, string> = {
-        accepted: "bg-success/20 text-success",
-        pending: "bg-warning/20 text-warning",
-        canceled: "bg-destructive/20 text-destructive",
+        approve: "bg-success/20 text-success",
+        complete: "bg-success/40 text-success",
+        prepare: "bg-warning/20 text-warning",
+        reject: "bg-destructive/20 text-destructive",
+        ship: "bg-info/20 text-info",
+        deliver: "bg-info/40 text-info",
       };
       const status = row.getValue<string>("order_status");
       const statusStyles = statusColors[status] || "default";

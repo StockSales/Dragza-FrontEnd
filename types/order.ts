@@ -9,7 +9,7 @@ export type OrderData = {
     quantity: number;
     amount: string;
     method: string;
-    order_status: "accepted" | "pending" | "rejected";
+    order_status: "approve" | "prepare" | "reject" | "ship" | "deliver" | "complete";
     status: "paid" | "due" | "canceled";
     action: React.ReactNode;
 }

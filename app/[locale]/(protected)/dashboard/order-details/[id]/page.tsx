@@ -66,7 +66,7 @@ const OrderDetails = () => {
               <Label className="w-[150px] flex-none">Order Status: </Label>
               <Select
                   value={order?.order_status}
-                  onValueChange={(value: "accepted" | "rejected" | "pending") => {
+                  onValueChange={(value: "approve" | "prepare" | "reject" | "ship" | "deliver" | "complete") => {
                     if (order) {
                       setOrder({ ...order, order_status: value });
                     }
@@ -78,9 +78,12 @@ const OrderDetails = () => {
                 <SelectContent>
                   <SelectGroup>
                     <SelectLabel>Status</SelectLabel>
-                    <SelectItem value="accepted">Accepted</SelectItem>
-                    <SelectItem value="rejected">Rejected</SelectItem>
-                    <SelectItem value="pending">Pending</SelectItem>
+                    <SelectItem value="approve">Approve</SelectItem>
+                    <SelectItem value="prepare">Prepare</SelectItem>
+                    <SelectItem value="ship">Ship</SelectItem>
+                    <SelectItem value="reject">Reject</SelectItem>
+                    <SelectItem value="deliver">Deliver</SelectItem>
+                    <SelectItem value="complete">Complete</SelectItem>
                   </SelectGroup>
                 </SelectContent>
               </Select>
