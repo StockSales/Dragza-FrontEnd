@@ -37,8 +37,10 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
+import {useRouter} from "@/i18n/routing";
 
 const TransactionsTable = () => {
+  const router = useRouter();
   const [sorting, setSorting] = React.useState<SortingState>([]);
   const [columnFilters, setColumnFilters] = React.useState<ColumnFiltersState>([]);
   const [columnVisibility, setColumnVisibility] = React.useState<VisibilityState>({});
@@ -120,6 +122,14 @@ const TransactionsTable = () => {
               </Button>
             </div>
           </div>
+          <Button
+            variant="shadow"
+            size="md"
+            className="flex items-center gap-2"
+            onClick={() => router.push("/dashboard/add-order") }
+          >
+            Add Order
+          </Button>
         </div>
 
         <CardContent>
