@@ -42,7 +42,7 @@ const ReturnDetails = () => {
       description: "Order Updated Successfully"
     })
     setTimeout(() => {
-      router.push("/dashboard/order-list");
+      router.push("/dashboard/return-list");
     }, 2000);
   }
 
