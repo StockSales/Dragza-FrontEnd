@@ -10,7 +10,7 @@ import {
 import { Card, CardContent, CardHeader, CardFooter } from "@/components/ui/card";
 import Image from 'next/image';
 import { redirect } from '@/components/navigation';
-import MessageFooter from './components/message-footer';
+// import MessageFooter from './components/message-footer';
 import ChatHeader from './components/chat-header';
 import InfoWrapper from './components/info-wrapper';
 import { MoreHorizontal } from 'lucide-react';
@@ -148,9 +148,9 @@ const ChatPageSingle = async ({ params: { id } }: { params: { id: string }; }) =
                     )}
 
                 </CardContent>
-                <CardFooter className="flex-none flex-col px-0 py-4 border-t border-border">
-                    <MessageFooter />
-                </CardFooter>
+                {/*<CardFooter className="flex-none flex-col px-0 py-4 border-t border-border">*/}
+                {/*    <MessageFooter />*/}
+                {/*</CardFooter>*/}
             </Card>
 
             <InfoWrapper>
