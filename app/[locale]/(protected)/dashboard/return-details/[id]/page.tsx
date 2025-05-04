@@ -16,33 +16,33 @@ import { Icon } from "@/components/ui/icon";
 import { Button } from "@/components/ui/button";
 import { useParams } from "next/navigation";
 import { useEffect, useState } from "react";
-import { data } from "@/app/[locale]/(protected)/dashboard/order-list/transactions/data";
-import { OrderData } from "@/types/order";
+import { data } from "@/app/[locale]/(protected)/dashboard/return-list/transactions/data";
 import {toast} from "sonner";
 import {useRouter} from "@/i18n/routing";
+import {ReturnType} from "@/types/return";
 
-const OrderDetails = () => {
+const ReturnDetails = () => {
   // state for the order data
-  const [order, setOrder] = useState<OrderData | undefined>(undefined);
+  const [returnData, setReturnData] = useState<ReturnType | undefined>(undefined);
   const params = useParams();
   const router = useRouter();
 
   const id: string | string[] | undefined = params?.id;
 
 
-  // getting the order details
-  const getOrder = (id: string | string[] | undefined) => {
-    const foundOrder = data.find((item) => item.id == id);
-    setOrder(foundOrder);
+  // getting the Return details
+  const getReturn = (id: string | string[] | undefined) => {
+    const foundReturn = data.find((item) => item.id == id);
+    setReturnData(foundReturn);
   }
 
-  // handling update the order status
-  const updateOrderStatus = (id: string | string[] | undefined) => {
+  // handling update the Return status
+  const updateReturnStatus = (id: string | string[] | undefined) => {
     toast.success("Order Updated", {
       description: "Order Updated Successfully"
     })
     setTimeout(() => {
-      router.push("/dashboard/order-list");
+      router.push("/dashboard/return-list");
     }, 2000);
   }
 
@@ -50,7 +50,7 @@ const OrderDetails = () => {
   // dependant data
   useEffect(() => {
     if (id) {
-      getOrder(id);
+      getReturn(id);
     }
   }, [id]);
 
@@ -58,17 +58,17 @@ const OrderDetails = () => {
   return (
       <Card>
         <CardHeader>
-          <CardTitle>Order Update</CardTitle>
+          <CardTitle>Return Information</CardTitle>
         </CardHeader>
         <CardContent>
           <div className="space-y-4">
             <div className="flex items-center flex-wrap gap-4">
-              <Label className="w-[150px] flex-none">Order Status: </Label>
+              <Label className="w-[150px] flex-none">Return Status: </Label>
               <Select
-                  value={order?.order_status}
-                  onValueChange={(value: "approve" | "prepare" | "reject" | "ship" | "deliver" | "complete") => {
-                    if (order) {
-                      setOrder({ ...order, order_status: value });
+                  value={returnData?.status}
+                  onValueChange={(value: "paid" | "due" | "canceled") => {
+                    if (returnData) {
+                      setReturnData({ ...returnData, status: value });
                     }
                   }}
               >
@@ -78,12 +78,9 @@ const OrderDetails = () => {
                 <SelectContent>
                   <SelectGroup>
                     <SelectLabel>Status</SelectLabel>
-                    <SelectItem value="approve">Approve</SelectItem>
-                    <SelectItem value="prepare">Prepare</SelectItem>
-                    <SelectItem value="ship">Ship</SelectItem>
-                    <SelectItem value="reject">Reject</SelectItem>
-                    <SelectItem value="deliver">Deliver</SelectItem>
-                    <SelectItem value="complete">Complete</SelectItem>
+                    <SelectItem value="paid">Paid</SelectItem>
+                    <SelectItem value="due">Due</SelectItem>
+                    <SelectItem value="canceled">Canceled</SelectItem>
                   </SelectGroup>
                 </SelectContent>
               </Select>
@@ -94,7 +91,7 @@ const OrderDetails = () => {
                   variant="outline"
                   className="w-[150px] flex-none"
                   type="submit"
-                  onClick={() => updateOrderStatus(id)}
+                  onClick={() => updateReturnStatus(id)}
               >
                 Update
               </Button>
@@ -156,4 +153,4 @@ const OrderDetails = () => {
   );
 };
 
-export default OrderDetails;
+export default ReturnDetails;

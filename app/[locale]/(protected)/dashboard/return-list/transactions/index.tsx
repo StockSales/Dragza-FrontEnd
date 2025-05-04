@@ -47,8 +47,20 @@ const TransactionsTable = () => {
     React.useState<VisibilityState>({});
   const [rowSelection, setRowSelection] = React.useState({});
 
+  const [filteredData, setFilteredData] = React.useState(data)
+
+  // filtering order data for table
+  const filteringOrders = (filter: string) => {
+    if (filter === "all") {
+      setFilteredData(data);
+    } else {
+      const newData = data.filter((item) => item.status === filter);
+      setFilteredData(newData);
+    }
+  };
+
   const table = useReactTable({
-    data,
+    data: filteredData,
     columns,
     onSortingChange: setSorting,
     onColumnFiltersChange: setColumnFilters,
@@ -69,91 +81,47 @@ const TransactionsTable = () => {
   return (
     <Card className="w-full">
       <div className="flex flex-wrap gap-4 items-center py-4 px-5">
-        <div className="flex-1 text-xl flex flex-wrap gap-4 font-medium text-default-900">
+        <div className="flex-1 text-xl justify-end flex flex-wrap gap-4 font-medium text-default-900">
           <div className="inline-flex flex-wrap items-center border border-solid divide-x divide-default-200 divide-solid rounded-md overflow-hidden">
             <Button
-              size="md"
-              variant="ghost"
-              color="default"
-              className="ring-0 outline-0 hover:ring-0 hover:ring-offset-0 font-normal border-default-200 rounded-none cursor-pointer"
+                size="md"
+                variant="ghost"
+                color="default"
+                className="ring-0 outline-0 hover:ring-0 hover:ring-offset-0 font-normal border-default-200 rounded-none cursor-pointer"
+                onClick={() => filteringOrders("all")}
             >
               All
             </Button>
-            <Button
-              size="md"
-              variant="ghost"
-              color="default"
-              className="ring-0 outline-0 hover:ring-0 hover:ring-offset-0 font-normal border-default-200 rounded-none cursor-pointer"
-            >
-              Pending
-            </Button>
-            <Button
-              size="md"
-              variant="ghost"
-              color="default"
-              className="ring-0 outline-0 hover:ring-0 hover:ring-offset-0 font-normal border-default-200 rounded-none cursor-pointer"
-            >
-              Confirm
-            </Button>
-            <Button
-              size="md"
-              variant="ghost"
-              color="default"
-              className="ring-0 outline-0 hover:ring-0 hover:ring-offset-0 font-normal border-default-200 rounded-none cursor-pointer"
-            >
-              Processing
-            </Button>
-            <Button
-              size="md"
-              variant="ghost"
-              color="default"
-              className="ring-0 outline-0 hover:ring-0 hover:ring-offset-0 font-normal border-default-200 rounded-none cursor-pointer"
-            >
-              Delivered
-            </Button>
-          </div>
 
-          <Select>
-            <SelectTrigger className=" w-[80px] cursor-pointer">
-              <SelectValue placeholder="Date" />
-            </SelectTrigger>
-            <SelectContent>
-              <SelectGroup>
-                <SelectLabel>Date</SelectLabel>
-                <SelectItem value="all">All</SelectItem>
-                <SelectItem value="paid">Paid</SelectItem>
-                <SelectItem value="pending">Pending</SelectItem>
-                <SelectItem value="failed">Failed</SelectItem>
-              </SelectGroup>
-            </SelectContent>
-          </Select>
-        </div>
-        <div className="#flex-none">
-          <div className="flex items-center gap-4 flex-wrap">
-            <Select>
-              <SelectTrigger className=" w-[80px] cursor-pointer">
-                <SelectValue placeholder="Date" />
-              </SelectTrigger>
-              <SelectContent>
-                <SelectGroup>
-                  <SelectLabel>Date</SelectLabel>
-                  <SelectItem value="all">All</SelectItem>
-                  <SelectItem value="paid">Paid</SelectItem>
-                  <SelectItem value="pending">Pending</SelectItem>
-                  <SelectItem value="failed">Failed</SelectItem>
-                </SelectGroup>
-              </SelectContent>
-            </Select>
-            <Input
-              placeholder="Search..."
-              value={
-                (table.getColumn("status")?.getFilterValue() as string) ?? ""
-              }
-              onChange={(event) =>
-                table.getColumn("status")?.setFilterValue(event.target.value)
-              }
-              className="w-full "
-            />
+            <Button
+                size="md"
+                variant="ghost"
+                color="default"
+                className="ring-0 outline-0 hover:ring-0 hover:ring-offset-0 font-normal border-default-200 rounded-none cursor-pointer"
+                onClick={() => filteringOrders("canceled")}
+            >
+              Canceled
+            </Button>
+
+            <Button
+                size="md"
+                variant="ghost"
+                color="default"
+                className="ring-0 outline-0 hover:ring-0 hover:ring-offset-0 font-normal border-default-200 rounded-none cursor-pointer"
+                onClick={() => filteringOrders("due")}
+            >
+              Due
+            </Button>
+
+            <Button
+                size="md"
+                variant="ghost"
+                color="default"
+                className="ring-0 outline-0 hover:ring-0 hover:ring-offset-0 font-normal border-default-200 rounded-none cursor-pointer"
+                onClick={() => filteringOrders("paid")}
+            >
+              Paid
+            </Button>
           </div>
         </div>
       </div>
