@@ -3,7 +3,7 @@ export type User = {
   email: string;
   password: string;
   image: string;
-  role: "admin" | "inventory" | "sales";
+  role: "Admin" | "inventory" | "sales";
 };
 
 export const users : User[] = [
@@ -12,7 +12,7 @@ export const users : User[] = [
     email: "minaemad@gmail.com",
     password: "password",
     image: '/images/users/user-1.jpg',
-    role: "admin",
+    role: "Admin",
   },
   {
     name: "Inventory Manager",

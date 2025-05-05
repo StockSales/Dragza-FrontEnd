@@ -6,34 +6,13 @@ import { Link } from '@/i18n/routing';
 import {usePathname} from "next/navigation";
 import {Button} from "@/components/ui/button";
 import {toast} from "sonner";
+import {CategoryType} from "@/types/category";
 
-export type DataProps = {
-  id: string | number;
-  product: {
-    name: string;
-    image: string;
-  };
-  category: string;
-  seller: string;
-  stock: number;
-  info: {
-    soldItems: number;
-    basePrice: string;
-    purchasePrice: string;
-    ratings: number;
-  };
-  pref: string;
-  disc: string;
-  isAvailable: boolean;
-  published: boolean;
-  action: React.ReactNode;
-};
-
-export const columns: ColumnDef<DataProps>[] = [
+export const columns: ColumnDef<CategoryType>[] = [
   {
-    accessorKey: "category",
-    header: "Category",
-    cell: ({ row }) => <span>{row.getValue("category")}</span>,
+    accessorKey: "name",
+    header: "Category Name",
+    cell: ({ row }) => <span>{row.getValue("name")}</span>,
   },
   {
     accessorKey: "pref",
@@ -41,10 +20,10 @@ export const columns: ColumnDef<DataProps>[] = [
     cell: ({ row }) => <span>{row.getValue("pref")}</span>,
   },
   {
-    accessorKey: "disc",
-    header: "Discription",
+    accessorKey: "description",
+    header: "Description",
     cell: ({ row }) => {
-      return <span>{row.getValue("disc")}</span>;
+      return <span>{row.getValue("description")}</span>;
     },
   },
   {
@@ -62,8 +41,6 @@ export const columns: ColumnDef<DataProps>[] = [
           return '/dashboard/edit-category';
         }
       };
-
-
         const handleDelete = (id: string | number) => {
             const toastId = toast("Delete Category", {
                 description: "Are you sure you want to delete this category?",

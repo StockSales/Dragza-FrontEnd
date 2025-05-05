@@ -8,15 +8,18 @@ import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 import { toast } from "sonner";
 import { useRouter } from "@/i18n/routing";
+import useCreateCategory from "@/services/categories/CreateCategory";
 
 const AddCategory = () => {
+  const {creatingCategory, isCreated, loading} = useCreateCategory()
+
   const router = useRouter();
 
   const [name, setName] = useState("");
   const [pref, setPref] = useState("");
   const [description, setDescription] = useState("");
 
-  const addCategory = () => {
+  const addCategory = async () => {
     if (!name.trim()) {
       toast.error("Validation Error", { description: "Category Name is required." });
       return;
@@ -30,13 +33,26 @@ const AddCategory = () => {
       return;
     }
 
-    toast.success("Category Added", {
-      description: "Category Added Successfully"
-    });
-
-    setTimeout(() => {
-      router.push('/dashboard/categories');
-    }, 2000);
+    // Calling the endpoint for creation
+    try {
+      await creatingCategory({
+        name,
+        pref,
+        description
+      })
+      if (isCreated) {
+        toast.success("Category Added", {
+          description: "Category Added Successfully",
+        });
+        setTimeout(() => {
+          router.push("/dashboard/categories");
+        }, 2000);
+      }
+    } catch (error: any) {
+      toast.error("Network Error", {
+        description: error,
+      });
+    }
   };
 
   return (
@@ -90,7 +106,9 @@ const AddCategory = () => {
           </Card>
         </div>
         <div className="col-span-12 flex justify-center">
-          <Button onClick={addCategory}>Add Category</Button>
+          <Button onClick={addCategory}>
+            {loading === true ? "Loading" : "Add Category" }
+          </Button>
         </div>
       </div>
   );

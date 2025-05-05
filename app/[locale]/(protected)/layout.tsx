@@ -6,6 +6,9 @@ import ThemeCustomize from '@/components/partials/customizer'
 import DashCodeHeader from '@/components/partials/header'
 import { auth } from "@/lib/auth";
 import { redirect } from "@/components/navigation";
+import RoleGuard from "@/components/RoleGuard";
+
+
 const layout = async ({ children }: { children: React.ReactNode }) => {
     const session = await auth();
 
@@ -18,6 +21,7 @@ const layout = async ({ children }: { children: React.ReactNode }) => {
             <DashCodeHeader />
             <DashCodeSidebar />
             <LayoutContentProvider>
+                <RoleGuard />
                 {children}
             </LayoutContentProvider>
             <DashCodeFooter />
