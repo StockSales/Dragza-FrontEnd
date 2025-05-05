@@ -11,9 +11,10 @@ import { zodResolver } from '@hookform/resolvers/zod';
 import { z } from "zod";
 import { cn } from "@/lib/utils"
 import { Loader2 } from 'lucide-react';
-import { loginUser } from '@/action/auth-action';
 import { toast } from "sonner"
 import { useRouter } from '@/components/navigation';
+import {loginWithCredentials} from "@/services/auth/login";
+import {defaultRouteByRole} from "@/lib/roleRoutes";
 
 const schema = z.object({
   email: z.string().email({ message: "Your email is invalid." }),
@@ -40,30 +41,28 @@ const LoginForm = () => {
     resolver: zodResolver(schema),
     mode: "all",
     defaultValues: {
-      email: "minaemad@gmail.com",
-      password: "password",
+      email: "",
+      password: "",
     },
   });
 
-  const onSubmit = (data: z.infer<typeof schema>) => {
+  const onSubmit = async (data: z.infer<typeof schema>) => {
     startTransition(async () => {
       try {
-        const response = await loginUser(data);
+        const user = await loginWithCredentials(data);
 
-        if (!!response.error) {
-          toast("Event has been created", {
-            description: "Sunday, December 03, 2023 at 9:00 AM",
+        const role = user?.role || localStorage.getItem("userRole");
+        const route =
+            defaultRouteByRole[role?.toLowerCase()] || "/dashboard/analytics";
 
-          })
-        } else {
-          router.push('/dashboard/analytics');
-          toast.success("Successfully logged in");
-        }
+        router.push(route);
+        toast.success("Successfully logged in");
       } catch (err: any) {
-        toast.error(err.message);
+        toast.error(err.message || "Login failed");
       }
     });
   };
+
 
   return (
     <form onSubmit={handleSubmit(onSubmit)} className="mt-5 2xl:mt-7 space-y-4">

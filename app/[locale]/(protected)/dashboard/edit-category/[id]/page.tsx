@@ -9,10 +9,13 @@ import {toast} from "sonner";
 import {useState} from "react";
 import {useRouter} from "@/i18n/routing";
 import { useParams } from "next/navigation";
-import {data} from "@/app/[locale]/(protected)/dashboard/categories/transactions/data";
 import {CategoryType} from "@/types/category";
+import useGetCategoryById from "@/services/categories/getCategoryById";
 
 const EditCategory = () => {
+  // getting category by id
+  const {category, gettingCategoryById, loading} = useGetCategoryById()
+
   // Router navigator
   const router = useRouter()
 
@@ -20,16 +23,21 @@ const EditCategory = () => {
   const params = useParams();
   const id: string | string[] | undefined = params?.id;
   // handling to get category data
-  const gettingCategory = (id: string | string[] | undefined): CategoryType | undefined => {
-    return data.find((item) => item.id == id);
+  const gettingCategory = async (id: string | string[] | undefined) => {
+    await gettingCategoryById(id)
+
+    if (category == undefined) {
+      toast.error("Something went wrong", {
+        description: "Please, reload the page"
+      })
+    }
+
   };
 
-  const category = gettingCategory(id);
-
   // states for the form
-  const [name, setName] = useState(category?.category || "");
+  const [name, setName] = useState(category?.name || "");
   const [pref, setPref] = useState(category?.pref || "");
-  const [description, setDescription] = useState(category?.disc || "");
+  const [description, setDescription] = useState(category?.description || "");
 
   // handle update category
   const updateCategory = () => {

@@ -69,10 +69,12 @@ const TransactionsTable = () => {
     gettingAllCategories()
   }, []);
 
-  if (loading) {
-    return <Loader />;
-  }
-
+  // dependant rendering
+  useEffect(() => {
+    if (loading === true) {
+      return <> <Loader/> </>
+    }
+  }, [loading]);
 
   return (
     <div className="w-full">

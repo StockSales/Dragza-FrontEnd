@@ -2,7 +2,7 @@ import NextAuth from "next-auth";
 
 declare module "next-auth" {
     interface User {
-        role: "admin" | "sales" | "inventory";
+        role: "Admin" | "sales" | "inventory";
     }
 
     interface Session {
@@ -10,7 +10,7 @@ declare module "next-auth" {
             name: string;
             email: string;
             image?: string;
-            role: "admin" | "sales" | "inventory";
+            role: "Admin" | "sales" | "inventory";
         };
     }
 }
