@@ -79,7 +79,7 @@ const EditCategory = () => {
       });
     } else if (error) {
       toast.error("Something went wrong", {
-        description: error || "Please, reload the page"
+        description: error
       })
       setTimeout(() => {
         router.push('/dashboard/categories');
