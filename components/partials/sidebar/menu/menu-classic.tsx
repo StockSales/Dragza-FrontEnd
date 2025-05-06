@@ -24,6 +24,7 @@ import SidebarHoverToggle from '@/components/partials/sidebar/sidebar-hover-togg
 import { useMenuHoverConfig } from '@/hooks/use-menu-hover';
 import { useMediaQuery } from '@/hooks/use-media-query';
 import {getSession, useSession} from "next-auth/react";
+import Cookies from "js-cookie";
 
 export function MenuClassic({ }) {
     const { data: session, status } = useSession();
@@ -44,24 +45,17 @@ export function MenuClassic({ }) {
     const [menuList, setMenuList] = useState<Group[]>([]);
     const [loading, setLoading] = useState(true);
     const [scroll, setScroll] = useState(false);
+    const roleFromCookie = Cookies.get('userRole');
 
     // Generate menu list after authentication
     useEffect(() => {
-        const fetchMenuData = async () => {
-            try {
-                if (status === "authenticated" && session?.user?.role) {
-                    const menu = getMenuList(pathname, t, session.user.role, locale);
-                    setMenuList(menu);
-                }
-            } catch (error) {
-                console.error("Error generating menu:", error);
-            } finally {
-                setLoading(false);
-            }
-        };
+        if (!roleFromCookie) return;
 
-        fetchMenuData();
-    }, [status, session, pathname, t, locale]);
+        setLoading(true);
+        const menu = getMenuList(pathname, t, roleFromCookie, locale);
+        setMenuList(menu);
+        setLoading(false);
+    }, [pathname, t, locale, roleFromCookie]);
 
     useEffect(() => {
         const handleScroll = () => {
@@ -78,8 +72,18 @@ export function MenuClassic({ }) {
         };
     }, [scrollableNodeRef]);
 
+    useEffect(() => {
+        const node = scrollableNodeRef.current;
+        if (!node) return;
+
+        const handleScroll = () => setScroll(node.scrollTop > 0);
+        node.addEventListener("scroll", handleScroll);
+        return () => node.removeEventListener("scroll", handleScroll);
+    }, []);
+
     // Show loading state while authentication is in progress or role data is loading
-    if (status === "loading" || (status === "authenticated" && loading)) {
+
+    if (loading) {
         return (
             <div className="w-full h-screen flex items-center justify-center">
                 <Loader2 className="text-blue-500 animate-spin w-6 h-6" />
@@ -87,24 +91,8 @@ export function MenuClassic({ }) {
         );
     }
 
-    // Show empty menu if not authenticated
-    if (status === "unauthenticated") {
-        return (
-            <div className="flex flex-col h-full">
-                {isDesktop && (
-                    <div className="flex items-center justify-between px-4 py-4">
-                        <Logo />
-                    </div>
-                )}
-                <div className="flex-1 flex items-center justify-center">
-                    <p className="text-gray-500">Please log in to view the menu</p>
-                </div>
-            </div>
-        );
-    }
-
     // Show specific message if authenticated but no role is present
-    if (status === "authenticated" && !session?.user?.role) {
+    if (roleFromCookie !== undefined && !roleFromCookie) {
         return (
             <div className="flex flex-col h-full">
                 {isDesktop && (
@@ -135,6 +123,8 @@ export function MenuClassic({ }) {
         );
     }
 
+
+
     return (
         <>
             {isDesktop && (
@@ -150,8 +140,6 @@ export function MenuClassic({ }) {
                         'px-4': !collapsed || hovered,
                         'text-center': collapsed || !hovered
                     })}>
-                        {/*<TeamSwitcher />*/}
-                        {/*<SearchBar />*/}
                     </div>
                 )}
 
@@ -159,9 +147,9 @@ export function MenuClassic({ }) {
                     <ul className="h-full flex flex-col min-h-[calc(100vh-48px-36px-16px-32px)] lg:min-h-[calc(100vh-32px-40px-32px)] items-start space-y-1 px-4">
                         {menuList?.map(({ groupLabel, menus }, index) => (
                             <li className={cn("w-full", groupLabel ? "" : "")} key={index}>
-                                {(!collapsed || hovered) && groupLabel || !collapsed === undefined ? (
+                                {(groupLabel && (!collapsed || hovered)) ? (
                                     <MenuLabel label={groupLabel} />
-                                ) : collapsed && !hovered && !collapsed !== undefined && groupLabel ? (
+                                ) : (collapsed && !hovered && groupLabel) ? (
                                     <TooltipProvider>
                                         <Tooltip delayDuration={100}>
                                             <TooltipTrigger className="w-full">
@@ -174,9 +162,7 @@ export function MenuClassic({ }) {
                                             </TooltipContent>
                                         </Tooltip>
                                     </TooltipProvider>
-                                ) : (
-                                    null
-                                )}
+                                ) : null}
 
                                 {menus.map(
                                     ({ href, label, icon, active, id, submenus }, index) =>

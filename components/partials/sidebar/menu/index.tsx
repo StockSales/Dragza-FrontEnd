@@ -1,59 +1,49 @@
 "use client";
 
-import React, { useState, useEffect } from 'react'
-import { useConfig } from "@/hooks/use-config";
+import React, { useEffect, useState } from "react";
+import Cookies from "js-cookie";
+import { Loader2 } from "lucide-react";
 import { MenuClassic } from './menu-classic';
 import { MenuTwoColumn } from './menu-two-column';
 import { MenuDragAble } from './menu-dragable';
-import {getSession, useSession} from "next-auth/react";
-import { Loader2 } from "lucide-react";
+import { useConfig } from "@/hooks/use-config";
 
 export function Menu() {
-    const [config, setConfig] = useConfig();
-    const { data: session, status } = useSession();
     const [isReady, setIsReady] = useState(false);
+    const [roleFromCookie, setRoleFromCookie] = useState<string | undefined>(undefined);
+    const [config] = useConfig();
 
-    // Make sure we don't render until we know the authentication status
     useEffect(() => {
-        console.log(status, session)
-        // Only set as ready when we have the full session data
-        if (status !== "loading") {
-            // Add a small delay to ensure the session data is fully propagated
-            const timer = setTimeout(() => {
-                setIsReady(true);
-            }, 100);
-
-            return () => clearTimeout(timer);
+        // Fetch role from cookie directly
+        const role = Cookies.get("userRole");
+        if (role) {
+            setRoleFromCookie(role);
+            setIsReady(true);  // Once the role is fetched, set the state to ready
+        } else {
+            setIsReady(true);  // If no role, consider it ready
         }
-    }, [status, session]);
+    }, []); // Runs only once when component mounts
 
-    // Show loading state while checking
-    if (status === "loading" || isReady === false) {
+    // Loading state
+    if (!isReady) {
         return (
             <div className="flex items-center justify-center h-full w-full">
-                <Loader2 className="h-6 w-6 animate-spin text-muted-foreground flex justify-center items-center" />
+                <Loader2 className="h-6 w-6 animate-spin text-muted-foreground" />
             </div>
         );
     }
 
-    if (status === "unauthenticated" || !session) {
-        getSession()
+    // If the user is unauthenticated and no role is found, show message
+    if (roleFromCookie === undefined) {
         return (
-            <Loader2 className="h-6 w-6 animate-spin flex justify-center items-center text-muted-foreground" />
+            <div className="flex items-center justify-center h-full w-full">
+                <p className="text-gray-500">You are not logged in or no role found.</p>
+            </div>
         );
     }
 
-
-    // Render based on selected layout
-    if (config.sidebar === 'draggable') {
-        return <MenuDragAble />
-    }
-
-    if (config.sidebar === 'two-column') {
-        return <MenuTwoColumn />
-    }
-
-    return (
-        <MenuClassic />
-    );
+    // Render based on layout
+    if (config.sidebar === 'draggable') return <MenuDragAble />;
+    if (config.sidebar === 'two-column') return <MenuTwoColumn />;
+    return <MenuClassic />;
 }
