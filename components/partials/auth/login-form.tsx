@@ -15,9 +15,11 @@ import { toast } from "sonner"
 import { useRouter } from '@/components/navigation';
 import {loginWithCredentials} from "@/services/auth/login";
 import {defaultRouteByRole} from "@/lib/roleRoutes";
+import {AuthType} from "@/types/auth";
+import Cookies from "js-cookie";
 
 const schema = z.object({
-  email: z.string().email({ message: "Your email is invalid." }),
+  usernameOrEmail: z.string().email({ message: "Your email is invalid." }),
   password: z.string().min(4),
 });
 const LoginForm = () => {
@@ -41,7 +43,7 @@ const LoginForm = () => {
     resolver: zodResolver(schema),
     mode: "all",
     defaultValues: {
-      email: "",
+      usernameOrEmail: "",
       password: "",
     },
   });
@@ -49,11 +51,10 @@ const LoginForm = () => {
   const onSubmit = async (data: z.infer<typeof schema>) => {
     startTransition(async () => {
       try {
-        const user = await loginWithCredentials(data);
+        const user: AuthType = await loginWithCredentials(data);
 
-        const role = user?.role || localStorage.getItem("userRole");
-        const route =
-            defaultRouteByRole[role?.toLowerCase()] || "/dashboard/analytics";
+        const role = user?.role || Cookies.get("userRole");
+        const route = defaultRouteByRole[role || ""] || "/dashboard/analytics";
 
         router.push(route);
         toast.success("Successfully logged in");
@@ -72,17 +73,17 @@ const LoginForm = () => {
         </Label>
         <Input size="lg"
           disabled={isPending}
-          {...register("email")}
+          {...register("usernameOrEmail")}
           type="email"
           id="email"
           className={cn("", {
-            "border-destructive ": errors.email,
+            "border-destructive ": errors.usernameOrEmail,
           })}
         />
       </div>
-      {errors.email && (
+      {errors.usernameOrEmail && (
         <div className=" text-destructive mt-2 text-sm">
-          {errors.email.message}
+          {errors.usernameOrEmail.message}
         </div>
       )}
 

@@ -32,7 +32,8 @@ export const columns: ColumnDef<CategoryType>[] = [
     header: "Actions",
     enableHiding: false,
     cell: ({ row }) => {
-      const id: string | number = row.original.id;
+      const id: string | number | undefined = row.original.id;
+        // eslint-disable-next-line react-hooks/rules-of-hooks
       const pathname: string | null = usePathname();
       const getHref = () => {
         if (pathname?.includes('/categories')) {
@@ -41,7 +42,7 @@ export const columns: ColumnDef<CategoryType>[] = [
           return '/dashboard/edit-category';
         }
       };
-        const handleDelete = (id: string | number) => {
+        const handleDelete = (id: string | number | undefined) => {
             const toastId = toast("Delete Category", {
                 description: "Are you sure you want to delete this category?",
                 action: (

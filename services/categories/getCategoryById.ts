@@ -15,7 +15,7 @@ function useGetCategoryById() {
            if (response.status === 200 || response.data !== null) {
                setCategory(response.data)
            }
-           if (response.data.status !== 200 || response.data.errors || response.data.title == "One or more validation errors occurred.") {
+           if (response.status !== 200 || response.data.errors || response.data.title == "One or more validation errors occurred.") {
                throw new Error(response.data.title || "Something went wrong")
            }
        }).catch((err) => {
