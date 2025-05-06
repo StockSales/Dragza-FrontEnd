@@ -12,10 +12,16 @@ const RoleGuard = () => {
         const role = getRoleFromToken();
         const allowedRoutes = roleRoutes[role || ""] || [];
 
+        if (!role) return; // not logged in yet
+
         if (!allowedRoutes.includes("*") && !allowedRoutes.includes(pathname)) {
-            router.push(defaultRouteByRole[role || ""]);
+            const defaultRoute = defaultRouteByRole[role || ""];
+            if (pathname !== defaultRoute) {
+                router.push(defaultRoute);
+            }
         }
     }, [pathname]);
+
 
     return null;
 };

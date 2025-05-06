@@ -1,53 +1,28 @@
-import { getToken } from "next-auth/jwt";
-import { NextRequest, NextResponse } from "next/server";
-import createMiddleware from "next-intl/middleware";
+import { NextRequest, NextResponse } from 'next/server';
 
-// routes config for each role
-import { roleRoutes, defaultRouteByRole } from "./lib/roleRoutes";
-import { locales } from "@/config";
+export function middleware(request: NextRequest) {
+  const token = request.cookies.get('authToken')?.value;
+  const userRole = request.cookies.get('userRole')?.value;
 
-// Define your allowed roles based on roleRoutes keys
-type Role = keyof typeof roleRoutes;
+  const url = request.nextUrl;
 
-interface CustomToken {
-  role: Role;
-}
-
-export default async function middleware(request: NextRequest) {
-  const token = await getToken({
-    req: request,
-    secret: process.env.AUTH_SECRET,
-    secureCookie: process.env.NODE_ENV === "production",
-  }) as CustomToken | null;
-
-  const url = request.nextUrl.pathname;
-  const defaultLocale = request.headers.get("dashcode-locale") || "en";
-
-  // Handle i18n routing
-  const handleI18nRouting = createMiddleware({ locales, defaultLocale });
-  const response = handleI18nRouting(request);
-  response.headers.set("dashcode-locale", defaultLocale);
-
-  // If token exists and has a valid role
-  if (token && token.role in roleRoutes) {
-    const role = token.role;
-    const allowedRoutes = roleRoutes[role] || [];
-    const defaultRoute = `/${defaultLocale}${defaultRouteByRole[role] || ""}`;
-
-    // 🆕 Redirect /en or /ar directly if user is authenticated
-    if (url === `/${defaultLocale}`) {
-      return NextResponse.redirect(new URL(defaultRoute, request.url));
+  // Only redirect if user hits the root or login page
+  if (url.pathname === '/' || url.pathname === '/login') {
+    if (!token) {
+      return NextResponse.next(); // stay on login
     }
 
-    const isAllowed =
-        allowedRoutes.includes("*") || allowedRoutes.includes(url);
-
-    if (!isAllowed) {
-      return NextResponse.redirect(new URL(defaultRoute, request.url));
+    // Redirect to role-based dashboard
+    if (userRole === 'Admin') {
+      return NextResponse.redirect(new URL('/dashboard/analytics', request.url));
+    } else if (userRole === 'inventory') {
+      return NextResponse.redirect(new URL('/dashboard/order-list', request.url));
+    } else if (userRole === 'sales') {
+      return NextResponse.redirect(new URL('/dashboard/sales', request.url));
     }
   }
 
-  return response;
+  return NextResponse.next(); // allow all other pages
 }
 
 export const config = {

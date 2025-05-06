@@ -4,6 +4,8 @@ import Google from "next-auth/providers/google";
 import CredentialsProvider from "next-auth/providers/credentials";
 import { getUserByEmail, User } from "./data";
 import { defaultRouteByRole } from "./roleRoutes";
+import {AuthType} from "@/types/auth";
+import {loginWithCredentials} from "@/services/auth/login";
 
 export const { auth, handlers, signIn, signOut } = NextAuth({
     session: {
@@ -12,35 +14,20 @@ export const { auth, handlers, signIn, signOut } = NextAuth({
     providers: [
         Google,
         GitHub,
-        CredentialsProvider({
-            credentials: {
-                email: {},
-                password: {},
-            },
-            async authorize(credentials) {
-                if (!credentials) return null;
-
-                const user = getUserByEmail(credentials.email as string);
-                if (!user) throw new Error("User not found");
-
-                const isMatch = user.password === credentials.password;
-                if (!isMatch) throw new Error("Email or Password is not correct");
-
-                return { ...user };
-            },
-        }),
     ],
     callbacks: {
         async jwt({ token, user }) {
             if (user) {
-                token.role = (user as User).role;
+                token.id = user.userId;
+                token.role = user.role;
+                token.accessToken = user.token;
             }
             return token;
         },
         async session({ session, token }) {
-            if (token?.role) {
-                session.user.role = token.role as User["role"];
-            }
+            session.user.id = token.id as string;
+            session.user.role = token.role as string;
+            session.accessToken = token.accessToken as string;
             return session;
         },
         async redirect({ url, baseUrl }) {

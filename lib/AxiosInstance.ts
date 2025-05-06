@@ -4,6 +4,7 @@ import axios, {
     InternalAxiosRequestConfig
 } from 'axios';
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import Cookies from "js-cookie";
 
 const AxiosInstance = axios.create({
     baseURL: 'http://dragza.runasp.net',
@@ -11,7 +12,7 @@ const AxiosInstance = axios.create({
 
 AxiosInstance.interceptors.request.use(
     async (config: InternalAxiosRequestConfig): Promise<InternalAxiosRequestConfig> => {
-        const token = await AsyncStorage.getItem('Token');
+        const token = Cookies.get('authToken');
         if (token && config.headers && typeof config.headers.set === 'function') {
             config.headers.set('Authorization', `Bearer ${token}`);
         }

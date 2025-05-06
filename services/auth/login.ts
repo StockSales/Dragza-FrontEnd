@@ -1,25 +1,28 @@
 import axiosInstance from "@/lib/AxiosInstance";
+import Cookies from "js-cookie";
+import { AuthType } from "@/types/auth";
 
 type LoginCredentials = {
-    email: string;
+    usernameOrEmail: string;
     password: string;
 };
 
-export const loginWithCredentials = async (credentials: LoginCredentials) => {
+export const loginWithCredentials = async (credentials: LoginCredentials): Promise<AuthType> => {
     try {
         const response = await axiosInstance.post("/api/Users/login", credentials);
 
         if (response.status === 200) {
-            const { role, token } = response.data;
+            const { role, token, userId } = response.data;
 
-            // Save role (and optionally token) to localStorage
-            localStorage.setItem("userRole", role);
-            localStorage.setItem("authToken", token || "");
+            // Save to cookies
+            Cookies.set("userRole", role, { path: "/", secure: true, sameSite: "Strict" });
+            Cookies.set("authToken", token, { path: "/", secure: true, sameSite: "Strict" });
+            Cookies.set("userId", userId, { path: "/", secure: true, sameSite: "Strict" });
 
             return response.data;
+        } else {
+            throw new Error("Login failed");
         }
-
-        throw new Error("Login failed");
     } catch (error: any) {
         throw new Error(error.response?.data?.message || error.message);
     }

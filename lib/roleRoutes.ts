@@ -1,15 +1,14 @@
-// lib/roleRoutes.ts
-
 import {jwtDecode} from "jwt-decode";
+import Cookies from "js-cookie";
 
 export function getRoleFromToken(): string | null {
-    const token = localStorage.getItem("token");
+    const token = Cookies.get("authToken");
     if (!token) return null;
 
     try {
-        const decoded: any = jwtDecode(token);
+        const decoded = jwtDecode<{ role: string }>(token);
         return decoded.role;
-    } catch {
+    } catch (err) {
         return null;
     }
 }
@@ -30,7 +29,7 @@ export const roleRoutes: Record<string, string[]> = {
 };
 
 export const defaultRouteByRole: Record<string, string> = {
-    admin: "/dashboard/analytics",
+    Admin: "/dashboard/analytics",
     inventory: "/dashboard/order-list",
     sales: "/dashboard/sales",
 };

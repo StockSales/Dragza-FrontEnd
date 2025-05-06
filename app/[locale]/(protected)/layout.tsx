@@ -4,24 +4,17 @@ import DashCodeSidebar from '@/components/partials/sidebar'
 import DashCodeFooter from '@/components/partials/footer'
 import ThemeCustomize from '@/components/partials/customizer'
 import DashCodeHeader from '@/components/partials/header'
-import { auth } from "@/lib/auth";
-import { redirect } from "@/components/navigation";
 import RoleGuard from "@/components/RoleGuard";
 
 
 const layout = async ({ children }: { children: React.ReactNode }) => {
-    const session = await auth();
 
-    if (!session) {
-        redirect({ href: '/', locale: 'en' })
-    }
     return (
         <LayoutProvider >
             <ThemeCustomize />
             <DashCodeHeader />
             <DashCodeSidebar />
             <LayoutContentProvider>
-                <RoleGuard />
                 {children}
             </LayoutContentProvider>
             <DashCodeFooter />
