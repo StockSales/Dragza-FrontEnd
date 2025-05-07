@@ -30,7 +30,7 @@ import { Link } from '@/i18n/routing';
 import {Button} from "@/components/ui/button";
 import {useEffect, useState} from "react";
 import getCategories from "@/services/categories/getCategories";
-import Loader from "@/components/loader";
+import {Loader2} from "lucide-react";
 
 const TransactionsTable = () => {
   const [sorting, setSorting] = React.useState<SortingState>([]);
@@ -69,8 +69,13 @@ const TransactionsTable = () => {
     gettingAllCategories()
   }, []);
 
-  if (loading) {
-    return <Loader />;
+
+  if (loading === true) {
+    return (
+        <div className="flex mx-auto  justify-center items-center h-16 w-16">
+            <Loader2 size={32} />
+        </div>
+    )
   }
 
 

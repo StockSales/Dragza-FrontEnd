@@ -1,29 +1,27 @@
-import {useState} from "react";
 import AxiosInstance from "@/lib/AxiosInstance";
+import {useState} from "react";
 import {CategoryType} from "@/types/category";
 
 function useCreateCategory() {
-    const [loading, setLoading] = useState(true)
-    const [isCreated, setIsCreated] = useState(false)
+    const [loading, setLoading] = useState(false);
 
     const creatingCategory = async (data: CategoryType) => {
-        setLoading(true)
-        await AxiosInstance.post("/api/Categories", data).then((response) => {
-            if (response.data !== null || response.status === 200 || response.status === 201) {
-                setIsCreated(true)
+        setLoading(true);
+        try {
+            const response = await AxiosInstance.post("/api/Categories", data);
+            if (response?.status === 200 || response?.status === 201) {
+                return true;
+            } else {
+                throw new Error("Something went wrong");
             }
-            if (response.data === null || response.data == undefined || response.status !== 201) {
-                setIsCreated(false)
-                throw new Error ("There is something went wrong")
-            }
-        }).catch((err) => {
-            return err.response?.data?.message || err.message
-        }).finally(() => {
-            setLoading(false)
-        })
-    }
+        } catch (err: any) {
+            throw err.response?.data?.message || err.message;
+        } finally {
+            setLoading(false);
+        }
+    };
 
-    return {isCreated, loading, creatingCategory}
+    return { loading, creatingCategory };
 }
 
 export default useCreateCategory;

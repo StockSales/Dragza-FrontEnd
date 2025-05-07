@@ -11,8 +11,7 @@ import { useRouter } from "@/i18n/routing";
 import useCreateCategory from "@/services/categories/CreateCategory";
 
 const AddCategory = () => {
-  const {creatingCategory, isCreated, loading} = useCreateCategory()
-
+  const { creatingCategory, loading } = useCreateCategory()
   const router = useRouter();
 
   const [name, setName] = useState("");
@@ -33,20 +32,15 @@ const AddCategory = () => {
       return;
     }
 
-    // Calling the endpoint for creation
     try {
-      await creatingCategory({
-        name,
-        pref,
-        description
-      })
-      if (isCreated) {
+      const success = await creatingCategory({ name, pref, description });
+      if (success) {
         toast.success("Category Added", {
-          description: "Category Added Successfully",
+          description: "Category added successfully!",
         });
         setTimeout(() => {
           router.push("/dashboard/categories");
-        }, 2000);
+        }, 1000);
       }
     } catch (error: any) {
       toast.error("Network Error", {
@@ -106,8 +100,8 @@ const AddCategory = () => {
           </Card>
         </div>
         <div className="col-span-12 flex justify-center">
-          <Button onClick={addCategory}>
-            {loading === true ? "Loading" : "Add Category" }
+          <Button onClick={addCategory} disabled={loading}>
+            {loading ? "Loading..." : "Add Category"}
           </Button>
         </div>
       </div>
