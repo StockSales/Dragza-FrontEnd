@@ -18,11 +18,13 @@ function useDeleteCategoryById() {
                 throw new Error("Something went wrong");
             }
         }).catch ((err) => {
+
+        }) {
             setError(err.response?.data?.message || err.message);
             throw new Error(err.response?.data?.message || err.message);
-        }).finally(() => {
+        } finally {
             setLoading(false);
-        })
+        }
     };
 
     return { deleteCategoryById, loading, success, error };
