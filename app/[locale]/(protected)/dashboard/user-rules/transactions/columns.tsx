@@ -1,58 +1,35 @@
 import { ColumnDef } from "@tanstack/react-table";
 import {
-  Download,
-  Eye,
+  SquarePen,
   Trash2,
 } from "lucide-react";
-import { Checkbox } from "@/components/ui/checkbox";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Badge } from "@/components/ui/badge";
 import { cn } from "@/lib/utils";
-import { Link } from '@/i18n/routing';
 import {toast} from "sonner";
 import {Button} from "@/components/ui/button";
+import {Link, usePathname} from "@/i18n/routing";
+import useDeleteUser from "@/services/users/DeleteUser";
 
 export type DataProps = {
   id: string | number;
-  user: {
-    name: string;
-    image: string;
-  };
-  phone: string;
+  userName: string;
   email: string;
-  status: "admin" | "manager" | "user";
+  phoneNumber: string;
+  businessName: string;
+  isPharmacy: boolean;
+  region: string;
   action: React.ReactNode;
 };
 export const columns: ColumnDef<DataProps>[] = [
   {
-    accessorKey: "user",
+    accessorKey: "userName",
     header: "Username",
     cell: ({ row }) => {
-      const user = row.original.user;
+      const user = row.original.userName;
       return (
-        <div className="font-medium text-card-foreground/80">
-          <div className="flex gap-3 items-center">
-            <Avatar className="rounded-full w-8 h-8">
-              {user?.image ? (
-                <AvatarImage src={user.image} />
-              ) : (
-                <AvatarFallback>AB</AvatarFallback>
-              )}
-            </Avatar>
-            <span className="text-sm text-default-600 whitespace-nowrap">
-              {user?.name ?? "Unknown User"}
-            </span>
-          </div>
-        </div>
+          <div className="text-sm text-default-600">{user}</div>
       );
-    },
-  },
-  {
-    accessorKey: "phone",
-    header: "Phone",
-    cell: ({ row }) => {
-      const phone = row.original.phone;
-      return <div className="text-sm text-default-600">{phone}</div>;
     },
   },
   {
@@ -60,25 +37,43 @@ export const columns: ColumnDef<DataProps>[] = [
     header: "Email",
     cell: ({ row }) => {
       const email = row.original.email;
-      return <div className="text-sm text-default-600">{email}</div>;
+      return (
+          <div className="text-sm text-default-600">{email}</div>
+      );
     },
   },
   {
-    accessorKey: "status",
-    header: "Rule",
+    accessorKey: "businessName",
+    header: "Business Name",
     cell: ({ row }) => {
-      const statusColors: Record<string, string> = {
-        admin: "bg-success/20 text-success",
-        manager: "bg-warning/20 text-warning",
-        user: "bg-destructive/20 text-destructive",
-      };
-      const status = row.getValue<string>("status");
-      const statusStyles = statusColors[status] || "default";
+      const businessName = row.original.businessName;
       return (
-        <Badge className={cn("rounded-full px-5", statusStyles)}>
-          {status}{" "}
-        </Badge>
+          <div className="text-sm text-default-600">{businessName}</div>
       );
+    },
+  },
+  {
+    accessorKey: "phoneNumber",
+    header: "Phone Number",
+    cell: ({ row }) => {
+      const phone = row.original.phoneNumber;
+      return <div className="text-sm text-default-600">{phone}</div>;
+    },
+  },
+  {
+    accessorKey: "isPharmacy",
+    header: "Is Pharmacy?",
+    cell: ({ row }) => {
+      const isPharmacy = row.original.isPharmacy;
+      return <div className="text-sm text-default-600">{isPharmacy === true ? "Yes" : "No"}</div>;
+    },
+  },
+  {
+    accessorKey: "region",
+    header: "Region",
+    cell: ({ row }) => {
+      const region = row.original.region;
+      return <div className="text-sm text-default-600">{region || "N/A"}</div>;
     },
   },
   {
@@ -89,9 +84,10 @@ export const columns: ColumnDef<DataProps>[] = [
     cell: ({ row }) => {
       // getting the selected user Id
       const id: string | number = row.original.id;
+      const pathname = usePathname();
+      const { deleteUser, loading, isDeleted } = useDeleteUser();
 
-      // deleting the user
-      const deleteUser = (id: string | number) => {
+      const handleDelete = () => {
         const toastId = toast("Delete User", {
           description: "Are you sure you want to delete this user?",
           action: (
@@ -106,13 +102,23 @@ export const columns: ColumnDef<DataProps>[] = [
                 <Button
                     size="sm"
                     variant="shadow"
+                    disabled={loading}
                     className="text-white px-3 py-1 rounded-md"
-                    onClick={() => {
-                      console.log("deleted user", id);
-                      toast.dismiss(toastId); // Dismiss confirmation toast
-                      toast("User deleted", {
-                        description: "The user was deleted successfully.",
-                      });
+                    onClick={async () => {
+                      try {
+                        await deleteUser(id);
+                        toast.dismiss(toastId);
+                        if (isDeleted) {
+                          toast("User deleted", {
+                            description: "The user was deleted successfully.",
+                          });
+                        }
+                      } catch (error) {
+                        toast.dismiss(toastId);
+                        toast("Error", {
+                          description: (error as Error).message,
+                        });
+                      }
                     }}
                 >
                   Confirm
@@ -123,14 +129,14 @@ export const columns: ColumnDef<DataProps>[] = [
       };
 
       return (
-        <div className="flex items-center gap-1">
-          <div
-              onClick={() => deleteUser(id)}
-            className="flex items-center p-2 text-destructive bg-destructive/40 duration-200 transition-all hover:bg-destructive/80 hover:text-destructive-foreground rounded-full cursor-pointer"
-          >
-            <Trash2 className="w-4 h-4" />
+          <div className="flex items-center gap-1">
+            <div
+                onClick={handleDelete}
+                className="flex items-center p-2 text-destructive bg-destructive/40 duration-200 transition-all hover:bg-destructive/80 hover:text-destructive-foreground rounded-full cursor-pointer"
+            >
+              <Trash2 className="w-4 h-4" />
+            </div>
           </div>
-        </div>
       );
     },
   },
