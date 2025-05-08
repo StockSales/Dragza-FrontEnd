@@ -25,16 +25,8 @@ const ProfileInfo = async () => {
         <DropdownMenuTrigger asChild className=" cursor-pointer">
           <div className=" flex items-center gap-3  text-default-800 ">
 
-            <Image
-              src={session?.user?.image as string}
-              alt={session?.user?.name?.charAt(0) as string}
-              width={36}
-              height={36}
-              className="rounded-full"
-            />
-
             <div className="text-sm font-medium  capitalize lg:block hidden  ">
-              {session?.user?.name}
+              {session?.user?.email}
             </div>
             <span className="text-base  me-2.5 lg:inline-block hidden">
               <Icon icon="heroicons-outline:chevron-down"></Icon>
@@ -44,17 +36,9 @@ const ProfileInfo = async () => {
         <DropdownMenuContent className="w-56 p-0" align="end">
           <DropdownMenuLabel className="flex gap-2 items-center mb-1 p-3">
 
-            <Image
-              src={session?.user?.image as string}
-              alt={session?.user?.name?.charAt(0) as string}
-              width={36}
-              height={36}
-              className="rounded-full"
-            />
-
             <div>
               <div className="text-sm font-medium text-default-800 capitalize ">
-                {session?.user?.name}
+                {session?.user?.email}
               </div>
               <Link
                 href="/dashboard"

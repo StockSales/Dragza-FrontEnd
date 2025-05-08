@@ -114,15 +114,8 @@ export default function TeamSwitcher({ className }: TeamSwitcherProps) {
                             className={cn("  h-14 w-14 mx-auto  p-0 md:p-0  dark:border-secondary ring-offset-sidebar", className)}
                         >
                             <Avatar className="">
-                                <AvatarImage
-                                    height={24}
-                                    width={24}
-                                    src={session?.user?.image as any}
-                                    alt={selectedTeam.label}
-                                    className="grayscale"
-                                />
 
-                                <AvatarFallback>{session?.user?.name?.charAt(0)}</AvatarFallback>
+                                <AvatarFallback>{session?.user?.email?.charAt(0)}</AvatarFallback>
                             </Avatar>
                         </Button> : <Button
                             variant="outline"
@@ -135,15 +128,8 @@ export default function TeamSwitcher({ className }: TeamSwitcherProps) {
                         >
                             <div className=" flex  gap-2 flex-1 items-center">
                                 <Avatar className=" flex-none h-[38px] w-[38px]">
-                                    <AvatarImage
-                                        height={38}
-                                        width={38}
-                                        src={session?.user?.image as any}
-                                        alt={selectedTeam.label}
-                                        className="grayscale"
-                                    />
 
-                                    <AvatarFallback>{session?.user?.name?.charAt(0)}</AvatarFallback>
+                                    <AvatarFallback>{session?.user?.email?.charAt(0)}</AvatarFallback>
                                 </Avatar>
                                 <div className="flex-1 text-start w-[100px]">
 
