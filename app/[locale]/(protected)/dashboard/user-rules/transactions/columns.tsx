@@ -1,14 +1,9 @@
 import { ColumnDef } from "@tanstack/react-table";
 import {
-  SquarePen,
   Trash2,
 } from "lucide-react";
-import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
-import { Badge } from "@/components/ui/badge";
-import { cn } from "@/lib/utils";
 import {toast} from "sonner";
 import {Button} from "@/components/ui/button";
-import {Link, usePathname} from "@/i18n/routing";
 import useDeleteUser from "@/services/users/DeleteUser";
 
 export type DataProps = {
