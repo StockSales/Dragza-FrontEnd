@@ -104,16 +104,17 @@ export const columns: ColumnDef<DataProps>[] = [
                     disabled={loading}
                     className="text-white px-3 py-1 rounded-md"
                     onClick={async () => {
-                      const result = await deleteUser(id);
+                      await deleteUser(id);
                       toast.dismiss(toastId);
-
-                      if (result.success) {
+                      if (isDeleted === true) {
                         toast("User deleted", {
                           description: "The user was deleted successfully.",
                         });
-                      } else {
+                      }
+                      if (error) {
+                        toast.dismiss(toastId);
                         toast("Error", {
-                          description: result.error ?? "There was an error deleting the user.",
+                          description: (error) ? error : "There was an error deleting the user.",
                         });
                       }
                     }}

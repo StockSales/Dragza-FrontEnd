@@ -1,36 +1,53 @@
 import { useState } from "react";
-import AxiosInstance from "@/lib/AxiosInstance";
+import GetUsers from "@/services/users/GetAllUsers";
 
 function useDeleteUser() {
+    const { gettingAllUsers } = GetUsers(); // Function to refresh user list
     const [loading, setLoading] = useState(false);
     const [isDeleted, setIsDeleted] = useState(false);
+    const [error, setError] = useState<string | null>(null);
 
-    const deleteUser = async (userId: string | number) => {
+    /**
+     * Deletes a user by ID and refreshes the users list.
+     * @param userId - ID of the user to delete
+     */
+    const deleteUser = async (userId: string | number): Promise<{ success: boolean; error?: string }> => {
         setLoading(true);
         setIsDeleted(false);
-        await fetch(`/api/Users/delete-user`, {
-            method: "POST",
-            headers: {
-                "Accept": "text/plain",
-            },
-            body: JSON.stringify(userId),
-        } )
-            .then((response) => {
-                if (response.status === 200 || response.status === 204) {
-                    setIsDeleted(true);
-                } else {
-                    throw new Error("There is something went wrong");
-                }
-            })
-            .catch((err) => {
-                console.error(err.response?.data?.message || err.message);
-            })
-            .finally(() => {
-                setLoading(false);
+        setError(null);
+
+        try {
+            const response = await fetch(`/api/Users/delete-user`, {
+                method: "POST",
+                headers: {
+                    "Accept": "text/plain",
+                },
+                body: JSON.stringify(userId),
             });
+
+            if (response.status === 200 || response.status === 204) {
+                gettingAllUsers();
+                setIsDeleted(true);
+                return { success: true };
+            } else {
+                const message = await response.text();
+                throw new Error(message || "Something went wrong");
+            }
+        } catch (err: any) {
+            setError(err.message);
+            setIsDeleted(false);
+            return { success: false, error: err.message };
+        } finally {
+            setLoading(false);
+        }
     };
 
-    return { isDeleted, loading, deleteUser };
+    return {
+        deleteUser,
+        isDeleted,
+        loading,
+        error,
+    };
 }
 
 export default useDeleteUser;
