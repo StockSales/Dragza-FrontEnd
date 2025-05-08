@@ -27,6 +27,11 @@ AxiosInstance.interceptors.response.use(
         const status = error.response?.status;
         if ([400, 401, 403, 404].includes(status ?? 0)) {
             await AsyncStorage.removeItem('Token');
+            Cookies.remove('authToken');
+            Cookies.remove('userRole');
+            Cookies.remove('userId');
+            // Optionally, you can redirect the user to the login page or show a message
+            window.location.href = '/en';
         }
         return Promise.reject(error);
     }

@@ -1,30 +1,55 @@
 import { NextRequest, NextResponse } from 'next/server';
+import { roleRoutes, defaultRouteByRole } from '@/lib/roleRoutes';
 
 export function middleware(request: NextRequest) {
-  const token = request.cookies.get('authToken')?.value;
-  const userRole = request.cookies.get('userRole')?.value;
+  const { pathname } = request.nextUrl;
 
-  const url = request.nextUrl;
+  // ===== 1. Handle "/" root path: Redirect to /en or /ar based on config cookie =====
+  if (pathname === '/') {
+    const config = request.cookies.get('config');
+    const isRtl = config ? JSON.parse(config.value).isRtl : false;
+    const locale = isRtl ? 'ar' : 'en';
+    return NextResponse.redirect(new URL(`/${locale}`, request.url));
+  }
 
-  // Only redirect if user hits the root or login page
-  if (url.pathname === '/' || url.pathname === '/login') {
-    if (!token) {
-      return NextResponse.next(); // stay on login
-    }
+  // ===== 2. Prevent access to /en or /ar directly when already authenticated =====
+  if ((pathname === '/en' || pathname === '/ar')) {
+    const token = request.cookies.get('authToken')?.value;
+    const userRole = request.cookies.get('userRole')?.value;
+    const userId = request.cookies.get('userId')?.value;
 
-    // Redirect to role-based dashboard
-    if (userRole === 'Admin') {
-      return NextResponse.redirect(new URL('/dashboard/analytics', request.url));
-    } else if (userRole === 'inventory') {
-      return NextResponse.redirect(new URL('/dashboard/order-list', request.url));
-    } else if (userRole === 'sales') {
-      return NextResponse.redirect(new URL('/dashboard/sales', request.url));
+    if (token && userRole && userId) {
+      const defaultRoute = defaultRouteByRole[userRole];
+      if (defaultRoute) {
+        return NextResponse.redirect(new URL(`/${pathname.slice(1)}${defaultRoute}`, request.url));
+      }
     }
   }
 
-  return NextResponse.next(); // allow all other pages
+  // ===== 3. Role-based route protection =====
+  const token = request.cookies.get('authToken')?.value;
+  if (token) {
+    try {
+      const role = request.cookies.get('userRole')?.value;
+
+      // Admins can access everything
+      if (role === 'Admin') return NextResponse.next();
+
+      const allowedRoutes = roleRoutes[role] || [];
+      const isAllowed = allowedRoutes.includes(pathname);
+
+      if (!isAllowed) {
+        return NextResponse.redirect(new URL(`/${pathname.split('/')[1]}/`, request.url));
+      }
+    } catch (e) {
+      return NextResponse.redirect(new URL('/en/login', request.url));
+    }
+  }
+
+  return NextResponse.next();
 }
 
+// Apply middleware only to relevant paths
 export const config = {
-  matcher: ["/", "/(ar|en)/:path*"],
+  matcher: ['/', '/en/:path*', '/ar/:path*'],
 };
