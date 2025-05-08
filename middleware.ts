@@ -30,12 +30,12 @@ export function middleware(request: NextRequest) {
   const token = request.cookies.get('authToken')?.value;
   if (token) {
     try {
-      const role = request.cookies.get('userRole')?.value;
+      const role: string | undefined = request.cookies.get('userRole')?.value;
 
       // Admins can access everything
       if (role === 'Admin') return NextResponse.next();
 
-      const allowedRoutes = roleRoutes[role] || [];
+      const allowedRoutes = roleRoutes[role as string] || [];
       const isAllowed = allowedRoutes.includes(pathname);
 
       if (!isAllowed) {
