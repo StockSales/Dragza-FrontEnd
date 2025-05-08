@@ -65,7 +65,7 @@ const TransactionsTable = () => {
   }, []);
 
   // checking if the data is loading or not
-  if (loading == true) {
+  if (loading) {
     return (
         <div className="flex justify-center items-center">
           <Loader2 size={24} />

@@ -8,7 +8,13 @@ function useDeleteUser() {
     const deleteUser = async (userId: string | number) => {
         setLoading(true);
         setIsDeleted(false);
-        await AxiosInstance.post(`/api/Users/delete`, userId )  
+        await fetch(`/api/Users/delete-user`, {
+            method: "POST",
+            headers: {
+                "Accept": "text/plain",
+            },
+            body: JSON.stringify(userId),
+        } )
             .then((response) => {
                 if (response.status === 200 || response.status === 204) {
                     setIsDeleted(true);

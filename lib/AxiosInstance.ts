@@ -14,7 +14,7 @@ AxiosInstance.interceptors.request.use(
     async (config: InternalAxiosRequestConfig): Promise<InternalAxiosRequestConfig> => {
         const token = Cookies.get('authToken');
         if (token && config.headers && typeof config.headers.set === 'function') {
-            config.headers.set('Authorization', `Bearer ${token}`);
+            config.headers.set('Authorization', `Bearer ${token}`, "Accept", );
         }
         return config;
     },
