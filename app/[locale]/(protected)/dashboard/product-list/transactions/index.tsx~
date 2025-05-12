@@ -127,6 +127,30 @@ const TransactionsTable = () => {
                 </SelectGroup>
               </SelectContent>
             </Select>
+            <Select>
+              <SelectTrigger className=" w-[80px] cursor-pointer">
+                <SelectValue placeholder="Date" />
+              </SelectTrigger>
+              <SelectContent>
+                <SelectGroup>
+                  <SelectLabel>Date</SelectLabel>
+                  <SelectItem value="all">All</SelectItem>
+                  <SelectItem value="paid">Paid</SelectItem>
+                  <SelectItem value="pending">Pending</SelectItem>
+                  <SelectItem value="failed">Failed</SelectItem>
+                </SelectGroup>
+              </SelectContent>
+            </Select>
+            <Input
+              placeholder="Search..."
+              value={
+                (table.getColumn("status")?.getFilterValue() as string) ?? ""
+              }
+              onChange={(event) =>
+                table.getColumn("status")?.setFilterValue(event.target.value)
+              }
+              className="w-full "
+            />
           </div>
         </div>
       </div>

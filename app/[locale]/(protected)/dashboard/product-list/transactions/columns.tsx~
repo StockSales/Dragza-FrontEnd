@@ -50,11 +50,11 @@ export const columns: ColumnDef<ProductType>[] = [
       );
       },
   },
-  {
-    accessorKey: "category",
-    header: "Category",
-    cell: ({ row }) => <span>{row.getValue("category")}</span>,
-  },
+  // {
+  //   accessorKey: "category",
+  //   header: "Category",
+  //   cell: ({ row }) => <span>{row.getValue("category")}</span>,
+  // },
   // {
   //   accessorKey: "stock",
   //   header: "Stock",
