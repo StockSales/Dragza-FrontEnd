@@ -47,7 +47,6 @@ const RegForm = () => {
             isActive: true,
             emailConfirmed: true,
             phoneConfirmed: true,
-            roleId: "8C2F4F3A-7F6D-4DB8-8B02-4A04D31F35D6"
         },
     });
 
@@ -74,7 +73,7 @@ const RegForm = () => {
             {/* User Type */}
             <div className="space-y-2">
                 <Controller
-                    name="userType"
+                    name="roleId"
                     control={control}
                     render={({ field }) => (
                         <>
@@ -112,10 +111,21 @@ const RegForm = () => {
             </div>
 
             {/* Is Pharmacy */}
-            <div className="flex items-center gap-2">
-                <Checkbox id="isPharmacy" {...register("isPharmacy")} />
-                <Label htmlFor="isPharmacy">Is Pharmacy?</Label>
-            </div>
+            <Controller
+                name="isPharmacy"
+                control={control}
+                defaultValue={false}
+                render={({ field }) => (
+                    <div className="flex items-center gap-2">
+                        <Checkbox
+                            id="isPharmacy"
+                            checked={field.value}
+                            onCheckedChange={(checked) => field.onChange(!!checked)} // force to boolean
+                        />
+                        <Label htmlFor="isPharmacy">Is Pharmacy?</Label>
+                    </div>
+                )}
+            />
 
             {/* User Name */}
             <div className="space-y-2">
@@ -141,8 +151,8 @@ const RegForm = () => {
 
             {/* Description Name */}
             <div className="space-y-2">
-                <Label htmlFor="desName">Description</Label>
-                <Input id="desName" placeholder="Description" {...register("desName")} />
+                <Label htmlFor="desName">Des Name</Label>
+                <Input id="desName" placeholder="Des Name" {...register("desName")} />
             </div>
 
             {/* Language */}

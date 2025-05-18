@@ -1,17 +1,11 @@
-import React from 'react';
+import AxiosInstance from "@/lib/AxiosInstance";
 
 function useRegister() {
     const registerUser = async (data: any) => {
         try {
-            const response = await fetch('/api/Users/register', {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                },
-                body: JSON.stringify(data),
-            });
+            const response = await AxiosInstance.post('/api/Users/register', data);
 
-            if (response.ok) {
+            if (response.status === 200 || response.status === 201) {
                 return true;
             } else {
                 throw new Error('Registration failed');
