@@ -4,12 +4,12 @@ import Logo from "@/components/partials/auth/logo";
 const Register = () => {
   return (
     <>
-      <div className="flex w-full items-center overflow-hidden min-h-lvh h-lvh basis-full shadow-2xl rounded-xl">
-        <div className="overflow-y-auto flex flex-wrap w-full h-dvh">
+      <div className="flex w-full items-center overflow-hidden basis-full shadow-2xl rounded-xl">
+        <div className="overflow-y-auto flex flex-wrap w-full">
           <div
             className="hidden flex-1 overflow-hidden text-[40px] leading-[48px] text-default-600 relative z-1 bg-default-50 lg:flex justify-center items-center">
-            <div className="w-fit flex justify-center items-center">
-              <Image src={"/LOGO.png"} alt={"logo"} width={50} height={50} className="w-72 flex justify-center items-center mb-10"/>
+            <div className="w-full flex justify-center items-center">
+              <Logo />
             </div>
           </div>
           <div className="flex-1 relative dark:bg-default-100 bg-white ">
