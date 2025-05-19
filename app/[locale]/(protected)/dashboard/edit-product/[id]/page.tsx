@@ -1,0 +1,230 @@
+"use client";
+
+import { Button } from "@/components/ui/button";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
+import {
+  Select,
+  SelectContent,
+  SelectGroup,
+  SelectItem,
+  SelectLabel,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
+import { Switch } from "@/components/ui/switch";
+import { Textarea } from "@/components/ui/textarea";
+import {useParams} from "next/navigation";
+import useGettingProductById from "@/services/products/gettingProductById";
+import {useEffect, useState} from "react";
+import {toast} from "sonner";
+import {useRouter} from "@/i18n/routing";
+import {Loader2} from "lucide-react";
+import GetCategories from "@/services/categories/getCategories";
+import useGettingAllActiveIngredient from "@/services/ActiveIngerients/gettingAllActiveIngerients";
+import {Accordion, AccordionContent, AccordionItem, AccordionTrigger} from "@/components/ui/accordion";
+import {formatDateToDMY} from "@/utils";
+import {Price} from "@/types/price";
+
+const EditProduct = () => {
+  const router = useRouter();
+
+  // states for getting all categories
+  const {data: categories, gettingAllCategories, loading: gettingAllCategoriesLoading} = GetCategories()
+
+  // getting all Active Ingredients
+  const { loading: gettingAllActiveIngredientsLoading, activeIngredients, gettingAllActiveIngredients } = useGettingAllActiveIngredient()
+
+  // state to manage the loading state
+  const [formData, setFormData] = useState({
+    name: "",
+    pref: "",
+    description: "",
+    categoryId: "",
+    activeIngredientId: ""
+  })
+
+  // getting the id of product from URL
+  const params = useParams();
+  const productId = params?.id as string;
+
+  // function to get product by id
+  const {getProductById, product, loading, error} = useGettingProductById()
+
+
+  // mounted data
+  useEffect(() => {
+    gettingAllCategories();
+    gettingAllActiveIngredients();
+  }, []);
+
+  // dependent data
+  useEffect(() => {
+    if (productId) getProductById(productId)
+  }, [productId]);
+
+  // // If product is undefined after loading is done, show error
+  //   useEffect(() => {
+  //       if (loading == false && !product) {
+  //         toast.error("Something went wrong", {
+  //             description: "Please, reload the page",
+  //         });
+  //         setTimeout(() => {
+  //           router.push('/dashboard/product-list');
+  //         }, 2000);
+  //       }
+  //   }, [loading, product]);
+
+  useEffect(() => {
+    if (product) {
+        setFormData({
+            name: product.name || "",
+            pref: product.preef || "",
+            description: product.description || "",
+            categoryId: String(product.category.id) || "" ,
+            activeIngredientId: product.activeIngredient || ""
+        })
+    }
+  }, [product]);
+
+  if (loading == true || gettingAllCategoriesLoading == true || gettingAllActiveIngredientsLoading == true) {
+    return (
+      <div className="flex items-center justify-center h-screen">
+        <Loader2 size={32} />
+      </div>
+    );
+  }
+
+
+  return (
+    <div className=" grid grid-cols-12  gap-4  rounded-lg">
+      <div className="col-span-12 md:col-span-12 space-y-12 lg:col-span-12 ">
+        <Card>
+          <CardHeader className="border-b border-solid border-default-200 mb-6">
+            <CardTitle>Product Information</CardTitle>
+          </CardHeader>
+          <CardContent className="space-y-4">
+            <div className="flex items-center flex-wrap">
+              <Label className="w-[150px] flex-none" htmlFor="h_Fullname">
+                Product Name
+              </Label>
+              <Input
+                  id="h_Fullname"
+                  type="text"
+                  placeholder="Full name"
+                  value={product?.name}
+                  onChange={(e) => setFormData({...formData, name: e.target.value})}
+              />
+            </div>
+
+            <div className="flex items-center flex-wrap">
+              <Label className="w-[150px] flex-none" htmlFor="pref">
+                Pref
+              </Label>
+              <Input
+                  id="pref"
+                  type="text"
+                  placeholder="Pref"
+                  value={product?.preef}
+                    onChange={(e) => setFormData({...formData, pref: e.target.value})}
+              />
+            </div>
+
+            <div className="flex items-center flex-wrap gap-4 md:gap-0">
+              <Label className="w-[150px] flex-none">Category</Label>
+              <Select onValueChange={(value) => setFormData({...formData, categoryId: value})}>
+                <SelectTrigger className="flex-1 cursor-pointer">
+                  <SelectValue placeholder="Select Category" />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectGroup>
+                    <SelectLabel>Category</SelectLabel>
+                    {categories.map((category: any) => (
+                        <SelectItem
+                            key={category.id}
+                            value={category.id}
+                        >
+                          {category.name}
+                        </SelectItem>
+                    ))}
+                  </SelectGroup>
+                </SelectContent>
+              </Select>
+            </div>
+
+            <div className="flex items-center flex-wrap gap-4 md:gap-0">
+              <Label className="w-[150px] flex-none">Active Ingredient</Label>
+              <Select onValueChange={(value) => setFormData({...formData, activeIngredientId: value})}>
+                <SelectTrigger className="flex-1 cursor-pointer">
+                  <SelectValue placeholder="Select Active Ingredient" />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectGroup>
+                    <SelectLabel>Active Ingredient</SelectLabel>
+                    {activeIngredients.map((active: any) => (
+                        <SelectItem
+                            key={active.id}
+                            value={active.id}
+                        >
+                          {active.name}
+                        </SelectItem>
+                    ))}
+                  </SelectGroup>
+                </SelectContent>
+              </Select>
+            </div>
+
+            <div className="flex items-center flex-wrap">
+              <Label className="w-[150px] flex-none" htmlFor="Description">
+                Description
+              </Label>
+              <Textarea
+                  id="Description"
+                  placeholder="Description"
+                  value={product?.description}
+              />
+            </div>
+          </CardContent>
+        </Card>
+
+        <Card>
+            <CardHeader className="border-b border-solid border-default-200 mb-6">
+                <CardTitle>Product Price</CardTitle>
+            </CardHeader>
+            <CardContent className="space-y-4">
+              <Accordion type="single" collapsible className="w-full">
+                {
+                    product?.prices && product?.prices.map((item: Price, index) => (
+                      <AccordionItem
+                          value={`value-${index + 1}`}
+                          key={`changelog-${index}`}
+                          className="border-default-100 "
+                      >
+                        <AccordionTrigger className="cursor-pointer">
+                          <div>
+                            {item.productName}
+                            <span className="font-semibold text-xs text-default-400">
+                            - Published on {formatDateToDMY(item.creationDate)}
+                          </span>
+                          </div>
+                        </AccordionTrigger>
+                        <AccordionContent>
+
+                        </AccordionContent>
+                      </AccordionItem>
+                  ))
+                }
+              </Accordion>
+            </CardContent>
+        </Card>
+      </div>
+
+      <div className="col-span-12 flex justify-end">
+        <Button>Update Product</Button>
+      </div>
+    </div>
+  );
+};
+
+export default EditProduct;
