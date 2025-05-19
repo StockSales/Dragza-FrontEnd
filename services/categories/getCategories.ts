@@ -3,7 +3,7 @@ import AxiosInstance from "@/lib/AxiosInstance";
 
 function GetCategories() {
     const [data, setData] = useState([])
-    const [loading, setLoading] = useState(true)
+    const [loading, setLoading] = useState(false)
 
     const gettingAllCategories = async () => {
         setLoading(true)
