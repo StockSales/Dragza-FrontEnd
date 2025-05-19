@@ -7,7 +7,13 @@ function useCreateProduct() {
     const [error, setError] = useState<string | null>(null);
     const [isCreated, setIsCreated] = useState<boolean>(false);
 
-    const createProduct = async (data: ProductType) => {
+    const createProduct = async (data: {
+        name: string;
+        preef: string;
+        description: string;
+        categoryId: string;
+        activeIngredient: string;
+    }) => {
         setLoading(true);
         setError(null);
         try {

@@ -53,7 +53,12 @@ export const columns: ColumnDef<ProductType>[] = [
   {
     accessorKey: "category",
     header: "Category",
-    cell: ({ row }) => <span>{row.getValue("category")}</span>,
+    cell: ({ row }) => <span>{row.original.category.name}</span>,
+  },
+    {
+    accessorKey: "activeIngredient",
+    header: "Active Ingredient",
+    cell: ({ row }) => <span>{row.original.activeIngredient}</span>,
   },
   // {
   //   accessorKey: "stock",
@@ -117,10 +122,9 @@ export const columns: ColumnDef<ProductType>[] = [
       const pathname = usePathname();
       const getHref = () => {
         if (pathname?.includes('/product-list')) {
-          return '/dashboard/edit-product';
-        } else {
-          return '/utility/invoice/preview/1'; // Default path
+          return `/dashboard/edit-product/${row.original.id}`;
         }
+        return `/dashboard/edit-product/${row.original.id}`
       };
       return (
         <div className="flex items-center gap-1">
