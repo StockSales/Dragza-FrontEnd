@@ -1,8 +1,8 @@
 import { Metadata } from "next";
 
 export const metadata: Metadata = {
-  title: 'Ecommerce',
-  description: 'Ecommerce Page'
+  title: 'Add Product',
+  description: 'Add Product Page'
 }
 const Layout = ({ children }: { children: React.ReactNode }) => {
   return (

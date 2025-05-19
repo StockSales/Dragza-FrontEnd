@@ -39,14 +39,14 @@ import {
 import { Link } from '@/i18n/routing';
 import {Button} from "@/components/ui/button";
 import useGettingAllProducts from "@/services/products/gettingAllProducts";
-import {useEffect} from "react";
+import {useEffect, useState} from "react";
 import {Loader2} from "lucide-react";
 import {toast} from "sonner";
 import GetCategories from "@/services/categories/getCategories";
 
 const TransactionsTable = () => {
   // getting all products
-  const { loading, getAllProducts, products: data, error } = useGettingAllProducts()
+  const { loading, getAllProducts, products: data, error, includeDeleted, setIncludeDeletedState } = useGettingAllProducts()
 
   // getting all categories
   const {loading: categoriesLoading, data: categories, gettingAllCategories} = GetCategories()
@@ -80,11 +80,15 @@ const TransactionsTable = () => {
 
   // mounted data
   useEffect(() => {
-    getAllProducts()
     gettingAllCategories()
   }, []);
 
-  if (loading || categoriesLoading) {
+  // getting all products
+  useEffect(() => {
+    getAllProducts(includeDeleted)
+  }, [includeDeleted]);
+
+  if (categoriesLoading) {
     return (
       <div className="flex items-center justify-center h-full">
         <Loader2 className="w-6 h-6 animate-spin" />
@@ -127,63 +131,84 @@ const TransactionsTable = () => {
                 </SelectGroup>
               </SelectContent>
             </Select>
+
+            <Select onValueChange={ (value) => setIncludeDeletedState(value)}>
+              <SelectTrigger className=" w-[150px] cursor-pointer">
+                <SelectValue placeholder="Select Include Deleted" />
+              </SelectTrigger>
+              <SelectContent>
+                <SelectGroup>
+                  <SelectLabel>Include Deleted</SelectLabel>
+                    <SelectItem value={"true"}>True</SelectItem>
+                    <SelectItem value={"false"}>False</SelectItem>
+                </SelectGroup>
+              </SelectContent>
+            </Select>
           </div>
         </div>
       </div>
 
-      <CardContent className="pt-6">
-        <div className="border border-solid border-default-200 rounded-lg overflow-hidden border-t-0">
-          <Table>
-            <TableHeader className="bg-default-200">
-              {table.getHeaderGroups().map((headerGroup) => (
-                <TableRow key={headerGroup.id}>
-                  {headerGroup.headers.map((header) => {
-                    return (
-                      <TableHead className="last:text-start" key={header.id}>
-                        {header.isPlaceholder
-                          ? null
-                          : flexRender(
-                              header.column.columnDef.header,
-                              header.getContext()
-                            )}
-                      </TableHead>
-                    );
-                  })}
-                </TableRow>
-              ))}
-            </TableHeader>
-            <TableBody>
-              {table.getRowModel().rows?.length ? (
-                table.getRowModel().rows.map((row) => (
-                  <TableRow
-                    key={row.id}
-                    data-state={row.getIsSelected() && "selected"}
-                  >
-                    {row.getVisibleCells().map((cell) => (
-                      <TableCell key={cell.id} className="h-[75px]">
-                        {flexRender(
-                          cell.column.columnDef.cell,
-                          cell.getContext()
-                        )}
-                      </TableCell>
+      {loading == true ? (
+          <div className="flex items-center justify-center h-full">
+            <Loader2 className="w-6 h-6 animate-spin" />
+          </div>
+      ) : (
+          <>
+            <CardContent className="pt-6">
+              <div className="border border-solid border-default-200 rounded-lg overflow-hidden border-t-0">
+                <Table>
+                  <TableHeader className="bg-default-200">
+                    {table.getHeaderGroups().map((headerGroup) => (
+                      <TableRow key={headerGroup.id}>
+                        {headerGroup.headers.map((header) => {
+                          return (
+                            <TableHead className="last:text-start" key={header.id}>
+                              {header.isPlaceholder
+                                ? null
+                                : flexRender(
+                                    header.column.columnDef.header,
+                                    header.getContext()
+                                  )}
+                            </TableHead>
+                          );
+                        })}
+                      </TableRow>
                     ))}
-                  </TableRow>
-                ))
-              ) : (
-                <TableRow>
-                  <TableCell
-                    colSpan={columns.length}
-                    className="h-24 text-center"
-                  >
-                    No results.
-                  </TableCell>
-                </TableRow>
-              )}
-            </TableBody>
-          </Table>
-        </div>
-      </CardContent>
-      <TablePagination table={table} />
+                  </TableHeader>
+                  <TableBody>
+                    {table.getRowModel().rows?.length ? (
+                      table.getRowModel().rows.map((row) => (
+                        <TableRow
+                          key={row.id}
+                          data-state={row.getIsSelected() && "selected"}
+                        >
+                          {row.getVisibleCells().map((cell) => (
+                            <TableCell key={cell.id} className="h-[75px]">
+                              {flexRender(
+                                cell.column.columnDef.cell,
+                                cell.getContext()
+                              )}
+                            </TableCell>
+                          ))}
+                        </TableRow>
+                      ))
+                    ) : (
+                      <TableRow>
+                        <TableCell
+                          colSpan={columns.length}
+                          className="h-24 text-center"
+                        >
+                          No results.
+                        </TableCell>
+                      </TableRow>
+                    )}
+                  </TableBody>
+                </Table>
+              </div>
+            </CardContent>
+            <TablePagination table={table} />
+          </>
+      )}
     </div>
   );
 };

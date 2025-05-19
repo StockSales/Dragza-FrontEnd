@@ -6,11 +6,14 @@ function useGettingAllProducts() {
     const [loading, setLoading] = useState<boolean>(false);
     const [products, setProducts] = useState<ProductType[]>([]);
     const [error, setError] = useState<string | null>(null);
+    const [includeDeletedState, setIncludeDeletedState] = useState<string>("false");
 
-    const getAllProducts = async () => {
+
+    const getAllProducts = async (includeDeleted: string) => {
         setLoading(true);
         setError(null);
-        await AxiosInstance.get("/api/Products").then((res) => {
+        setIncludeDeletedState(includeDeleted);
+        await AxiosInstance.get(`/api/Products?includeDeleted=${includeDeleted}`).then((res) => {
             if (res.status === 200 || res.status === 201 || !res.data.errors) {
                 setProducts(res.data);
             } else {
@@ -36,7 +39,9 @@ function useGettingAllProducts() {
         getAllProducts,
         loading,
         error,
-        products
+        products,
+        includeDeleted: includeDeletedState,
+        setIncludeDeletedState
     }
 
 }

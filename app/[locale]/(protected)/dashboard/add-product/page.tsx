@@ -21,6 +21,7 @@ import {Loader2} from "lucide-react";
 import useCreateProduct from "@/services/products/createProduct";
 import {toast} from "sonner";
 import {useRouter} from "@/i18n/routing";
+import useGettingAllActiveIngredient from "@/services/ActiveIngerients/gettingAllActiveIngerients";
 
 const AddProduct = () => {
   const router = useRouter();
@@ -30,9 +31,13 @@ const AddProduct = () => {
   const [preef, setPref] = useState<string>("")
   const [description, setDescription] = useState<string>("")
   const [categoryId, setCategoryId] = useState<string>("")
+  const [activeIngredient, setActiveIngredient] = useState<string>("")
 
   // getting all categories
   const {loading: gettingAllCatLoading, data, gettingAllCategories} = GetCategories()
+
+  // getting all active ingredients
+  const {activeIngredients, loading: gettingAllActiveIngredientsLoading, error: gettingAllActiveIngredientsError, gettingAllActiveIngredients} = useGettingAllActiveIngredient()
 
   // Create new Product
   const {createProduct, isCreated, loading: creatingProductLoading, error} = useCreateProduct()
@@ -40,7 +45,7 @@ const AddProduct = () => {
   // on submit
   const onSubmit = async () => {
     if (!name.trim()) {
-      toast.error("Validation Error", { description: "Category Name is required." });
+      toast.error("Validation Error", { description: "Name is required." });
       return;
     }
     if (!preef.trim()) {
@@ -57,13 +62,20 @@ const AddProduct = () => {
       })
       return;
     }
+    if (!activeIngredient?.trim()) {
+      toast.error("Validation Error", {
+        description: "Active Ingredient is required."
+      })
+      return;
+    }
 
     try {
       const success = await createProduct({
         name,
         preef,
         description,
-        categoryId
+        categoryId,
+        activeIngredient,
       })
 
       if (success) {
@@ -86,9 +98,10 @@ const AddProduct = () => {
   // mounted data
   useEffect(() => {
     gettingAllCategories()
+    gettingAllActiveIngredients()
   }, []);
 
-  if (gettingAllCatLoading == true) {
+  if (gettingAllCatLoading == true || gettingAllActiveIngredientsLoading == true) {
     return (
         <div className="w-6 h-6 flex items-center justify-center">
           <Loader2 size={12}/>
@@ -145,6 +158,28 @@ const AddProduct = () => {
                             value={category.id}
                         >
                           {category.name}
+                        </SelectItem>
+                    ))}
+                  </SelectGroup>
+                </SelectContent>
+              </Select>
+            </div>
+
+            <div className="flex items-center flex-wrap gap-4 md:gap-0">
+              <Label className="w-[131px] md:w-[150px] flex-none">Active Ingredient</Label>
+              <Select onValueChange={(e) => setCategoryId(e)}>
+                <SelectTrigger className="flex-1 cursor-pointer">
+                  <SelectValue placeholder="Select Active Ingredient" />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectGroup>
+                    <SelectLabel>Active Ingredient</SelectLabel>
+                    {activeIngredients.map((item: any) => (
+                        <SelectItem
+                            key={item.id}
+                            value={item.id}
+                        >
+                          {item.name}
                         </SelectItem>
                     ))}
                   </SelectGroup>
