@@ -9,6 +9,7 @@ import {ProductType} from "@/types/product";
 import {toast} from "sonner";
 import useDeleteProductById from "@/services/products/deleteProductById";
 import {Button} from "@/components/ui/button";
+import Cookies from "js-cookie";
 
 export const columns: ColumnDef<ProductType>[] = [
   {
@@ -122,12 +123,14 @@ export const columns: ColumnDef<ProductType>[] = [
     header: "Actions",
     enableHiding: false,
     cell: ({ row }) => {
+        const userRole = Cookies.get("userRole");
         const { loading, deleteProductById, isDeleted, error} = useDeleteProductById()
-
       const pathname = usePathname();
       const getHref = () => {
-        if (pathname?.includes('/product-list')) {
+        if (pathname?.includes('/product-list') && userRole == 'Admin') {
           return `/dashboard/edit-product/${row.original.id}`;
+        } else if( pathname?.includes('/product-list') && userRole == 'Inventory') {
+            return `/dashboard/add-product-price/${row.original.id}`;
         }
         return `/dashboard/edit-product/${row.original.id}`
       };
@@ -182,12 +185,14 @@ export const columns: ColumnDef<ProductType>[] = [
           >
             <SquarePen className="w-4 h-4" />
           </Link>
-          <div
-            onClick={() => handleDeleteProduct(row.original.id)}
-            className="flex items-center p-2 text-destructive bg-destructive/40 duration-200 transition-all hover:bg-destructive/80 hover:text-destructive-foreground rounded-full"
-          >
-            <Trash2 className="w-4 h-4" />
-          </div>
+            {userRole == "Admin" && (
+              <div
+                onClick={() => handleDeleteProduct(row.original.id)}
+                className="flex items-center p-2 text-destructive bg-destructive/40 duration-200 transition-all hover:bg-destructive/80 hover:text-destructive-foreground rounded-full"
+              >
+                <Trash2 className="w-4 h-4" />
+              </div>
+            )}
         </div>
       );
     },
