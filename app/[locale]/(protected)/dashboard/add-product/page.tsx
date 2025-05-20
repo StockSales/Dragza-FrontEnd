@@ -31,7 +31,7 @@ const AddProduct = () => {
   const [preef, setPref] = useState<string>("")
   const [description, setDescription] = useState<string>("")
   const [categoryId, setCategoryId] = useState<string>("")
-  const [activeIngredient, setActiveIngredient] = useState<string>("")
+  const [activeIngredientId, setActiveIngredient] = useState<string>("")
 
   // getting all categories
   const {loading: gettingAllCatLoading, data, gettingAllCategories} = GetCategories()
@@ -62,7 +62,7 @@ const AddProduct = () => {
       })
       return;
     }
-    if (!activeIngredient?.trim()) {
+    if (!activeIngredientId?.trim()) {
       toast.error("Validation Error", {
         description: "Active Ingredient is required."
       })
@@ -75,7 +75,7 @@ const AddProduct = () => {
         preef,
         description,
         categoryId,
-        activeIngredient,
+        activeIngredientId,
       })
 
       if (success) {
@@ -167,7 +167,7 @@ const AddProduct = () => {
 
             <div className="flex items-center flex-wrap gap-4 md:gap-0">
               <Label className="w-[131px] md:w-[150px] flex-none">Active Ingredient</Label>
-              <Select onValueChange={(e) => setCategoryId(e)}>
+              <Select onValueChange={(value) => setActiveIngredient(value)}>
                 <SelectTrigger className="flex-1 cursor-pointer">
                   <SelectValue placeholder="Select Active Ingredient" />
                 </SelectTrigger>

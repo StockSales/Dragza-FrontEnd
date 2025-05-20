@@ -10,7 +10,7 @@ function useGettingAllActiveIngredient() {
     // function to get all active ingredients
     const gettingAllActiveIngredients = async () => {
         setLoading(true);
-        await AxiosInstance.get('/api/ActiveIngredients').then((response) => {
+        await AxiosInstance.get('/api/ActiveIngerients').then((response) => {
             if (response.status != 200 ) {
                 throw new Error ("Error getting active ingredients");
             }

@@ -26,9 +26,24 @@ import useGettingAllActiveIngredient from "@/services/ActiveIngerients/gettingAl
 import {Accordion, AccordionContent, AccordionItem, AccordionTrigger} from "@/components/ui/accordion";
 import {formatDateToDMY} from "@/utils";
 import {Price} from "@/types/price";
+import {Table, TableBody, TableCell, TableHead, TableHeader, TableRow} from "@/components/ui/table";
+import {
+  flexRender,
+  getCoreRowModel,
+  getFilteredRowModel,
+  getPaginationRowModel,
+  getSortedRowModel,
+  useReactTable
+} from "@tanstack/react-table";
+import {productColumns} from "@/app/[locale]/(protected)/dashboard/edit-product/[id]/columns";
+import useUpdateProductById from "@/services/products/UpdateProductById";
 
 const EditProduct = () => {
+  // router for navigation
   const router = useRouter();
+
+  // update product
+  const { loading: updateProductLoading, updatingProductById, isUpdated, error: updateProductError} = useUpdateProductById()
 
   // states for getting all categories
   const {data: categories, gettingAllCategories, loading: gettingAllCategoriesLoading} = GetCategories()
@@ -52,6 +67,41 @@ const EditProduct = () => {
   // function to get product by id
   const {getProductById, product, loading, error} = useGettingProductById()
 
+  const table = useReactTable({
+    data: product?.prices ?? [],
+    columns: productColumns,
+    getCoreRowModel: getCoreRowModel(),
+    getSortedRowModel: getSortedRowModel(),
+    getFilteredRowModel: getFilteredRowModel(),
+    getPaginationRowModel: getPaginationRowModel(),
+  });
+
+  // function to handle the update of product
+  const handleUpdateProduct = async (productId: string, formData: any) => {
+    if (!formData.name || !formData.pref || !formData.description || !formData.categoryId || !formData.activeIngredientId) {
+      toast.error("Please fill all the fields");
+      return;
+    }
+
+    const updatedData = {
+      name: formData.name,
+      preef: formData.pref,
+      description: formData.description,
+      categoryId: formData.categoryId,
+      activeIngredientId: formData.activeIngredientId
+    }
+
+    await updatingProductById(productId, updatedData).then(() => {
+      if (isUpdated) {
+        toast.success("Product updated successfully");
+        setTimeout(() => {
+          router.push('/dashboard/product-list');
+        }, 2000);
+      }
+    }).catch((error) => {
+      toast.error(error.message);
+    })
+  }
 
   // mounted data
   useEffect(() => {
@@ -133,7 +183,7 @@ const EditProduct = () => {
 
             <div className="flex items-center flex-wrap gap-4 md:gap-0">
               <Label className="w-[150px] flex-none">Category</Label>
-              <Select onValueChange={(value) => setFormData({...formData, categoryId: value})}>
+              <Select value={product?.category.id?.toString()} onValueChange={(value) => setFormData({...formData, categoryId: value})}>
                 <SelectTrigger className="flex-1 cursor-pointer">
                   <SelectValue placeholder="Select Category" />
                 </SelectTrigger>
@@ -188,40 +238,84 @@ const EditProduct = () => {
           </CardContent>
         </Card>
 
-        <Card>
-            <CardHeader className="border-b border-solid border-default-200 mb-6">
-                <CardTitle>Product Price</CardTitle>
-            </CardHeader>
-            <CardContent className="space-y-4">
-              <Accordion type="single" collapsible className="w-full">
-                {
-                    product?.prices && product?.prices.map((item: Price, index) => (
-                      <AccordionItem
-                          value={`value-${index + 1}`}
-                          key={`changelog-${index}`}
-                          className="border-default-100 "
-                      >
-                        <AccordionTrigger className="cursor-pointer">
-                          <div>
-                            {item.productName}
-                            <span className="font-semibold text-xs text-default-400">
-                            - Published on {formatDateToDMY(item.creationDate)}
-                          </span>
-                          </div>
-                        </AccordionTrigger>
-                        <AccordionContent>
+        {product?.prices && product?.prices.length > 0 && (
+          <Card>
+              <CardHeader className="border-b border-solid border-default-200 mb-6">
+                  <CardTitle>Product Price</CardTitle>
+              </CardHeader>
+              <CardContent className="space-y-4">
+                {product?.prices && product.prices.map((item: Price, index: number) => (
+                  <Accordion key={index} type="single" collapsible className="w-full">
+                    {
+                        product?.prices && product?.prices.map((item: Price, index) => (
+                          <AccordionItem
+                              value={`value-${index + 1}`}
+                              key={`changelog-${index}`}
+                              className="border-default-100 "
+                          >
+                            <AccordionTrigger className="cursor-pointer">
+                              <div>
+                                {item.productName}
+                                <span className="font-semibold text-xs text-default-400">
+                                - Published on {formatDateToDMY(item.creationDate)}
+                              </span>
+                              </div>
+                            </AccordionTrigger>
+                            <AccordionContent>
+                              {/*need to create Table for the price data*/}
+                              <div className="border border-solid border-default-200 rounded-lg overflow-hidden border-t-0">
+                                <Table>
+                                  <TableHeader className="bg-default-200">
+                                    {table.getHeaderGroups().map((headerGroup) => (
+                                        <TableRow key={headerGroup.id}>
+                                          {headerGroup.headers.map((header) => (
+                                              <TableHead className="text-left" key={header.id}>
+                                                {header.isPlaceholder
+                                                    ? null
+                                                    : flexRender(
+                                                        header.column.columnDef.header,
+                                                        header.getContext()
+                                                    )}
+                                              </TableHead>
+                                          ))}
+                                        </TableRow>
+                                    ))}
+                                  </TableHeader>
 
-                        </AccordionContent>
-                      </AccordionItem>
-                  ))
-                }
-              </Accordion>
-            </CardContent>
-        </Card>
+                                  <TableBody>
+                                    {table.getRowModel().rows.length ? (
+                                        table.getRowModel().rows.map((row) => (
+                                            <TableRow key={row.id}>
+                                              {row.getVisibleCells().map((cell) => (
+                                                  <TableCell key={cell.id}>
+                                                    {flexRender(cell.column.columnDef.cell, cell.getContext())}
+                                                  </TableCell>
+                                              ))}
+                                            </TableRow>
+                                        ))
+                                    ) : (
+                                        <TableRow>
+                                          <TableCell colSpan={productColumns.length} className="text-center">
+                                            No results.
+                                          </TableCell>
+                                        </TableRow>
+                                    )}
+                                  </TableBody>
+                                </Table>
+                              </div>
+                            </AccordionContent>
+                          </AccordionItem>
+                      ))
+                    }
+                  </Accordion>
+                ))}
+              </CardContent>
+          </Card>
+        )}
       </div>
 
       <div className="col-span-12 flex justify-end">
-        <Button>Update Product</Button>
+        <Button onClick={() => handleUpdateProduct(productId, formData)}>Update Product</Button>
       </div>
     </div>
   );

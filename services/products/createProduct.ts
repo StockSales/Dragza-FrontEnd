@@ -12,7 +12,7 @@ function useCreateProduct() {
         preef: string;
         description: string;
         categoryId: string;
-        activeIngredient: string;
+        activeIngredientId: string;
     }) => {
         setLoading(true);
         setError(null);
