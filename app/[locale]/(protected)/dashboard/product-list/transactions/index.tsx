@@ -43,8 +43,10 @@ import {useEffect, useState} from "react";
 import {Loader2} from "lucide-react";
 import {toast} from "sonner";
 import GetCategories from "@/services/categories/getCategories";
+import Cookies from "js-cookie";
 
 const TransactionsTable = () => {
+  const userRole = Cookies.get("userRole");
   // getting all products
   const { loading, getAllProducts, products: data, error, includeDeleted, setIncludeDeletedState } = useGettingAllProducts()
 
@@ -108,11 +110,13 @@ const TransactionsTable = () => {
       <div className="flex flex-wrap justify-end items-center py-4 px-6 border-b border-solid border-default-200">
         <div className="#flex-none">
           <div className="flex items-center gap-4 flex-wrap">
-            <Link href="/dashboard/add-product">
-              <Button size={"md"} variant="outline" color="secondary">
-                Add Product
-              </Button>
-            </Link>
+            {userRole == "Admin" && (
+              <Link href="/dashboard/add-product">
+                <Button size={"md"} variant="outline" color="secondary">
+                  Add Product
+                </Button>
+              </Link>
+            )}
             <Select>
               <SelectTrigger className=" w-[150px] cursor-pointer">
                 <SelectValue placeholder="Select Category" />

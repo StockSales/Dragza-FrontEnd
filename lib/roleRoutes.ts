@@ -24,6 +24,8 @@ export const roleRoutes: Record<string, string[]> = {
         "/en/dashboard/return-list",
         "/en/dashboard/sales",
         "/ar/dashboard/sales",
+        "/ar/dashboard/add-product-price",
+        "/en/dashboard/add-product-price",
     ],
     sales: ["/en/dashboard/sales", "/en/dashboard/register", "/ar/dashboard/sales", "/ar/dashboard/register"]
 };

@@ -31,11 +31,13 @@ function isRouteAllowed(pathname: string, role: string): boolean {
   const allowedRoutes = roleRoutes[role] || [];
 
   return allowedRoutes.some(route => {
-    if (route.endsWith('*')) {
-      const baseRoute = route.slice(0, -1);
-      return pathname === '/' || pathname.startsWith(baseRoute);
-    }
-    return route === pathname;
+    // Exact match
+    if (route === pathname) return true;
+
+    // Match prefix for dynamic routes
+    if (pathname.startsWith(route)) return true;
+
+    return false;
   });
 }
 
