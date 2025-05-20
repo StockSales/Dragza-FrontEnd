@@ -6,6 +6,9 @@ import {usePathname} from "next/navigation";
 import {Badge} from "@/components/ui/badge";
 import {cn} from "@/lib/utils";
 import {ProductType} from "@/types/product";
+import {toast} from "sonner";
+import useDeleteProductById from "@/services/products/deleteProductById";
+import {Button} from "@/components/ui/button";
 
 export const columns: ColumnDef<ProductType>[] = [
   {
@@ -16,7 +19,7 @@ export const columns: ColumnDef<ProductType>[] = [
       return (
         <div className="font-medium text-card-foreground/80">
             <span className="text-sm text-default-600">
-              {name ?? "Unknown User"}
+              {product ?? "Unknown Product"}
             </span>
         </div>
       );
@@ -36,20 +39,20 @@ export const columns: ColumnDef<ProductType>[] = [
       );
     },
   },
-  {
-      accessorKey: "description",
-      header: "Description",
-      cell: ({ row }) => {
-      const description = row.original.description;
-      return (
-          <div className="font-medium text-card-foreground/80">
-              <span className="text-sm text-default-600">
-              {description ?? "N/A"}
-              </span>
-          </div>
-      );
-      },
-  },
+  // {
+  //     accessorKey: "description",
+  //     header: "Description",
+  //     cell: ({ row }) => {
+  //     const description = row.original.description;
+  //     return (
+  //         <div className="font-medium text-card-foreground/80">
+  //             <span className="text-sm text-default-600">
+  //             {description ?? "N/A"}
+  //             </span>
+  //         </div>
+  //     );
+  //     },
+  // },
   {
     accessorKey: "category",
     header: "Category",
@@ -58,7 +61,7 @@ export const columns: ColumnDef<ProductType>[] = [
     {
     accessorKey: "activeIngredient",
     header: "Active Ingredient",
-    cell: ({ row }) => <span>{row.original.activeIngredient}</span>,
+    cell: ({ row }) => <span>{row.original.activeIngredient || "N/A"}</span>,
   },
   // {
   //   accessorKey: "stock",
@@ -119,6 +122,8 @@ export const columns: ColumnDef<ProductType>[] = [
     header: "Actions",
     enableHiding: false,
     cell: ({ row }) => {
+        const { loading, deleteProductById, isDeleted, error} = useDeleteProductById()
+
       const pathname = usePathname();
       const getHref = () => {
         if (pathname?.includes('/product-list')) {
@@ -126,7 +131,50 @@ export const columns: ColumnDef<ProductType>[] = [
         }
         return `/dashboard/edit-product/${row.original.id}`
       };
-      return (
+
+        const handleDeleteProduct = (id: string | undefined) => {
+            const toastId = toast("Delete Product", {
+                description: "Are you sure you want to delete this product?",
+                action: (
+                    <div className="flex justify-end mx-auto items-center my-auto gap-2">
+                        <Button
+                            size="sm"
+                            onClick={() => toast.dismiss(toastId)}
+                            className="text-white px-3 py-1 rounded-md"
+                        >
+                            Cancel
+                        </Button>
+                        <Button
+                            size="sm"
+                            variant="shadow"
+                            disabled={loading} // Make sure you define loading state
+                            className="text-white px-3 py-1 rounded-md"
+                            onClick={async () => {
+                                try {
+                                    await deleteProductById(id);
+                                    toast.dismiss(toastId);
+                                    if (isDeleted) {
+                                        toast("Product deleted", {
+                                            description: "The product was deleted successfully.",
+                                        });
+                                    } else if (error) {
+                                        throw new Error(error);
+                                    }
+                                } catch (error) {
+                                    toast.dismiss(toastId);
+                                    toast("Error", {
+                                        description: (error as Error).message,
+                                    });
+                                }
+                            }}
+                        >
+                            Confirm
+                        </Button>
+                    </div>
+                ),
+            });
+        };
+        return (
         <div className="flex items-center gap-1">
           <Link
             href={getHref()}
@@ -134,12 +182,12 @@ export const columns: ColumnDef<ProductType>[] = [
           >
             <SquarePen className="w-4 h-4" />
           </Link>
-          <Link
-            href="#"
+          <div
+            onClick={() => handleDeleteProduct(row.original.id)}
             className="flex items-center p-2 text-destructive bg-destructive/40 duration-200 transition-all hover:bg-destructive/80 hover:text-destructive-foreground rounded-full"
           >
             <Trash2 className="w-4 h-4" />
-          </Link>
+          </div>
         </div>
       );
     },
