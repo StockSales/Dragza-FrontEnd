@@ -7,106 +7,95 @@ import { Badge } from "@/components/ui/badge";
 export type DataProps = {
   id: string | number;
   phone: string;
-  customer: {
-    name: string;
-    image: string;
-  };
+  userName: string;
   date: string;
   email: string;
   amount: string;
   rating: number;
   action: React.ReactNode;
+  isPharmacy: boolean;
+  pharmacyDetails: {
+    arabicName: string;
+    englishName: string;
+    phoneNumber: string;
+  }
 };
 export const columns: ColumnDef<DataProps>[] = [
   {
-    id: "select",
-    header: ({ table }) => (
-      <Checkbox
-        checked={
-          table.getIsAllPageRowsSelected() ||
-          (table.getIsSomePageRowsSelected() && "indeterminate")
-        }
-        onCheckedChange={(value) => table.toggleAllPageRowsSelected(!!value)}
-        aria-label="Select all"
-        className="bg-default-100"
-      />
-    ),
-    cell: ({ row }) => (
-      <div className="xl:w-16">
-        <Checkbox
-          checked={row.getIsSelected()}
-          onCheckedChange={(value) => row.toggleSelected(!!value)}
-          aria-label="Select row"
-          className="bg-default-100"
-        />
-      </div>
-    ),
-    enableSorting: false,
-    enableHiding: false,
-  },
-
-  {
-    accessorKey: "customer",
-    header: "User Name",
+    accessorKey: "userName",
+    header: "UserName",
     cell: ({ row }) => {
-      const user = row.original.customer;
+      const user = row.original.userName;
       return (
         <div className="font-medium text-card-foreground/80">
           <div className="flex gap-3 items-center">
             <span className="text-sm text-default-600 whitespace-nowrap">
-              {user?.name ?? "Unknown User"}
+              {user ?? "Unknown User"}
             </span>
           </div>
         </div>
       );
     },
   },
-  {
-    accessorKey: "phone",
-    header: "Phone",
-    cell: ({ row }) => <span>{row.getValue("phone")}</span>,
-  },
+  // {
+  //   accessorKey: "phone",
+  //   header: "Phone",
+  //   cell: ({ row }) => <span>{row.getValue("phone")}</span>,
+  // },
   {
     accessorKey: "email",
     header: "Email",
     cell: ({ row }) => <span>{row.getValue("email")}</span>,
   },
   {
-    accessorKey: "date",
-    header: "Create Date",
+    accessorKey: "pharmacyDetails",
+    header: "Arabic Name",
     cell: ({ row }) => {
-      return <span>{row.getValue("date")}</span>;
+      return <span> {row.original?.pharmacyDetails?.arabicName || "N/A"}</span>;
     },
   },
   {
-    accessorKey: "amount",
-    header: "Wallet",
+    accessorKey: "pharmacyDetails",
+    header: "English Name",
     cell: ({ row }) => {
-      return <span> {row.getValue("amount")}</span>;
+      return <span> {row.original?.pharmacyDetails?.englishName || "N/A"}</span>;
     },
   },
   {
-    id: "actions",
-    accessorKey: "action",
-    header: "Actions",
-    enableHiding: false,
+    accessorKey: "pharmacyDetails",
+    header: "English Name",
     cell: ({ row }) => {
-      return (
-        <div className="flex items-center gap-1">
-          <Link
-            href="/utility/invoice/preview/1"
-            className="flex items-center p-2 border-b text-info hover:text-info-foreground bg-info/20 hover:bg-info duration-200 transition-all rounded-full"
-          >
-            <SquarePen className="w-4 h-4" />
-          </Link>
-          <Link
-            href="#"
-            className="flex items-center p-2 text-destructive bg-destructive/40 duration-200 transition-all hover:bg-destructive/80 hover:text-destructive-foreground rounded-full"
-          >
-            <Trash2 className="w-4 h-4" />
-          </Link>
-        </div>
-      );
+      return <span> {row.original?.pharmacyDetails?.phoneNumber || "N/A"}</span>;
     },
   },
+  {
+    accessorKey: "isPharmacy",
+    header: "Is Pharmacy",
+    cell: ({ row }) => {
+      return <span>{"true"}</span>;
+    },
+  },
+  // {
+  //   id: "actions",
+  //   accessorKey: "action",
+  //   header: "Actions",
+  //   enableHiding: false,
+  //   cell: ({ row }) => {
+  //     return (
+  //       <div className="flex items-center gap-1">
+  //         {/*<Link*/}
+  //         {/*  href="/utility/invoice/preview/1"*/}
+  //         {/*  className="flex items-center p-2 border-b text-info hover:text-info-foreground bg-info/20 hover:bg-info duration-200 transition-all rounded-full"*/}
+  //         {/*>*/}
+  //         {/*  <SquarePen className="w-4 h-4" />*/}
+  //         {/*</Link>*/}
+  //         <div
+  //           className="flex items-center p-2 text-destructive bg-destructive/40 duration-200 transition-all hover:bg-destructive/80 hover:text-destructive-foreground rounded-full"
+  //         >
+  //           <Trash2 className="w-4 h-4" />
+  //         </div>
+  //       </div>
+  //     );
+  //   },
+  // },
 ];
