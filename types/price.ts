@@ -1,5 +1,5 @@
-export interface Price {
-    id: string;
+export type Price = {
+    id?: string;
     productId: string;
     productName: string;
     categoryId: string;

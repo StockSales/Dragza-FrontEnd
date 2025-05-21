@@ -90,7 +90,7 @@ const TransactionsTable = () => {
     getAllProducts(includeDeleted)
   }, [includeDeleted]);
 
-  if (categoriesLoading == true) {
+  if (categoriesLoading == true || loading == true) {
     return (
       <div className="flex items-center justify-center h-full">
         <Loader2 className="w-6 h-6 animate-spin" />

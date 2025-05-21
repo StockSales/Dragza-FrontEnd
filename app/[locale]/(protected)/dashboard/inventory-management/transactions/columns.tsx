@@ -1,58 +1,21 @@
 import {usePathname} from "next/navigation";
 import { ColumnDef } from "@tanstack/react-table";
 import { SquarePen, Trash2, TriangleAlert } from "lucide-react";
-import { Checkbox } from "@/components/ui/checkbox";
 import { Link } from '@/i18n/routing';
+import {formatDateToDMY} from "@/utils";
+import {Price} from "@/types/price";
 
-export type DataProps = {
-  id: string | number;
-  phone: string;
-  seller: string;
-  address: string;
-  date: string;
-  email: string;
-  store: string;
-  quantity: number;
-  revenue: string;
-  action: React.ReactNode;
-};
-export const columns: ColumnDef<DataProps>[] = [
-  {
-    id: "select",
-    header: ({ table }) => (
-      <Checkbox
-        checked={
-          table.getIsAllPageRowsSelected() ||
-          (table.getIsSomePageRowsSelected() && "indeterminate")
-        }
-        onCheckedChange={(value) => table.toggleAllPageRowsSelected(!!value)}
-        aria-label="Select all"
-        className="bg-default-100"
-      />
-    ),
-    cell: ({ row }) => (
-      <div className="xl:w-16">
-        <Checkbox
-          checked={row.getIsSelected()}
-          onCheckedChange={(value) => row.toggleSelected(!!value)}
-          aria-label="Select row"
-          className="bg-default-100"
-        />
-      </div>
-    ),
-    enableSorting: false,
-    enableHiding: false,
-  },
 
+export const columns: ColumnDef<Price>[] = [
   {
-    accessorKey: "seller",
-    header: "Inventory Manger",
+    accessorKey: "productName",
+    header: "Product Name",
     cell: ({ row }) => {
       return (
         <div className="font-medium text-card-foreground/80">
           <div className="flex gap-3 items-center">
             <span className="text-sm text-default-600 whitespace-nowrap">
-              {row.getValue("seller")}
+              {row.getValue("productName")}
             </span>
           </div>
         </div>
@@ -60,32 +23,32 @@ export const columns: ColumnDef<DataProps>[] = [
     },
   },
   {
-    accessorKey: "phone",
-    header: "Phone",
-    cell: ({ row }) => <span>{row.getValue("phone")}</span>,
+    accessorKey: "categoryName",
+    header: "Category Name",
+    cell: ({ row }) => <span>{row.getValue("categoryName")}</span>,
   },
   {
-    accessorKey: "address",
-    header: "Address",
-    cell: ({ row }) => <span>{row.getValue("address")}</span>,
+    accessorKey: "purchasePrice",
+    header: "PurchasePrice",
+    cell: ({ row }) => <span>{row.getValue("purchasePrice")}</span>,
   },
   {
-    accessorKey: "email",
-    header: "Email",
-    cell: ({ row }) => <span>{row.getValue("email")}</span>,
+    accessorKey: "salesPrice",
+    header: "SalesPrice",
+    cell: ({ row }) => <span>{row.getValue("salesPrice")}</span>,
   },
   {
-    accessorKey: "revenue",
-    header: "Revenue",
+    accessorKey: "creationDate",
+    header: "Creation Date",
     cell: ({ row }) => {
-      return <span>{row.getValue("revenue")}</span>;
+      return <span>{formatDateToDMY(row.original.creationDate)}</span>;
     },
   },
   {
-    accessorKey: "quantity",
-    header: "Orders",
+    accessorKey: "inventoryUserName",
+    header: "InventoryUserName",
     cell: ({ row }) => {
-      return <span>{row.getValue("quantity")}</span>;
+      return <span>{row.getValue("inventoryUserName") || "minaemad"}</span>;
     },
   },
   // {
@@ -95,44 +58,44 @@ export const columns: ColumnDef<DataProps>[] = [
   //     return <span> {row.getValue("store")}</span>;
   //   },
   // },
-  {
-    id: "actions",
-    accessorKey: "action",
-    header: "Actions",
-    enableHiding: false,
-    cell: ({ row }) => {
-      const pathname = usePathname();
-      const getHref = () => {
-        if (pathname?.includes('/sellers')) {
-          return '/dashboard/edit-product';
-        } else if (pathname?.includes('/admin')) {
-          return '/admin/invoice/preview/1';
-        } else {
-          return '/utility/invoice/preview/1'; // Default path
-        }
-      };
-      return (
-        <div className="flex items-center gap-1">
-          <Link
-            href={getHref()}
-            className="flex items-center p-2 border-b text-info hover:text-info-foreground bg-info/40 hover:bg-info duration-200 transition-all rounded-full"
-          >
-            <SquarePen className="w-4 h-4" />
-          </Link>
-          <Link
-            href="#"
-            className="flex items-center p-2 border-b text-warning hover:text-warning-foreground bg-warning/40 hover:bg-warning duration-200 transition-all rounded-full"
-          >
-            <TriangleAlert className="w-4 h-4" />
-          </Link>
-          <Link
-            href="#"
-            className="flex items-center p-2 text-destructive bg-destructive/40 duration-200 transition-all hover:bg-destructive/80 hover:text-destructive-foreground rounded-full"
-          >
-            <Trash2 className="w-4 h-4" />
-          </Link>
-        </div>
-      );
-    },
-  },
+  // {
+  //   id: "actions",
+  //   accessorKey: "action",
+  //   header: "Actions",
+  //   enableHiding: false,
+  //   cell: ({ row }) => {
+  //     const pathname = usePathname();
+  //     const getHref = () => {
+  //       if (pathname?.includes('/sellers')) {
+  //         return '/dashboard/edit-product';
+  //       } else if (pathname?.includes('/admin')) {
+  //         return '/admin/invoice/preview/1';
+  //       } else {
+  //         return '/utility/invoice/preview/1'; // Default path
+  //       }
+  //     };
+  //     return (
+  //       <div className="flex items-center gap-1">
+  //         <Link
+  //           href={getHref()}
+  //           className="flex items-center p-2 border-b text-info hover:text-info-foreground bg-info/40 hover:bg-info duration-200 transition-all rounded-full"
+  //         >
+  //           <SquarePen className="w-4 h-4" />
+  //         </Link>
+  //         <Link
+  //           href="#"
+  //           className="flex items-center p-2 border-b text-warning hover:text-warning-foreground bg-warning/40 hover:bg-warning duration-200 transition-all rounded-full"
+  //         >
+  //           <TriangleAlert className="w-4 h-4" />
+  //         </Link>
+  //         <Link
+  //           href="#"
+  //           className="flex items-center p-2 text-destructive bg-destructive/40 duration-200 transition-all hover:bg-destructive/80 hover:text-destructive-foreground rounded-full"
+  //         >
+  //           <Trash2 className="w-4 h-4" />
+  //         </Link>
+  //       </div>
+  //     );
+  //   },
+  // },
 ];

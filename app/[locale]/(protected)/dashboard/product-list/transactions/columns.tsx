@@ -1,10 +1,7 @@
 import { ColumnDef } from "@tanstack/react-table";
 import { SquarePen, Trash2 } from "lucide-react";
 import { Link } from '@/i18n/routing';
-import Image from "next/image";
 import {usePathname} from "next/navigation";
-import {Badge} from "@/components/ui/badge";
-import {cn} from "@/lib/utils";
 import {ProductType} from "@/types/product";
 import {toast} from "sonner";
 import useDeleteProductById from "@/services/products/deleteProductById";
