@@ -48,10 +48,14 @@ import {
 import useGettingPricesForInventoryManager from "@/services/productPrice/gettingPricesForInventoryManager";
 import {Loader2} from "lucide-react";
 import Cookies from "js-cookie";
+import useGetUsersByRoleId from "@/services/users/GetUsersByRoleId";
 
 const TransactionsTable = () => {
   // getting data from API
   const {loading: gettingPricesLoading, gettingPricesForInventoryManager, prices: allData, error: gettingPricesError} = useGettingPricesForInventoryManager()
+
+  // getting users by user id
+  const {loading: usersLoading, users, getUsersByRoleId, error: gettingUsersError} = useGetUsersByRoleId()
 
   // getting user Role from Cookies
     const userRole = Cookies.get("userRole");
@@ -85,6 +89,7 @@ const TransactionsTable = () => {
 
   useEffect(() => {
     gettingPricesForInventoryManager();
+    if (userRole == "Admin") getUsersByRoleId("1A5A84FB-23C3-4F9B-A122-4C5BC6C5CB2D")
   }, []);
 
 
@@ -99,11 +104,15 @@ const TransactionsTable = () => {
               </SelectTrigger>
               <SelectContent>
                 <SelectGroup>
-                  <SelectLabel>Bulk Action</SelectLabel>
-                  <SelectItem value="all">All</SelectItem>
-                  <SelectItem value="paid">Paid</SelectItem>
-                  <SelectItem value="pending">Pending</SelectItem>
-                  <SelectItem value="failed">Failed</SelectItem>
+                  <SelectLabel>Select user</SelectLabel>
+                  {users && users.map((user: any) => (
+                      <SelectItem
+                          key={user.id}
+                          value={user.id}
+                      >
+                          {user.name}
+                      </SelectItem>
+                  ))}
                 </SelectGroup>
               </SelectContent>
             </Select>

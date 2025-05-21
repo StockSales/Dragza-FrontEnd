@@ -1,17 +1,17 @@
 import {useState} from "react";
 import {Price} from "@/types/price";
 import AxiosInstance from "@/lib/AxiosInstance";
-import Cookies from "js-cookie";
 
-function useGettingPricesForInventoryManager() {
-    const [loading, setLoading] = useState(false);
+function useGettingPricesByInventoryId() {
+    const [loading, setLoading] = useState<boolean>(false);
     const [error, setError] = useState<string | null>(null);
     const [prices, setPrices] = useState<Price[]>([]);
 
-    const gettingPricesForInventoryManager = async () => {
+    // getting prices by inventoryId
+    const gettingPricesByInventoryId = async (inventoryId: string) => {
         setLoading(true);
         setError(null);
-        await AxiosInstance.get('/api/ProductPrices/my-prices')
+        await AxiosInstance.get(`/api/ProductPrices/${inventoryId}`)
             .then((response) => {
                 if (response.status !== 200) {
                     throw new Error('Failed to fetch prices');
@@ -19,10 +19,6 @@ function useGettingPricesForInventoryManager() {
                 setPrices(response.data)
             })
             .catch((error) => {
-                Cookies.remove("userRole");
-                Cookies.remove("userId");
-                Cookies.remove("authToken");
-                window.location.href = '/en';
                 setError(error.message);
             })
             .finally(() => {
@@ -34,9 +30,9 @@ function useGettingPricesForInventoryManager() {
         loading,
         error,
         prices,
-        gettingPricesForInventoryManager
+        gettingPricesByInventoryId
     }
 
 }
 
-export default useGettingPricesForInventoryManager;
+export default useGettingPricesByInventoryId;

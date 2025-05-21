@@ -5,25 +5,27 @@ function useDeleteProductById() {
     // getting all products
 
     const [loading, setLoading] = React.useState(false);
-    const [error, setError] = React.useState<string | null>(null);
-    const [isDeleted, setIsDeleted] = React.useState<boolean>(false);
 
-    const deleteProductById = async (id: string | undefined) => {
+    const deleteProductById = async (id: string | undefined): Promise<{ success: boolean; error?: string }> => {
         setLoading(true);
-        setError(null);
-        await AxiosInstance.delete(`/api/Products/${id}`).then((response) => {
-            if (![200, 201, 204].includes(response.status)) {
-                throw new Error('Failed to delete product');
+        try {
+            const response = await AxiosInstance.delete(`/api/Products/${id}`);
+            if ([200, 204].includes(response.status)) {
+                return { success: true };
+            } else {
+                return { success: false, error: "Failed to delete product" };
             }
-            setIsDeleted(true);
-        }).catch ((err) => {
-            setError(err.message);
-        }).finally(() => {
+        } catch (err: any) {
+            return {
+                success: false,
+                error: err.response?.data?.message || err.message,
+            };
+        } finally {
             setLoading(false);
-        })
+        }
     };
 
-    return { deleteProductById, loading, error, isDeleted };
+    return { deleteProductById, loading };
 }
 
 export default useDeleteProductById;

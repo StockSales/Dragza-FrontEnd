@@ -8,7 +8,8 @@ import useDeleteProductById from "@/services/products/deleteProductById";
 import {Button} from "@/components/ui/button";
 import Cookies from "js-cookie";
 
-export const columns: ColumnDef<ProductType>[] = [
+export const baseColumns = ({ refresh }: { refresh: () => void }): ColumnDef<ProductType>[] =>
+[
   {
     accessorKey: "name",
     header: "Product",
@@ -121,7 +122,7 @@ export const columns: ColumnDef<ProductType>[] = [
     enableHiding: false,
     cell: ({ row }) => {
         const userRole = Cookies.get("userRole");
-        const { loading, deleteProductById, isDeleted, error} = useDeleteProductById()
+        const { loading, deleteProductById} = useDeleteProductById()
       const pathname = usePathname();
       const getHref = () => {
         if (pathname?.includes('/product-list') && userRole == 'Admin') {
@@ -151,13 +152,14 @@ export const columns: ColumnDef<ProductType>[] = [
                             className="text-white px-3 py-1 rounded-md"
                             onClick={async () => {
                                 try {
-                                    await deleteProductById(id);
+                                    const {success, error} = await deleteProductById(id);
                                     toast.dismiss(toastId);
-                                    if (isDeleted) {
+                                    if (success) {
                                         toast("Product deleted", {
                                             description: "The product was deleted successfully.",
                                         });
-                                    } else if (error) {
+                                        refresh();
+                                    } else {
                                         throw new Error(error);
                                     }
                                 } catch (error) {
