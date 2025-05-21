@@ -25,24 +25,25 @@ import useGettingAllActiveIngredient from "@/services/ActiveIngerients/gettingAl
 import useCreateProductPrice from "@/services/productPrice/createProductPrice";
 import useGettingAllProducts from "@/services/products/gettingAllProducts";
 import {ProductType} from "@/types/product";
+import useGettingProductById from "@/services/products/gettingProductById";
+import {useParams} from "next/navigation";
 
-const AddProduct = () => {
+const AddProductPrice = () => {
+  // getting all products
+  const {loading: gettingAllProductsLoading, getProductById, product} = useGettingProductById()
   const router = useRouter();
+
+  const params = useParams();
+  const productId = params?.id as string;
 
   // states for product
   const [purchasePrice, setPurchasePrice] = useState<number>(0)
   const [salesPrice, setSalesPrice] = useState<number>(0)
-  const [categoryId, setCategoryId] = useState<string>("")
-  const [productId, setProductId] = useState<string>("")
-
-  // getting all categories
-  const {loading: gettingAllCatLoading, data, gettingAllCategories} = GetCategories()
+  const [categoryId, setCategoryId] = useState<string>(product?.category?.name as string)
 
   // Creating new Product price
-  const { error: productPriceError, loading: productPriceLoading, createProductPrice, isCreated} = useCreateProductPrice()
+  const { error: productPriceError, loading: productPriceLoading, createProductPrice} = useCreateProductPrice()
 
-  // getting all products
-  const {loading: gettingAllProductsLoading, products, getAllProducts} = useGettingAllProducts()
 
   // on submit
   const onSubmit = async () => {
@@ -54,16 +55,6 @@ const AddProduct = () => {
       toast.error("Validation Error", { description: "Sales Price is required." });
       return;
     }
-    if (!productId.trim()) {
-      toast.error("Validation Error", { description: "Product is required." });
-      return;
-    }
-    if (!categoryId?.trim()) {
-      toast.error("Validation Error", {
-        description: "Category is required."
-      })
-      return;
-    }
 
     try {
       const success = await createProductPrice({
@@ -71,32 +62,40 @@ const AddProduct = () => {
         productId,
         purchasePrice,
         salesPrice,
-      })
+      });
 
-      if (isCreated) {
+      if (success) {
         toast.success("Product price Created", {
-          description: "Product price added successfully"
-        })
+          description: "Product price added successfully",
+          duration: 1500, // customize duration if needed
+        });
+
+        // Redirect after delay
         setTimeout(() => {
           router.push("/dashboard/product-list");
-        }, 1000);
+        }, 1500); // Wait for toast to appear
       }
     } catch (error: any) {
       toast.error("Network Error", {
         description: error,
       });
     }
+  };
 
-
-  }
 
   // mounted data
   useEffect(() => {
-    gettingAllCategories()
-    getAllProducts("false")
-  }, []);
+    getProductById(productId)
+    console.log("product", product, categoryId)
+  }, [categoryId]);
 
-  if (gettingAllCatLoading == true || gettingAllProductsLoading == true) {
+  useEffect(() => {
+    if (product?.category?.id) {
+      setCategoryId(product?.category?.id as string);
+    }
+  }, [product]);
+
+  if ( gettingAllProductsLoading == true ) {
     return (
         <div className="w-6 h-6 flex items-center justify-center">
           <Loader2 size={12}/>
@@ -112,50 +111,6 @@ const AddProduct = () => {
             <CardTitle>Product Information</CardTitle>
           </CardHeader>
           <CardContent className="space-y-4">
-            <div className="flex items-center flex-wrap gap-4 md:gap-0">
-              <Label className="w-[131px] md:w-[150px] flex-none">Category</Label>
-              <Select onValueChange={(e) => setCategoryId(e)}>
-                <SelectTrigger className="flex-1 cursor-pointer">
-                  <SelectValue placeholder="Select Category" />
-                </SelectTrigger>
-                <SelectContent>
-                  <SelectGroup>
-                    <SelectLabel>Category</SelectLabel>
-                    {data.map((category: any) => (
-                        <SelectItem
-                            key={category.id}
-                            value={category.id}
-                        >
-                          {category.name}
-                        </SelectItem>
-                    ))}
-                  </SelectGroup>
-                </SelectContent>
-              </Select>
-            </div>
-
-            <div className="flex items-center flex-wrap gap-4 md:gap-0">
-              <Label className="w-[131px] md:w-[150px] flex-none">Product </Label>
-              <Select onValueChange={(value) => setProductId(value)}>
-                <SelectTrigger className="flex-1 cursor-pointer">
-                  <SelectValue placeholder="Select Product" />
-                </SelectTrigger>
-                <SelectContent>
-                  <SelectGroup>
-                    <SelectLabel>Product</SelectLabel>
-                    {products.map((item: any) => (
-                        <SelectItem
-                            key={item.id}
-                            value={item.id}
-                        >
-                          {item.name}
-                        </SelectItem>
-                    ))}
-                  </SelectGroup>
-                </SelectContent>
-              </Select>
-            </div>
-
             <div className="flex items-center flex-wrap">
               <Label className="w-[150px] flex-none" htmlFor="purchasePrice">
                 Purchase Price
@@ -197,4 +152,4 @@ const AddProduct = () => {
   );
 };
 
-export default AddProduct;
+export default AddProductPrice;
