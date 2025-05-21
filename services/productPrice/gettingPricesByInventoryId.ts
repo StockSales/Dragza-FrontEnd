@@ -11,7 +11,7 @@ function useGettingPricesByInventoryId() {
     const gettingPricesByInventoryId = async (inventoryId: string) => {
         setLoading(true);
         setError(null);
-        await AxiosInstance.get(`/api/ProductPrices/${inventoryId}`)
+        await AxiosInstance.get(`/api/ProductPrices/by-inventory-user/${inventoryId}`)
             .then((response) => {
                 if (response.status !== 200) {
                     throw new Error('Failed to fetch prices');
