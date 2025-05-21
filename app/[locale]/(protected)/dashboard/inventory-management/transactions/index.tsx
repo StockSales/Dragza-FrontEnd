@@ -1,12 +1,6 @@
 "use client";
 
-import {useEffect} from "react";
-
-type TableType = {
-  data: Price[];
-  columns: typeof columns;
-}
-
+import { useEffect, useState } from "react";
 import * as React from "react";
 import {
   ColumnFiltersState,
@@ -19,11 +13,11 @@ import {
   getSortedRowModel,
   useReactTable,
 } from "@tanstack/react-table";
+
 import { columns } from "./columns";
 import { Price } from "@/types/price";
 
 import { Input } from "@/components/ui/input";
-
 import {
   Table,
   TableBody,
@@ -32,10 +26,9 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
-
 import TablePagination from "./table-pagination";
-
 import { Card, CardContent } from "@/components/ui/card";
+
 import {
   Select,
   SelectContent,
@@ -45,31 +38,53 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
+
 import useGettingPricesForInventoryManager from "@/services/productPrice/gettingPricesForInventoryManager";
-import {Loader2} from "lucide-react";
-import Cookies from "js-cookie";
+import useGettingPricesByInventoryId from "@/services/productPrice/gettingPricesByInventoryId";
 import useGetUsersByRoleId from "@/services/users/GetUsersByRoleId";
 
+import Cookies from "js-cookie";
+import { Loader2 } from "lucide-react";
+
 const TransactionsTable = () => {
-  // getting data from API
-  const {loading: gettingPricesLoading, gettingPricesForInventoryManager, prices: allData, error: gettingPricesError} = useGettingPricesForInventoryManager()
+  const userRole = Cookies.get("userRole");
 
-  // getting users by user id
-  const {loading: usersLoading, users, getUsersByRoleId, error: gettingUsersError} = useGetUsersByRoleId()
+  const [selectedUserId, setSelectedUserId] = useState<string | null>(null);
 
-  // getting user Role from Cookies
-    const userRole = Cookies.get("userRole");
+  // Non-admin prices
+  const {
+    loading: managerLoading,
+    prices: managerPrices,
+    gettingPricesForInventoryManager,
+  } = useGettingPricesForInventoryManager();
 
-  const [sorting, setSorting] = React.useState<SortingState>([]);
-  const [columnFilters, setColumnFilters] = React.useState<ColumnFiltersState>(
-    []
-  );
-  const [columnVisibility, setColumnVisibility] =
-    React.useState<VisibilityState>({});
-  const [rowSelection, setRowSelection] = React.useState({});
+  // Admin user prices
+  const {
+    loading: inventoryIdLoading,
+    prices: adminPrices,
+    gettingPricesByInventoryId,
+  } = useGettingPricesByInventoryId();
+
+  // Users for Admin select
+  const {
+    loading: usersLoading,
+    users,
+    getUsersByRoleId,
+  } = useGetUsersByRoleId();
+
+  const [sorting, setSorting] = useState<SortingState>([]);
+  const [columnFilters, setColumnFilters] = useState<ColumnFiltersState>([]);
+  const [columnVisibility, setColumnVisibility] = useState<VisibilityState>({});
+  const [rowSelection, setRowSelection] = useState({});
+
+  const isAdmin = userRole === "Admin";
+
+  // Table Data: Admin → based on selected user, Others → default manager data
+  const tableData = isAdmin ? adminPrices : managerPrices;
+  const isLoading = isAdmin ? inventoryIdLoading : managerLoading;
 
   const table = useReactTable({
-    data: allData ?? [],
+    data: tableData ?? [],
     columns,
     onSortingChange: setSorting,
     onColumnFiltersChange: setColumnFilters,
@@ -88,51 +103,66 @@ const TransactionsTable = () => {
   });
 
   useEffect(() => {
-    gettingPricesForInventoryManager();
-    if (userRole == "Admin") getUsersByRoleId("1A5A84FB-23C3-4F9B-A122-4C5BC6C5CB2D")
+    if (isAdmin) {
+      getUsersByRoleId("1A5A84FB-23C3-4F9B-A122-4C5BC6C5CB2D");
+    } else {
+      gettingPricesForInventoryManager();
+    }
   }, []);
 
+  useEffect(() => {
+    if (selectedUserId) {
+      gettingPricesByInventoryId(selectedUserId);
+    }
+  }, [selectedUserId]);
+
+  if (usersLoading) {
+    return (
+        <div className="flex items-center justify-center h-full">
+          <Loader2 className="w-6 h-6 animate-spin" />
+        </div>
+    );
+  }
 
   return (
-    <Card className="w-full">
-      <div className="flex flex-wrap gap-4 items-center py-4 px-5">
-      {userRole == "Admin" && (
-          <div className="flex-1 text-xl flex gap-4 font-medium text-default-900">
-            <Select>
-              <SelectTrigger className=" w-[150px] cursor-pointer">
-                <SelectValue placeholder="Bulk Action" />
-              </SelectTrigger>
-              <SelectContent>
-                <SelectGroup>
-                  <SelectLabel>Select user</SelectLabel>
-                  {users && users.map((user: any) => (
-                      <SelectItem
-                          key={user.id}
-                          value={user.id}
-                      >
-                          {user.name}
-                      </SelectItem>
-                  ))}
-                </SelectGroup>
-              </SelectContent>
-            </Select>
-          </div>
-      )}
-      </div>
+      <Card className="w-full">
+        <div className="flex flex-wrap gap-4 items-center py-4 px-5">
+          {isAdmin && (
+              <div className="flex-1 text-xl flex gap-4 font-medium text-default-900">
+                <Select onValueChange={setSelectedUserId}>
+                  <SelectTrigger className="w-[150px] cursor-pointer">
+                    <SelectValue placeholder="Select user" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectGroup>
+                      <SelectLabel>Select user</SelectLabel>
+                      {users &&
+                          users.map((user: any) => (
+                              <SelectItem key={user.id} value={user.id}>
+                                {user.userName}
+                              </SelectItem>
+                          ))}
+                    </SelectGroup>
+                  </SelectContent>
+                </Select>
+              </div>
+          )}
+        </div>
 
-      {gettingPricesLoading == true ? (
-          <div className="flex items-center justify-center h-full">
-            <Loader2 className="w-6 h-6 animate-spin" />
-          </div>
-      ): (
-          <CardContent>
-            <div className="border border-solid border-default-200 rounded-lg overflow-hidden border-t-0">
-              <Table>
-                <TableHeader className="bg-default-200">
-                  {table.getHeaderGroups().map((headerGroup) => (
-                      <TableRow key={headerGroup.id}>
-                        {headerGroup.headers.map((header) => {
-                          return (
+        {isAdmin && !selectedUserId ? (
+            <div className="text-center text-gray-500 py-10">Please select a user to view their prices.</div>
+        ) : isLoading ? (
+            <div className="flex items-center justify-center h-full">
+              <Loader2 className="w-6 h-6 animate-spin" />
+            </div>
+        ) : (
+            <CardContent>
+              <div className="border border-solid border-default-200 rounded-lg overflow-hidden border-t-0">
+                <Table>
+                  <TableHeader className="bg-default-200">
+                    {table.getHeaderGroups().map((headerGroup) => (
+                        <TableRow key={headerGroup.id}>
+                          {headerGroup.headers.map((header) => (
                               <TableHead className="last:text-start" key={header.id}>
                                 {header.isPlaceholder
                                     ? null
@@ -141,45 +171,45 @@ const TransactionsTable = () => {
                                         header.getContext()
                                     )}
                               </TableHead>
-                          );
-                        })}
-                      </TableRow>
-                  ))}
-                </TableHeader>
-                <TableBody>
-                  {table.getRowModel().rows?.length ? (
-                      table.getRowModel().rows.map((row) => (
-                          <TableRow
-                              key={row.id}
-                              data-state={row.getIsSelected() && "selected"}
+                          ))}
+                        </TableRow>
+                    ))}
+                  </TableHeader>
+                  <TableBody>
+                    {table.getRowModel().rows?.length ? (
+                        table.getRowModel().rows.map((row) => (
+                            <TableRow
+                                key={row.id}
+                                data-state={row.getIsSelected() && "selected"}
+                            >
+                              {row.getVisibleCells().map((cell) => (
+                                  <TableCell key={cell.id} className="h-[75px]">
+                                    {flexRender(
+                                        cell.column.columnDef.cell,
+                                        cell.getContext()
+                                    )}
+                                  </TableCell>
+                              ))}
+                            </TableRow>
+                        ))
+                    ) : (
+                        <TableRow>
+                          <TableCell
+                              colSpan={columns.length}
+                              className="h-24 text-center"
                           >
-                            {row.getVisibleCells().map((cell) => (
-                                <TableCell key={cell.id} className="h-[75px]">
-                                  {flexRender(
-                                      cell.column.columnDef.cell,
-                                      cell.getContext()
-                                  )}
-                                </TableCell>
-                            ))}
-                          </TableRow>
-                      ))
-                  ) : (
-                      <TableRow>
-                        <TableCell
-                            colSpan={columns.length}
-                            className="h-24 text-center"
-                        >
-                          No results.
-                        </TableCell>
-                      </TableRow>
-                  )}
-                </TableBody>
-              </Table>
-            </div>
-          </CardContent>
-      )}
-      <TablePagination table={table} />
-    </Card>
+                            No results.
+                          </TableCell>
+                        </TableRow>
+                    )}
+                  </TableBody>
+                </Table>
+              </div>
+            </CardContent>
+        )}
+        {!isAdmin || selectedUserId ? <TablePagination table={table} /> : null}
+      </Card>
   );
 };
+
 export default TransactionsTable;

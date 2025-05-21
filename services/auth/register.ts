@@ -2,6 +2,7 @@ import AxiosInstance from "@/lib/AxiosInstance";
 
 function useRegister() {
     const registerUser = async (data: any) => {
+        console.log("Submitted data", data);
         try {
             const response = await AxiosInstance.post('/api/Users/register', data);
 
