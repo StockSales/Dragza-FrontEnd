@@ -12,7 +12,7 @@ import {
   getSortedRowModel,
   useReactTable,
 } from "@tanstack/react-table";
-import { columns } from "./columns";
+import { baseColumns } from "./columns";
 
 import {
   Table,
@@ -43,6 +43,9 @@ const TransactionsTable = () => {
 
   // getting all Categories as mounted
   const {data, loading, gettingAllCategories} = getCategories()
+
+  const columns = baseColumns({ refresh: gettingAllCategories });
+
 
   const table = useReactTable({
     data,

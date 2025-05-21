@@ -12,7 +12,7 @@ import {
   getSortedRowModel,
   useReactTable,
 } from "@tanstack/react-table";
-import { columns } from "./columns";
+import { baseColumns } from "./columns";
 import { Input } from "@/components/ui/input";
 
 import {
@@ -60,6 +60,8 @@ const TransactionsTable = () => {
   const [columnVisibility, setColumnVisibility] =
     React.useState<VisibilityState>({});
   const [rowSelection, setRowSelection] = React.useState({});
+
+  const columns = baseColumns({ refresh: () => getAllProducts("false") });
 
   const table = useReactTable({
     data: data ?? [],

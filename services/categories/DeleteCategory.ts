@@ -3,30 +3,31 @@ import AxiosInstance from "@/lib/AxiosInstance";
 
 function useDeleteCategoryById() {
     const [loading, setLoading] = useState(false);
-    const [success, setSuccess] = useState(false);
-    const [error, setError] = useState<string | null>(null);
 
-    const deleteCategoryById = async (id: string | string[] | undefined) => {
+    const deleteCategoryById = async (
+        id: string | string[] | undefined
+    ): Promise<{ success: boolean; error?: string }> => {
         setLoading(true);
-        setError(null);
-        setSuccess(false);
 
-        await AxiosInstance.delete(`/api/Categories/${id}`).then((response) => {
-            if (response.status === 200) {
-                setSuccess(true);
+        try {
+            const response = await AxiosInstance.delete(`/api/Categories/${id}`);
+
+            if (response.status === 200 || response.status === 204) {
+                return { success: true };
             } else {
-                throw new Error("Something went wrong");
+                return { success: false, error: "Something went wrong" };
             }
-        }).catch ((err) => {
-            setError(err.response?.data?.message || err.message);
-            throw new Error(err.response?.data?.message || err.message);
-        }).finally(() => {
+        } catch (err: any) {
+            return {
+                success: false,
+                error: err.response?.data?.message || err.message,
+            };
+        } finally {
             setLoading(false);
-        })
+        }
     };
 
-    return { deleteCategoryById, loading, success, error };
+    return { deleteCategoryById, loading };
 }
 
 export default useDeleteCategoryById;
-

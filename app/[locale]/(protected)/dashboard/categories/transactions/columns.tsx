@@ -8,8 +8,9 @@ import {Button} from "@/components/ui/button";
 import {toast} from "sonner";
 import {CategoryType} from "@/types/category";
 import useDeleteCategoryById from "@/services/categories/DeleteCategory";
+import getCategories from "@/services/categories/getCategories";
 
-export const columns: ColumnDef<CategoryType>[] = [
+export const baseColumns = ({ refresh }: { refresh: () => void }): ColumnDef<CategoryType>[] => [
   {
     accessorKey: "name",
     header: "Category Name",
@@ -36,7 +37,7 @@ export const columns: ColumnDef<CategoryType>[] = [
       const id: string | number | undefined = row.original.id;
         // eslint-disable-next-line react-hooks/rules-of-hooks
         const pathname = usePathname();
-        const { deleteCategoryById, loading, error, success } = useDeleteCategoryById();
+        const { deleteCategoryById, loading } = useDeleteCategoryById();
 
         const getHref = () => {
             if (pathname?.includes("/categories")) {
@@ -65,13 +66,15 @@ export const columns: ColumnDef<CategoryType>[] = [
                             className="text-white px-3 py-1 rounded-md"
                             onClick={async () => {
                                 try {
-                                    await deleteCategoryById(id as string);
+                                    const { success, error } = await deleteCategoryById(id as string);
                                     toast.dismiss(toastId);
+
                                     if (success) {
                                         toast("Category deleted", {
                                             description: "The category was deleted successfully.",
                                         });
-                                    } else if (error) {
+                                        refresh()
+                                    } else {
                                         throw new Error(error);
                                     }
                                 } catch (error) {
