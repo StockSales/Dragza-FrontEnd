@@ -14,9 +14,9 @@ import {formatDateToDMY} from "@/utils";
 
 export const columns: ColumnDef<Orders>[] = [
   {
-    accessorKey: "order",
+    accessorKey: "id",
     header: "Order",
-    cell: ({ row }) => <span>{row.getValue("order")}</span>,
+    cell: ({ row }) => <span>{row.getValue("id")}</span>,
   },
   {
     accessorKey: "pharmacyUserId",
