@@ -77,6 +77,9 @@ const EditCategory = () => {
       toast.success("Category Updated", {
         description: "Category Updated Successfully"
       });
+      setTimeout(() => {
+        router.push('/dashboard/categories');
+      }, 2000);
     } else if (error) {
       toast.error("Something went wrong", {
         description: error || "Please, reload the page"

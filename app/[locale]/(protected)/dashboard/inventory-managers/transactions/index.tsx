@@ -25,18 +25,11 @@ import {
 
 import TablePagination from "./table-pagination";
 import { Card, CardContent } from "@/components/ui/card";
-import GetUsers from "@/services/users/GetAllUsers";
 import {useEffect, useState} from "react";
 import {Loader2} from "lucide-react";
 import useGetUsersByRoleId from "@/services/users/GetUsersByRoleId";
-import {Select, SelectContent, SelectItem, SelectTrigger, SelectValue} from "@/components/ui/select";
-import {SelectItemText, SelectViewport} from "@radix-ui/react-select";
-import {UserRoles} from "@/lib/data";
 
 const TransactionsTable = () => {
-  // getting all users hooks
-  const {data, loading, gettingAllUsers} = GetUsers()
-
   // getting all users by role id
   const {loading: usersLoading, users, getUsersByRoleId} = useGetUsersByRoleId()
 
@@ -48,17 +41,11 @@ const TransactionsTable = () => {
     React.useState<VisibilityState>({});
   const [rowSelection, setRowSelection] = React.useState({});
 
-  const [selectedRole, setSelectedRole] = useState("");
 
-  const handleSelectChange = async (value: string) => {
-    setSelectedRole(value);
-    await getUsersByRoleId(value);
-  };
-
-  const columns = baseColumns({ refresh: () => gettingAllUsers() });
+  const columns = baseColumns({ refresh: () => getUsersByRoleId("1A5A84FB-23C3-4F9B-A122-4C5BC6C5CB2D") });
 
   const table = useReactTable({
-    data: selectedRole ? users ?? [] : data ?? [],
+    data: users ?? [],
     columns,
     onSortingChange: setSorting,
     onColumnFiltersChange: setColumnFilters,
@@ -77,11 +64,11 @@ const TransactionsTable = () => {
   });
 
   useEffect(() => {
-    gettingAllUsers()
+    getUsersByRoleId("1A5A84FB-23C3-4F9B-A122-4C5BC6C5CB2D")
   }, []);
 
   // checking if the data is loading or not
-  if (loading == true && usersLoading == true) {
+  if ( usersLoading == true) {
     return (
         <div className="flex justify-center items-center">
           <Loader2 size={24} />
@@ -91,22 +78,6 @@ const TransactionsTable = () => {
 
   return (
       <div className={"flex flex-col"}>
-        <Select value={selectedRole} onValueChange={handleSelectChange}>
-          <SelectTrigger className="w-[180px] mx-6 mt-3">
-            <SelectValue
-                placeholder="Select Role"
-            />
-          </SelectTrigger>
-          <SelectContent>
-            <SelectViewport>
-              {UserRoles.map((user) => (
-                  <SelectItem key={user.id} value={user.id}>
-                    {user.name}
-                  </SelectItem>
-              ))}
-            </SelectViewport>
-          </SelectContent>
-        </Select>
         <Card className="w-full">
           <div className="flex flex-wrap gap-4 items-center py-4 px-5">
 

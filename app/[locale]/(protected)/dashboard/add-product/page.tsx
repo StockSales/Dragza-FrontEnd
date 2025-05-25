@@ -31,6 +31,7 @@ const AddProduct = () => {
   const [preef, setPref] = useState<string>("")
   const [description, setDescription] = useState<string>("")
   const [categoryId, setCategoryId] = useState<string>("")
+    const [photo, setPhoto] = useState<string>("")
   const [activeIngredientId, setActiveIngredient] = useState<string>("")
 
   // getting all categories
@@ -132,14 +133,26 @@ const AddProduct = () => {
 
             <div className="flex items-center flex-wrap">
               <Label className="w-[150px] flex-none" htmlFor="pref">
-                Pref
+                Company
               </Label>
               <Input
                   id="pref"
                   type="text"
-                  placeholder="Pref"
+                  placeholder="Company"
                   value={preef}
                   onChange={(e) => setPref(e?.target?.value)}
+              />
+            </div>
+            <div className="flex items-center flex-wrap">
+              <Label className="w-[150px] flex-none" htmlFor="pref">
+                Product Photo
+              </Label>
+              <Input
+                  id="pref"
+                  type="file"
+                  placeholder="Pref"
+                  value={photo}
+                  onChange={(e) => setPhoto(e?.target?.value)}
               />
             </div>
 

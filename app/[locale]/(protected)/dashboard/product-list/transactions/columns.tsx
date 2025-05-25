@@ -26,7 +26,7 @@ export const baseColumns = ({ refresh }: { refresh: () => void }): ColumnDef<Pro
   },
   {
     accessorKey: "preef",
-    header: "Pref",
+    header: "Company",
     cell: ({ row }) => {
       const pref = row.original.preef;
       return (
@@ -60,7 +60,7 @@ export const baseColumns = ({ refresh }: { refresh: () => void }): ColumnDef<Pro
     {
     accessorKey: "activeIngredient",
     header: "Active Ingredient",
-    cell: ({ row }) => <span>{row.original.activeIngredient || "N/A"}</span>,
+    cell: ({ row }) => <span>{row.original.activeIngredient || "acetaminophen"}</span>,
   },
   // {
   //   accessorKey: "stock",

@@ -5,7 +5,6 @@ import {
 import {toast} from "sonner";
 import {Button} from "@/components/ui/button";
 import useDeleteUser from "@/services/users/DeleteUser";
-import {ProductType} from "@/types/product";
 
 export type DataProps = {
   id: string | number;
@@ -38,40 +37,40 @@ export const baseColumns = ({ refresh }: { refresh: () => void }): ColumnDef<Dat
       );
     },
   },
-  {
-    accessorKey: "businessName",
-    header: "Business Name",
-    cell: ({ row }) => {
-      const businessName = row.original.businessName;
-      return (
-          <div className="text-sm text-default-600">{businessName}</div>
-      );
-    },
-  },
-  {
-    accessorKey: "phoneNumber",
-    header: "Phone Number",
-    cell: ({ row }) => {
-      const phone = row.original.phoneNumber;
-      return <div className="text-sm text-default-600">{phone}</div>;
-    },
-  },
-  {
-    accessorKey: "isPharmacy",
-    header: "Is Pharmacy?",
-    cell: ({ row }) => {
-      const isPharmacy = row.original.isPharmacy;
-      return <div className="text-sm text-default-600">{isPharmacy === true ? "Yes" : "No"}</div>;
-    },
-  },
-  {
-    accessorKey: "region",
-    header: "Region",
-    cell: ({ row }) => {
-      const region = row.original.region;
-      return <div className="text-sm text-default-600">{region || "N/A"}</div>;
-    },
-  },
+  // {
+  //   accessorKey: "businessName",
+  //   header: "Business Name",
+  //   cell: ({ row }) => {
+  //     const businessName = row.original.businessName;
+  //     return (
+  //         <div className="text-sm text-default-600">{businessName}</div>
+  //     );
+  //   },
+  // },
+  // {
+  //   accessorKey: "phoneNumber",
+  //   header: "Phone Number",
+  //   cell: ({ row }) => {
+  //     const phone = row.original.phoneNumber;
+  //     return <div className="text-sm text-default-600">{phone}</div>;
+  //   },
+  // },
+  // {
+  //   accessorKey: "isPharmacy",
+  //   header: "Is Pharmacy?",
+  //   cell: ({ row }) => {
+  //     const isPharmacy = row.original.isPharmacy;
+  //     return <div className="text-sm text-default-600">{isPharmacy === true ? "Yes" : "No"}</div>;
+  //   },
+  // },
+  // {
+  //   accessorKey: "region",
+  //   header: "Region",
+  //   cell: ({ row }) => {
+  //     const region = row.original.region;
+  //     return <div className="text-sm text-default-600">{region || "N/A"}</div>;
+  //   },
+  // },
   {
     id: "actions",
     accessorKey: "action",
