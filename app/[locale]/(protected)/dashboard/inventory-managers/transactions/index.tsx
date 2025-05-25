@@ -1,6 +1,5 @@
 "use client";
 
-import { useEffect, useState } from "react";
 import * as React from "react";
 import {
   ColumnFiltersState,
@@ -13,11 +12,8 @@ import {
   getSortedRowModel,
   useReactTable,
 } from "@tanstack/react-table";
+import {baseColumns} from "./columns";
 
-import { columns } from "./columns";
-import { Price } from "@/types/price";
-
-import { Input } from "@/components/ui/input";
 import {
   Table,
   TableBody,
@@ -26,65 +22,30 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
+
 import TablePagination from "./table-pagination";
 import { Card, CardContent } from "@/components/ui/card";
-
-import {
-  Select,
-  SelectContent,
-  SelectGroup,
-  SelectItem,
-  SelectLabel,
-  SelectTrigger,
-  SelectValue,
-} from "@/components/ui/select";
-
-import useGettingPricesForInventoryManager from "@/services/productPrice/gettingPricesForInventoryManager";
-import useGettingPricesByInventoryId from "@/services/productPrice/gettingPricesByInventoryId";
+import {useEffect, useState} from "react";
+import {Loader2} from "lucide-react";
 import useGetUsersByRoleId from "@/services/users/GetUsersByRoleId";
 
-import Cookies from "js-cookie";
-import { Loader2 } from "lucide-react";
-
 const TransactionsTable = () => {
-  const userRole = Cookies.get("userRole");
+  // getting all users by role id
+  const {loading: usersLoading, users, getUsersByRoleId} = useGetUsersByRoleId()
 
-  const [selectedUserId, setSelectedUserId] = useState<string | null>(null);
+  const [sorting, setSorting] = React.useState<SortingState>([]);
+  const [columnFilters, setColumnFilters] = React.useState<ColumnFiltersState>(
+    []
+  );
+  const [columnVisibility, setColumnVisibility] =
+    React.useState<VisibilityState>({});
+  const [rowSelection, setRowSelection] = React.useState({});
 
-  // Non-admin prices
-  const {
-    loading: managerLoading,
-    prices: managerPrices,
-    gettingPricesForInventoryManager,
-  } = useGettingPricesForInventoryManager();
 
-  // Admin user prices
-  const {
-    loading: inventoryIdLoading,
-    prices: adminPrices,
-    gettingPricesByInventoryId,
-  } = useGettingPricesByInventoryId();
-
-  // Users for Admin select
-  const {
-    loading: usersLoading,
-    users,
-    getUsersByRoleId,
-  } = useGetUsersByRoleId();
-
-  const [sorting, setSorting] = useState<SortingState>([]);
-  const [columnFilters, setColumnFilters] = useState<ColumnFiltersState>([]);
-  const [columnVisibility, setColumnVisibility] = useState<VisibilityState>({});
-  const [rowSelection, setRowSelection] = useState({});
-
-  const isAdmin = userRole === "Admin";
-
-  // Table Data: Admin → based on selected user, Others → default manager data
-  const tableData = isAdmin ? adminPrices : managerPrices;
-  const isLoading = isAdmin ? inventoryIdLoading : managerLoading;
+  const columns = baseColumns({ refresh: () => getUsersByRoleId("1A5A84FB-23C3-4F9B-A122-4C5BC6C5CB2D") });
 
   const table = useReactTable({
-    data: tableData ?? [],
+    data: users ?? [],
     columns,
     onSortingChange: setSorting,
     onColumnFiltersChange: setColumnFilters,
@@ -103,113 +64,80 @@ const TransactionsTable = () => {
   });
 
   useEffect(() => {
-    if (isAdmin) {
-      getUsersByRoleId("1A5A84FB-23C3-4F9B-A122-4C5BC6C5CB2D");
-    } else {
-      gettingPricesForInventoryManager();
-    }
+    getUsersByRoleId("1A5A84FB-23C3-4F9B-A122-4C5BC6C5CB2D")
   }, []);
 
-  useEffect(() => {
-    if (selectedUserId) {
-      gettingPricesByInventoryId(selectedUserId);
-    }
-  }, [selectedUserId]);
-
-  if (usersLoading) {
+  // checking if the data is loading or not
+  if ( usersLoading == true) {
     return (
-        <div className="flex items-center justify-center h-full">
-          <Loader2 className="w-6 h-6 animate-spin" />
+        <div className="flex justify-center items-center">
+          <Loader2 size={24} />
         </div>
-    );
+    )
   }
 
   return (
-      <Card className="w-full">
-        <div className="flex flex-wrap gap-4 items-center py-4 px-5">
-          {isAdmin && (
-              <div className="flex-1 text-xl flex gap-4 font-medium text-default-900">
-                <Select onValueChange={setSelectedUserId}>
-                  <SelectTrigger className="w-[150px] cursor-pointer">
-                    <SelectValue placeholder="Select Inventory" />
-                  </SelectTrigger>
-                  <SelectContent>
-                    <SelectGroup>
-                      <SelectLabel>Select Inventory</SelectLabel>
-                      {users &&
-                          users.map((user: any) => (
-                              <SelectItem key={user.id} value={user.id}>
-                                {user.userName}
-                              </SelectItem>
-                          ))}
-                    </SelectGroup>
-                  </SelectContent>
-                </Select>
-              </div>
-          )}
-        </div>
+      <div className={"flex flex-col"}>
+        <Card className="w-full">
+          <div className="flex flex-wrap gap-4 items-center py-4 px-5">
 
-        {isAdmin && !selectedUserId ? (
-            <div className="text-center text-gray-500 py-10">Please select a inventory manager to view their prices.</div>
-        ) : isLoading ? (
-            <div className="flex items-center justify-center h-full">
-              <Loader2 className="w-6 h-6 animate-spin" />
-            </div>
-        ) : (
-            <CardContent>
-              <div className="border border-solid border-default-200 rounded-lg overflow-hidden border-t-0">
-                <Table>
-                  <TableHeader className="bg-default-200">
-                    {table.getHeaderGroups().map((headerGroup) => (
-                        <TableRow key={headerGroup.id}>
-                          {headerGroup.headers.map((header) => (
-                              <TableHead className="last:text-start" key={header.id}>
-                                {header.isPlaceholder
-                                    ? null
-                                    : flexRender(
-                                        header.column.columnDef.header,
-                                        header.getContext()
-                                    )}
-                              </TableHead>
-                          ))}
-                        </TableRow>
-                    ))}
-                  </TableHeader>
-                  <TableBody>
-                    {table.getRowModel().rows?.length ? (
-                        table.getRowModel().rows.map((row) => (
-                            <TableRow
-                                key={row.id}
-                                data-state={row.getIsSelected() && "selected"}
-                            >
-                              {row.getVisibleCells().map((cell) => (
-                                  <TableCell key={cell.id} className="h-[75px]">
-                                    {flexRender(
-                                        cell.column.columnDef.cell,
-                                        cell.getContext()
-                                    )}
-                                  </TableCell>
-                              ))}
-                            </TableRow>
-                        ))
-                    ) : (
-                        <TableRow>
-                          <TableCell
-                              colSpan={columns.length}
-                              className="h-24 text-center"
-                          >
-                            No results.
+          </div>
+
+          <CardContent>
+            <div className="border border-solid border-default-200 rounded-lg overflow-hidden border-t-0">
+              <Table>
+                <TableHeader className="bg-default-200">
+                  {table.getHeaderGroups().map((headerGroup) => (
+                    <TableRow key={headerGroup.id}>
+                      {headerGroup.headers.map((header) => {
+                        return (
+                          <TableHead className="last:text-start" key={header.id}>
+                            {header.isPlaceholder
+                              ? null
+                              : flexRender(
+                                header.column.columnDef.header,
+                                header.getContext()
+                              )}
+                          </TableHead>
+                        );
+                      })}
+                    </TableRow>
+                  ))}
+                </TableHeader>
+                <TableBody>
+                  {table.getRowModel().rows?.length ? (
+                    table.getRowModel().rows.map((row) => (
+                      <TableRow
+                        key={row.id}
+                        data-state={row.getIsSelected() && "selected"}
+                      >
+                        {row.getVisibleCells().map((cell) => (
+                          <TableCell key={cell.id} className="h-[75px]">
+                            {flexRender(
+                              cell.column.columnDef.cell,
+                              cell.getContext()
+                            )}
                           </TableCell>
-                        </TableRow>
-                    )}
-                  </TableBody>
-                </Table>
-              </div>
-            </CardContent>
-        )}
-        {!isAdmin || selectedUserId ? <TablePagination table={table} /> : null}
-      </Card>
+                        ))}
+                      </TableRow>
+                    ))
+                  ) : (
+                    <TableRow>
+                      <TableCell
+                        colSpan={columns.length}
+                        className="h-24 text-center"
+                      >
+                        No results.
+                      </TableCell>
+                    </TableRow>
+                  )}
+                </TableBody>
+              </Table>
+            </div>
+          </CardContent>
+          <TablePagination table={table} />
+        </Card>
+      </div>
   );
 };
-
 export default TransactionsTable;

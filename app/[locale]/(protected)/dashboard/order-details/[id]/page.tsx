@@ -16,7 +16,6 @@ import { Icon } from "@/components/ui/icon";
 import { Button } from "@/components/ui/button";
 import { useParams } from "next/navigation";
 import { useEffect, useState } from "react";
-import { data } from "@/app/[locale]/(protected)/dashboard/order-list/transactions/data";
 import { OrderData } from "@/types/order";
 import {toast} from "sonner";
 import {useRouter} from "@/i18n/routing";
@@ -31,10 +30,10 @@ const OrderDetails = () => {
 
 
   // getting the order details
-  const getOrder = (id: string | string[] | undefined) => {
-    const foundOrder = data.find((item) => item.id == id);
-    setOrder(foundOrder);
-  }
+  // const getOrder = (id: string | string[] | undefined) => {
+  //   const foundOrder = data.find((item) => item.id == id);
+  //   setOrder(foundOrder);
+  // }
 
   // handling update the order status
   const updateOrderStatus = (id: string | string[] | undefined) => {
@@ -47,12 +46,12 @@ const OrderDetails = () => {
   }
 
 
-  // dependant data
-  useEffect(() => {
-    if (id) {
-      getOrder(id);
-    }
-  }, [id]);
+  // // dependant data
+  // useEffect(() => {
+  //   if (id) {
+  //     getOrder(id);
+  //   }
+  // }, [id]);
 
 
   return (

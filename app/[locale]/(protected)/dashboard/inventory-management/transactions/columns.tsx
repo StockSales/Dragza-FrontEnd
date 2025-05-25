@@ -29,12 +29,12 @@ export const columns: ColumnDef<Price>[] = [
   },
   {
     accessorKey: "purchasePrice",
-    header: "PurchasePrice",
+    header: "Purchase Price",
     cell: ({ row }) => <span>{row.getValue("purchasePrice")}</span>,
   },
   {
     accessorKey: "salesPrice",
-    header: "SalesPrice",
+    header: "Sales Price",
     cell: ({ row }) => <span>{row.getValue("salesPrice")}</span>,
   },
   {

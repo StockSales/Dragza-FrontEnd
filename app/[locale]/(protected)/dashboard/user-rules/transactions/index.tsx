@@ -12,7 +12,7 @@ import {
   getSortedRowModel,
   useReactTable,
 } from "@tanstack/react-table";
-import { columns } from "./columns";
+import {baseColumns} from "./columns";
 
 import {
   Table,
@@ -54,6 +54,8 @@ const TransactionsTable = () => {
     setSelectedRole(value);
     await getUsersByRoleId(value);
   };
+
+  const columns = baseColumns({ refresh: () => gettingAllUsers() });
 
   const table = useReactTable({
     data: selectedRole ? users ?? [] : data ?? [],

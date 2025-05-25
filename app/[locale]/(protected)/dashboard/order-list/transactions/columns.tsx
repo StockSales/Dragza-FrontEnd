@@ -47,6 +47,13 @@ export const columns: ColumnDef<Orders>[] = [
     },
   },
   {
+    accessorKey: "totalAmount",
+    header: "Order Cost",
+    cell: ({ row }) => {
+      return <span>{row.getValue("totalAmount")}</span>;
+    },
+  },
+  {
     accessorKey: "status",
     header: "Payment Status",
     cell: ({ row }) => {

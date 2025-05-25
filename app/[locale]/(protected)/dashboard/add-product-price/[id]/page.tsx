@@ -23,6 +23,7 @@ function AddProductPrice() {
     // states for product
     const [purchasePrice, setPurchasePrice] = useState<number>(0)
     const [salesPrice, setSalesPrice] = useState<number>(0)
+    const [stock, setStock] = useState<number>(0)
     const [categoryId, setCategoryId] = useState<string>(product?.category?.name as string)
 
     // Creating new Product price
@@ -110,7 +111,7 @@ function AddProductPrice() {
 
                         <div className="flex items-center flex-wrap">
                             <Label className="w-[150px] flex-none" htmlFor="salesPrice">
-                                Purchase Price
+                                Sales Price
                             </Label>
                             <Input
                                 id="salesPrice"
@@ -118,6 +119,19 @@ function AddProductPrice() {
                                 placeholder="sales price"
                                 value={salesPrice}
                                 onChange={(e) => setSalesPrice(parseInt(e?.target?.value))}
+                            />
+                        </div>
+
+                        <div className="flex items-center flex-wrap">
+                            <Label className="w-[150px] flex-none" htmlFor="stock">
+                                Stock
+                            </Label>
+                            <Input
+                                id="stock"
+                                type="number"
+                                placeholder="eg. 100"
+                                value={stock}
+                                onChange={(e) => setStock(parseInt(e?.target?.value))}
                             />
                         </div>
 

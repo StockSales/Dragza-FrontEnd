@@ -62,17 +62,17 @@ export const columns: ColumnDef<DataProps>[] = [
     },
   },
   {
-    accessorKey: "pharmacyDetails",
-    header: "English Name",
+    accessorKey: "phoneNumber",
+    header: "Phone Number",
     cell: ({ row }) => {
       return <span> {row.original?.pharmacyDetails?.phoneNumber || "N/A"}</span>;
     },
   },
   {
-    accessorKey: "isPharmacy",
-    header: "Is Pharmacy",
+    accessorKey: "area",
+    header: "Area",
     cell: ({ row }) => {
-      return <span>{"true"}</span>;
+      return <span>{"Location"}</span>;
     },
   },
   // {

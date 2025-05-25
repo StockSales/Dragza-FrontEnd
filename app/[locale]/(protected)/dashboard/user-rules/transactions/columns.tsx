@@ -5,6 +5,7 @@ import {
 import {toast} from "sonner";
 import {Button} from "@/components/ui/button";
 import useDeleteUser from "@/services/users/DeleteUser";
+import {ProductType} from "@/types/product";
 
 export type DataProps = {
   id: string | number;
@@ -16,7 +17,7 @@ export type DataProps = {
   region: string;
   action: React.ReactNode;
 };
-export const columns: ColumnDef<DataProps>[] = [
+export const baseColumns = ({ refresh }: { refresh: () => void }): ColumnDef<DataProps>[] => [
   {
     accessorKey: "userName",
     header: "Username",
@@ -106,6 +107,7 @@ export const columns: ColumnDef<DataProps>[] = [
                         toast("User deleted", {
                           description: "The user was deleted successfully.",
                         });
+                        refresh();
                       } else {
                         toast("Error", {
                           description: result.error ?? "There was an error deleting the user.",
