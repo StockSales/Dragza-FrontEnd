@@ -31,6 +31,8 @@ import {Button} from "@/components/ui/button";
 import {useEffect, useState} from "react";
 import getCategories from "@/services/categories/getCategories";
 import {Loader2} from "lucide-react";
+import {CategoryType} from "@/types/category";
+import SearchInput from "@/app/[locale]/(protected)/components/SearchInput/SearchInput";
 
 const TransactionsTable = () => {
   const [sorting, setSorting] = React.useState<SortingState>([]);
@@ -46,9 +48,10 @@ const TransactionsTable = () => {
 
   const columns = baseColumns({ refresh: gettingAllCategories });
 
+  const [filteredCategories, setFilteredCategories] = useState<CategoryType[]>([]);
 
   const table = useReactTable({
-    data,
+    data: filteredCategories ?? [],
     columns,
     onSortingChange: setSorting,
     onColumnFiltersChange: setColumnFilters,
@@ -72,6 +75,13 @@ const TransactionsTable = () => {
     gettingAllCategories()
   }, []);
 
+  // filtering data
+    useEffect(() => {
+        if (data) {
+        setFilteredCategories(data);
+        }
+    }, [data]);
+
 
   if (loading === true) {
     return (
@@ -85,6 +95,7 @@ const TransactionsTable = () => {
   return (
     <div className="w-full">
       <div className="flex flex-wrap justify-end items-center py-4 px-6 border-b border-solid border-default-200">
+        <SearchInput data={data ?? []} setFilteredData={setFilteredCategories} filterKey={"name"}/>
         <div className="#flex-none">
           <div className="flex items-center gap-4 flex-wrap">
             <Link href="/dashboard/add-category">

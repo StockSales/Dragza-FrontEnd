@@ -28,6 +28,7 @@ import { Card, CardContent } from "@/components/ui/card";
 import {useEffect, useState} from "react";
 import {Loader2} from "lucide-react";
 import useGetUsersByRoleId from "@/services/users/GetUsersByRoleId";
+import SearchInput from "@/app/[locale]/(protected)/components/SearchInput/SearchInput";
 
 const TransactionsTable = () => {
   // getting all users by role id
@@ -44,8 +45,10 @@ const TransactionsTable = () => {
 
   const columns = baseColumns({ refresh: () => getUsersByRoleId("1A5A84FB-23C3-4F9B-A122-4C5BC6C5CB2D") });
 
+  const [filteredInventoryManagers, setFilteredInventoryManagers] = useState<any[]>([]);
+
   const table = useReactTable({
-    data: users ?? [],
+    data: filteredInventoryManagers ?? [],
     columns,
     onSortingChange: setSorting,
     onColumnFiltersChange: setColumnFilters,
@@ -67,6 +70,12 @@ const TransactionsTable = () => {
     getUsersByRoleId("1A5A84FB-23C3-4F9B-A122-4C5BC6C5CB2D")
   }, []);
 
+  useEffect(() => {
+    if (users) {
+      setFilteredInventoryManagers(users);
+    }
+  }, []);
+
   // checking if the data is loading or not
   if ( usersLoading == true) {
     return (
@@ -79,7 +88,13 @@ const TransactionsTable = () => {
   return (
       <div className={"flex flex-col"}>
         <Card className="w-full">
-          <div className="flex flex-wrap gap-4 items-center py-4 px-5">
+
+          <div className="px-5 py-4">
+            <SearchInput
+                data={users}
+                setFilteredData={setFilteredInventoryManagers}
+                filterKey={"userName"}
+            />
 
           </div>
 

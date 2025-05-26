@@ -32,6 +32,7 @@ import useGetUsersByRoleId from "@/services/users/GetUsersByRoleId";
 import {Select, SelectContent, SelectItem, SelectTrigger, SelectValue} from "@/components/ui/select";
 import {SelectItemText, SelectViewport} from "@radix-ui/react-select";
 import {UserRoles} from "@/lib/data";
+import SearchInput from "@/app/[locale]/(protected)/components/SearchInput/SearchInput";
 
 const TransactionsTable = () => {
   // getting all users hooks
@@ -48,17 +49,12 @@ const TransactionsTable = () => {
     React.useState<VisibilityState>({});
   const [rowSelection, setRowSelection] = React.useState({});
 
-  const [selectedRole, setSelectedRole] = useState("");
-
-  const handleSelectChange = async (value: string) => {
-    setSelectedRole(value);
-    await getUsersByRoleId(value);
-  };
-
   const columns = baseColumns({ refresh: () => gettingAllUsers() });
 
+  const [filteredUsers, setFilteredUsers] = useState<any[]>([]);
+
   const table = useReactTable({
-    data: selectedRole ? users ?? [] : data ?? [],
+    data: filteredUsers ?? [],
     columns,
     onSortingChange: setSorting,
     onColumnFiltersChange: setColumnFilters,
@@ -80,6 +76,10 @@ const TransactionsTable = () => {
     gettingAllUsers()
   }, []);
 
+  useEffect(() => {
+    if (data) setFilteredUsers(data)
+  }, []);
+
   // checking if the data is loading or not
   if (loading == true && usersLoading == true) {
     return (
@@ -91,27 +91,14 @@ const TransactionsTable = () => {
 
   return (
       <div className={"flex flex-col"}>
-        <Select value={selectedRole} onValueChange={handleSelectChange}>
-          <SelectTrigger className="w-[180px] mx-6 mt-3">
-            <SelectValue
-                placeholder="Select Role"
-            />
-          </SelectTrigger>
-          <SelectContent>
-            <SelectViewport>
-              {UserRoles.map((user) => (
-                  <SelectItem key={user.id} value={user.id}>
-                    {user.name}
-                  </SelectItem>
-              ))}
-            </SelectViewport>
-          </SelectContent>
-        </Select>
+        <div className="px-5 py-4">
+          <SearchInput
+            data={data ?? []}
+            filterKey={"userName"}
+            setFilteredData={setFilteredUsers}
+          />
+        </div>
         <Card className="w-full">
-          <div className="flex flex-wrap gap-4 items-center py-4 px-5">
-
-          </div>
-
           <CardContent>
             <div className="border border-solid border-default-200 rounded-lg overflow-hidden border-t-0">
               <Table>
