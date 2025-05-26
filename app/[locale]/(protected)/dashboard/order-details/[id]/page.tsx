@@ -19,6 +19,7 @@ import { useEffect, useState } from "react";
 import { OrderData } from "@/types/order";
 import {toast} from "sonner";
 import {useRouter} from "@/i18n/routing";
+import {OrderStatusLabel, UserRoleLabel} from "@/enum";
 
 const OrderDetails = () => {
   // state for the order data
@@ -77,12 +78,11 @@ const OrderDetails = () => {
                 <SelectContent>
                   <SelectGroup>
                     <SelectLabel>Status</SelectLabel>
-                    <SelectItem value="approve">Approve</SelectItem>
-                    <SelectItem value="prepare">Prepare</SelectItem>
-                    <SelectItem value="ship">Ship</SelectItem>
-                    <SelectItem value="reject">Reject</SelectItem>
-                    <SelectItem value="deliver">Deliver</SelectItem>
-                    <SelectItem value="complete">Complete</SelectItem>
+                    {Object.entries(OrderStatusLabel).map(([id, label]) => (
+                        <SelectItem key={id} value={id}>
+                          {label}
+                        </SelectItem>
+                    ))}
                   </SelectGroup>
                 </SelectContent>
               </Select>

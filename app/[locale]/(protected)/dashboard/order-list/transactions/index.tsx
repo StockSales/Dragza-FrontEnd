@@ -38,8 +38,10 @@ import {
 } from "@/components/ui/select";
 import {useRouter} from "@/i18n/routing";
 import useGettingAllOrders from "@/services/Orders/gettingAllOrders";
-import {useEffect} from "react";
+import {useEffect, useState} from "react";
 import {Loader2} from "lucide-react";
+import {Orders} from "@/types/orders";
+import SearchInput from "@/app/[locale]/(protected)/components/SearchInput/SearchInput";
 
 const TransactionsTable = () => {
   // getting all orders
@@ -50,9 +52,10 @@ const TransactionsTable = () => {
   const [columnFilters, setColumnFilters] = React.useState<ColumnFiltersState>([]);
   const [columnVisibility, setColumnVisibility] = React.useState<VisibilityState>({});
   const [rowSelection, setRowSelection] = React.useState({});
+  const [filteredOrders, setFilteredOrders] = useState<Orders[]>([])
 
   const table = useReactTable({
-    data: orders ?? [],
+    data: filteredOrders ?? [],
     columns,
     onSortingChange: setSorting,
     onColumnFiltersChange: setColumnFilters,
@@ -75,9 +78,19 @@ const TransactionsTable = () => {
     gettingAllOrders()
   }, []);
 
+  // dependent data
+  useEffect(() => {
+    if (orders) setFilteredOrders(orders)
+  }, [orders]);
+
   return (
       <Card className="w-full">
-        <div className="flex flex-wrap gap-4 items-center py-4 px-5">
+        <div className="px-5 py-4">
+          <SearchInput
+              data={orders ?? []}
+              setFilteredData={setFilteredOrders}
+              filterKey="id"
+          />
         </div>
 
         {loading == true ? (

@@ -20,6 +20,7 @@ import { data } from "@/app/[locale]/(protected)/dashboard/return-list/transacti
 import {toast} from "sonner";
 import {useRouter} from "@/i18n/routing";
 import {ReturnType} from "@/types/return";
+import {ReturnStatusLabel} from "@/enum";
 
 const ReturnDetails = () => {
   // state for the order data
@@ -78,9 +79,11 @@ const ReturnDetails = () => {
                 <SelectContent>
                   <SelectGroup>
                     <SelectLabel>Status</SelectLabel>
-                    <SelectItem value="paid">Paid</SelectItem>
-                    <SelectItem value="due">Due</SelectItem>
-                    <SelectItem value="canceled">Canceled</SelectItem>
+                    {Object.entries(ReturnStatusLabel).map(([id, label]) => (
+                        <SelectItem key={id} value={id}>
+                          {label}
+                        </SelectItem>
+                    ))}
                   </SelectGroup>
                 </SelectContent>
               </Select>

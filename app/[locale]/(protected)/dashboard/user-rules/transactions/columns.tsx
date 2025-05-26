@@ -1,11 +1,13 @@
 import { ColumnDef } from "@tanstack/react-table";
 import {
+  SquarePen,
   Trash2,
 } from "lucide-react";
 import {toast} from "sonner";
 import {Button} from "@/components/ui/button";
 import useDeleteUser from "@/services/users/DeleteUser";
 import {ProductType} from "@/types/product";
+import {Link} from "@/i18n/routing";
 
 export type DataProps = {
   id: string | number;
@@ -81,6 +83,15 @@ export const baseColumns = ({ refresh }: { refresh: () => void }): ColumnDef<Dat
       // getting the selected user Id
       const id: string | number = row.original.id;
       const { deleteUser, loading, isDeleted, error } = useDeleteUser();
+      const pathname = window.location.pathname;
+      const userRole = localStorage.getItem('userRole');
+
+      const getHref = () => {
+        if (pathname?.includes('/user-rules')) {
+          return `/dashboard/edit-user/${row.original.id}`;
+        }
+        return `/dashboard/edit-user/${row.original.id}`
+      };
 
       const handleDelete = () => {
         const toastId = toast("Delete User", {
@@ -124,6 +135,12 @@ export const baseColumns = ({ refresh }: { refresh: () => void }): ColumnDef<Dat
 
       return (
           <div className="flex items-center gap-1">
+            <Link
+                href={getHref()}
+                className="flex items-center p-2 border-b text-info hover:text-info-foreground bg-info/40 hover:bg-info duration-200 transition-all rounded-full"
+            >
+              <SquarePen className="w-4 h-4" />
+            </Link>
             <div
                 onClick={handleDelete}
                 className="flex items-center p-2 text-destructive bg-destructive/40 duration-200 transition-all hover:bg-destructive/80 hover:text-destructive-foreground rounded-full cursor-pointer"

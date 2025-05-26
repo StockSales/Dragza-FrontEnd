@@ -44,6 +44,9 @@ import {Loader2} from "lucide-react";
 import {toast} from "sonner";
 import GetCategories from "@/services/categories/getCategories";
 import Cookies from "js-cookie";
+import {ProductType} from "@/types/product";
+import product from "@/app/[locale]/(protected)/dashboard/dash-ecom/components/product";
+import SearchInput from "@/app/[locale]/(protected)/components/SearchInput/SearchInput";
 
 const TransactionsTable = () => {
   const userRole = Cookies.get("userRole");
@@ -63,8 +66,10 @@ const TransactionsTable = () => {
 
   const columns = baseColumns({ refresh: () => getAllProducts("false") });
 
+  const [filteredProducts, setFilteredProducts] = useState<ProductType[]>([])
+
   const table = useReactTable({
-    data: data ?? [],
+    data: filteredProducts ?? [],
     columns,
     onSortingChange: setSorting,
     onColumnFiltersChange: setColumnFilters,
@@ -92,6 +97,11 @@ const TransactionsTable = () => {
     getAllProducts(includeDeleted)
   }, [includeDeleted]);
 
+  // dependent data
+  useEffect(() => {
+    if (data) setFilteredProducts(data)
+  }, [data]);
+
   if (categoriesLoading == true) {
     return (
       <div className="flex items-center justify-center h-full">
@@ -112,6 +122,11 @@ const TransactionsTable = () => {
       <div className="flex flex-wrap justify-end items-center py-4 px-6 border-b border-solid border-default-200">
         <div className="#flex-none">
           <div className="flex items-center gap-4 flex-wrap">
+            <SearchInput
+              data={data ?? []}
+              filterKey={"name"}
+              setFilteredData={setFilteredProducts}
+            />
             {userRole == "Admin" && (
               <Link href="/dashboard/add-product">
                 <Button size={"md"} variant="outline" color="secondary">

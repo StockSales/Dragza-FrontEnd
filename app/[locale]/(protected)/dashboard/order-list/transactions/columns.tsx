@@ -111,63 +111,63 @@ export const columns: ColumnDef<Orders>[] = [
   //     );
   //   }
   // },
-  // {
-  //   id: "actions",
-  //   accessorKey: "action",
-  //   header: "Actions",
-  //   enableHiding: false,
-  //   cell: ({ row }) => {
-  //
-  //     const deleteOrder = (id: any) => {
-  //       return () => {
-  //         toast.success("Order Deleted", {
-  //           description: "Order Deleted Successfully",
-  //           action: (
-  //             <div className="flex justify-end mx-auto items-center my-auto gap-2">
-  //               <Button
-  //                 size="sm"
-  //                 variant="shadow"
-  //                 onClick={() => toast.dismiss()}
-  //                 className="text-white px-3 py-1 rounded-md"
-  //               >
-  //                 Cancel
-  //               </Button>
-  //               <Button
-  //                 size="sm"
-  //                 variant="shadow"
-  //                 onClick={() => {
-  //                   console.log("deleted order", id);
-  //                   toast.dismiss(); // Dismiss confirmation toast
-  //                   toast("Order deleted", {
-  //                     description: "The order was deleted successfully.",
-  //                   });
-  //                 }}
-  //                 className="text-white px-3 py-1 rounded-md"
-  //               >
-  //                 Confirm
-  //               </Button>
-  //             </div>
-  //           )
-  //         });
-  //       };
-  //     }
-  //
-  //     return (
-  //       <div className="flex items-center gap-1">
-  //         <Link
-  //           href={`/dashboard/order-details/${row.original.id}`}
-  //           className="flex items-center p-2 border-b text-warning hover:text-warning-foreground bg-warning/20 hover:bg-warning duration-200 transition-all rounded-full cursor-pointer"
-  //         >
-  //           <Eye className="w-4 h-4" />
-  //         </Link>
-  //         <div
-  //             onClick={deleteOrder(row.original.id)}
-  //             className="flex items-center p-2 text-destructive bg-destructive/40 duration-200 transition-all hover:bg-destructive/80 hover:text-destructive-foreground rounded-full cursor-pointer"
-  //         >
-  //           <Trash2 className="w-4 h-4" />
-  //         </div>
-  //       </div>
-  //     );
-  //   },
-  // },
+  {
+    id: "actions",
+    accessorKey: "action",
+    header: "Actions",
+    enableHiding: false,
+    cell: ({ row }) => {
+
+      // const deleteOrder = (id: any) => {
+      //   return () => {
+      //     toast.success("Order Deleted", {
+      //       description: "Order Deleted Successfully",
+      //       action: (
+      //         <div className="flex justify-end mx-auto items-center my-auto gap-2">
+      //           <Button
+      //             size="sm"
+      //             variant="shadow"
+      //             onClick={() => toast.dismiss()}
+      //             className="text-white px-3 py-1 rounded-md"
+      //           >
+      //             Cancel
+      //           </Button>
+      //           <Button
+      //             size="sm"
+      //             variant="shadow"
+      //             onClick={() => {
+      //               console.log("deleted order", id);
+      //               toast.dismiss(); // Dismiss confirmation toast
+      //               toast("Order deleted", {
+      //                 description: "The order was deleted successfully.",
+      //               });
+      //             }}
+      //             className="text-white px-3 py-1 rounded-md"
+      //           >
+      //             Confirm
+      //           </Button>
+      //         </div>
+      //       )
+      //     });
+      //   };
+      // }
+
+      return (
+        <div className="flex items-center gap-1">
+          <Link
+            href={`/dashboard/order-details/${row.original.id}`}
+            className="flex items-center p-2 border-b text-warning hover:text-warning-foreground bg-warning/20 hover:bg-warning duration-200 transition-all rounded-full cursor-pointer"
+          >
+            <Eye className="w-4 h-4" />
+          </Link>
+          {/*<div*/}
+          {/*    onClick={deleteOrder(row.original.id)}*/}
+          {/*    className="flex items-center p-2 text-destructive bg-destructive/40 duration-200 transition-all hover:bg-destructive/80 hover:text-destructive-foreground rounded-full cursor-pointer"*/}
+          {/*>*/}
+          {/*  <Trash2 className="w-4 h-4" />*/}
+          {/*</div>*/}
+        </div>
+      );
+    },
+  },
 ];
