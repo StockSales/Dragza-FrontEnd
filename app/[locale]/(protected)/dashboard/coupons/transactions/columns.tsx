@@ -123,7 +123,18 @@ export const baseColumns = (): ColumnDef<Coupon>[] =>
             cell: ({ row }) => {
                 const getHref = () => {
                     const id = row.original.id;
-                    return `/dashboard/edit-coupons/${id}`;
+                    return `/dashboard/edit-coupon/${id}`;
+                };
+
+                const handleDelete = (id: string | number | undefined) => {
+                    if (!id) return;
+                    // TODO: handle delete here
+                    toast.success("Coupon Deleted", {
+                        description: "Coupon Deleted Successfully"
+                    })
+                    setTimeout(() => {
+                        toast.dismiss();
+                    }, 2000);
                 };
 
                 return (
@@ -135,7 +146,11 @@ export const baseColumns = (): ColumnDef<Coupon>[] =>
                             <SquarePen className="w-4 h-4" />
                         </Link>
                         <div
-                            className="flex items-center p-2 text-destructive bg-destructive/40 duration-200 transition-all hover:bg-destructive/80 hover:text-destructive-foreground rounded-full"
+                            className="flex items-center p-2 text-destructive bg-destructive/40 duration-200 transition-all hover:bg-destructive/80 hover:text-destructive-foreground rounded-full cursor-pointer"
+                            onClick={() => {
+                                const id = row.original.id;
+                                handleDelete(id);
+                            }}
                         >
                             <Trash2 className="w-4 h-4" />
                         </div>

@@ -29,8 +29,12 @@ import { CardContent } from "@/components/ui/card";
 import {useEffect, useState} from "react";
 import SearchInput from "@/app/[locale]/(protected)/components/SearchInput/SearchInput";
 import {coupons} from "@/app/[locale]/(protected)/dashboard/coupons/transactions/data";
+import {Button} from "@/components/ui/button";
+import {useRouter} from "@/i18n/routing";
 
 const TransactionsTable = () => {
+  const router = useRouter()
+
   const [sorting, setSorting] = React.useState<SortingState>([]);
   const [columnFilters, setColumnFilters] = React.useState<ColumnFiltersState>(
     []
@@ -75,6 +79,15 @@ const TransactionsTable = () => {
               filterKey={"code"}
               setFilteredData={setFilteredCoupons}
             />
+            <Button
+              variant="outline"
+              className="ml-2"
+              onClick={() => {
+                router.push("/dashboard/add-coupon");
+              }}
+            >
+              Add Coupon
+            </Button>
           </div>
         </div>
       </div>
