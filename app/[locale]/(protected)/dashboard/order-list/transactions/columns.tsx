@@ -3,12 +3,9 @@ import {
   Eye,
   Trash2,
 } from "lucide-react";
-import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Badge } from "@/components/ui/badge";
 import { cn } from "@/lib/utils";
-import {Link, useRouter} from '@/i18n/routing';
-import {toast} from "sonner";
-import {Button} from "@/components/ui/button";
+import {Link} from '@/i18n/routing';
 import {Orders} from "@/types/orders";
 import {formatDateToDMY} from "@/utils";
 
@@ -160,12 +157,12 @@ export const columns: ColumnDef<Orders>[] = [
           >
             <Eye className="w-4 h-4" />
           </Link>
-          {/*<div*/}
-          {/*    onClick={deleteOrder(row.original.id)}*/}
-          {/*    className="flex items-center p-2 text-destructive bg-destructive/40 duration-200 transition-all hover:bg-destructive/80 hover:text-destructive-foreground rounded-full cursor-pointer"*/}
-          {/*>*/}
-          {/*  <Trash2 className="w-4 h-4" />*/}
-          {/*</div>*/}
+          <Link
+              href={`/dashboard/resign-order/${row.original.id}`}
+              className="flex items-center p-2 text-destructive bg-destructive/40 duration-200 transition-all hover:bg-destructive/80 hover:text-destructive-foreground rounded-full cursor-pointer"
+          >
+            <Trash2 className="w-4 h-4" />
+          </Link>
         </div>
       );
     },
