@@ -3,12 +3,9 @@ import {
   Eye,
   Trash2,
 } from "lucide-react";
-import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Badge } from "@/components/ui/badge";
 import { cn } from "@/lib/utils";
-import {Link, useRouter} from '@/i18n/routing';
-import {toast} from "sonner";
-import {Button} from "@/components/ui/button";
+import {Link} from '@/i18n/routing';
 import {Orders} from "@/types/orders";
 import {formatDateToDMY} from "@/utils";
 

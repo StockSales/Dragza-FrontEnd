@@ -1,40 +1,5 @@
 import {BillSummaryProps, OrderItem} from "@/types/orders";
 
-const rows = [
-  {
-    item: "Headphone",
-    tax: "$0.00",
-    delivery:"home delivery",
-    qty: 2,
-    price: "$600.25",
-    total: "$1200.50",
-  },
-  {
-    item: "Headphone",
-    tax: "$0.00",
-    delivery:"home delivery",
-    qty: 2,
-    price: "$600.25",
-    total: "$1200.50",
-  },
-  {
-    item: "Headphone",
-    tax: "$0.00",
-    delivery:"home delivery",
-    qty: 2,
-    price: "$600.25",
-    total: "$1200.50",
-  },
-  {
-    item: "Headphone",
-    tax: "$0.00",
-    delivery:"home delivery",
-    qty: 2,
-    price: "$600.25",
-    total: "$1200.50",
-  },
-];
-
 const BillSummary: React.FC<BillSummaryProps> = ({ items, deletedItems, defaultItems }) => {
   const activeItems: OrderItem[] = items.filter((item: OrderItem) => !deletedItems.includes(item.id));
   const subtotal: number = activeItems.reduce((sum: number, item: OrderItem) => sum + item.total, 0);
