@@ -24,6 +24,7 @@ function AddProductPrice() {
     const [purchasePrice, setPurchasePrice] = useState<number>(0)
     const [salesPrice, setSalesPrice] = useState<number>(0)
     const [stock, setStock] = useState<number>(0)
+    const [discount, setDiscount] = useState<number>(0)
     const [categoryId, setCategoryId] = useState<string>(product?.category?.name as string)
 
     // Creating new Product price
@@ -38,6 +39,14 @@ function AddProductPrice() {
         }
         if (!salesPrice) {
             toast.error("Validation Error", { description: "Sales Price is required." });
+            return;
+        }
+        if (!stock) {
+            toast.error("Validation Error", { description: "Stock is required." });
+            return;
+        }
+        if (!discount) {
+            toast.error("Validation Error", { description: "Discount is required." });
             return;
         }
 
@@ -133,6 +142,24 @@ function AddProductPrice() {
                                 value={stock}
                                 onChange={(e) => setStock(parseInt(e?.target?.value))}
                             />
+                        </div>
+                        <div className="flex items-center">
+                            <Label className="w-[150px] flex-none" htmlFor="discount">
+                                Discount
+                            </Label>
+                            <div className="relative w-full ">
+                                <Input
+                                    id="discount"
+                                    type="number"
+                                    placeholder="eg. 100"
+                                    value={stock}
+                                    onChange={(e) => setDiscount(parseInt(e.target.value))}
+                                    className="pr-10" // padding-right for icon space
+                                />
+                                <span className="absolute inset-y-0 right-3 flex items-center pointer-events-none text-gray-500 text-sm">
+      %
+    </span>
+                            </div>
                         </div>
 
                     </CardContent>

@@ -19,11 +19,11 @@ import { useEffect, useState } from "react";
 import { OrderData } from "@/types/order";
 import {toast} from "sonner";
 import {useRouter} from "@/i18n/routing";
-import {OrderStatusLabel, UserRoleLabel} from "@/enum";
+import {OrderStatus, OrderStatusLabel, UserRoleLabel} from "@/enum";
 
 const OrderDetails = () => {
   // state for the order data
-  const [order, setOrder] = useState<OrderData | undefined>(undefined);
+  const [order, setOrder] = useState<any>(undefined);
   const params = useParams();
   const router = useRouter();
 
@@ -54,6 +54,9 @@ const OrderDetails = () => {
   //   }
   // }, [id]);
 
+  useEffect(() => {
+    console.log(order)
+  }, [order]);
 
   return (
       <Card>
@@ -65,11 +68,10 @@ const OrderDetails = () => {
             <div className="flex items-center flex-wrap gap-4">
               <Label className="w-[150px] flex-none">Order Status: </Label>
               <Select
-                  value={order?.order_status}
-                  onValueChange={(value: "approve" | "prepare" | "reject" | "ship" | "deliver" | "complete") => {
-                    if (order) {
-                      setOrder({ ...order, order_status: value });
-                    }
+                  value={order?.order_status?.toString()}
+                  onValueChange={(value: string) => {
+                    const numericValue = Number(value) as OrderStatus;
+                    setOrder({ ...order, status: numericValue });
                   }}
               >
                 <SelectTrigger className="flex-1 cursor-pointer">
@@ -78,11 +80,13 @@ const OrderDetails = () => {
                 <SelectContent>
                   <SelectGroup>
                     <SelectLabel>Status</SelectLabel>
-                    {Object.entries(OrderStatusLabel).map(([id, label]) => (
-                        <SelectItem key={id} value={id}>
-                          {label}
-                        </SelectItem>
-                    ))}
+                    {Object.values(OrderStatus)
+                        .filter((value) => typeof value === "number")
+                        .map((status) => (
+                            <SelectItem key={status} value={status.toString()}>
+                              {OrderStatusLabel[status as OrderStatus]}
+                            </SelectItem>
+                        ))}
                   </SelectGroup>
                 </SelectContent>
               </Select>
