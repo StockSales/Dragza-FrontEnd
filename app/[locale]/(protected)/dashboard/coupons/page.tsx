@@ -1,8 +1,11 @@
 import React from 'react';
+import TransactionsTable from "@/app/[locale]/(protected)/dashboard/coupons/transactions";
 
 function Coupons() {
     return (
-        <div></div>
+        <div>
+            <TransactionsTable/>
+        </div>
     );
 }
 

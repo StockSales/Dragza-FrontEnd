@@ -107,6 +107,13 @@ export function getMenuList(pathname: string, t: any, role: string, locale: stri
               icon: "heroicons:document-text",
             },
             {
+              href: "/dashboard/coupons",
+              label: t("coupons"),
+              active: pathname === "/dashboard/coupons",
+              children: [],
+              icon: "heroicons:document-text",
+            },
+            {
               href: "/dashboard/return-list",
               label: t("returnList"),
               active: pathname === "/dashboard/return-list",
