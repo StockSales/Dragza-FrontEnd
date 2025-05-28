@@ -45,8 +45,8 @@ function AddProductPrice() {
             toast.error("Validation Error", { description: "Stock is required." });
             return;
         }
-        if (!categoryId) {
-            toast.error("Validation Error", { description: "Category is required." });
+        if (!discount) {
+            toast.error("Validation Error", { description: "Discount is required." });
             return;
         }
 

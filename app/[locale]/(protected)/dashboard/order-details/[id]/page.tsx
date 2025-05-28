@@ -54,6 +54,9 @@ const OrderDetails = () => {
   //   }
   // }, [id]);
 
+  useEffect(() => {
+    console.log(order)
+  }, [order]);
 
   return (
       <Card>
@@ -65,11 +68,11 @@ const OrderDetails = () => {
             <div className="flex items-center flex-wrap gap-4">
               <Label className="w-[150px] flex-none">Order Status: </Label>
               <Select
-                  value={order?.order_status}
-                  onValueChange={(value: "approve" | "prepare" | "reject" | "ship" | "deliver" | "complete") => {
-                    if (order) {
-                      setOrder({ ...order, order_status: value });
-                    }
+                  value={order?.order_status?.toString()} // convert enum to string
+                  onValueChange={(value: string) => {
+                    const numericValue = Number(value) as OrderStatus;
+                    setOrder({ ...order, order_status: numericValue });
+                    console.log('Updated order:', { ...order, order_status: numericValue });
                   }}
               >
                 <SelectTrigger className="flex-1 cursor-pointer">
@@ -78,8 +81,8 @@ const OrderDetails = () => {
                 <SelectContent>
                   <SelectGroup>
                     <SelectLabel>Status</SelectLabel>
-                    {Object.entries(OrderStatusLabel).map(([id, label]) => (
-                        <SelectItem key={id} value={id}>
+                    {Object.entries(OrderStatusLabel).map(([key, label]) => (
+                        <SelectItem key={key} value={key}>
                           {label}
                         </SelectItem>
                     ))}
