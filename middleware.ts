@@ -107,6 +107,10 @@ export default async function middleware(request: NextRequest) {
   return response;
 }
 
+// Updated config to exclude static assets
 export const config = {
-  matcher: ['/((?!api|_next/static|_next/image|_next/scripts|favicon.ico).*)'],
+  matcher: [
+    // Exclude static files and assets
+    '/((?!api|_next/static|_next/image|_next/scripts|favicon.ico|.*\\.(?:png|jpg|jpeg|gif|webp|svg|ico|css|js|woff|woff2|ttf|eot|pdf|zip|rar|7z|mp4|mp3|avi|mov|wmv|flv|webm|ogg|wav)$).*)',
+  ],
 };

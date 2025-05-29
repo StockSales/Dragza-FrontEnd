@@ -24,6 +24,7 @@ const EditModule = () => {
 
   useEffect(() => {
     if (id) {
+      // eslint-disable-next-line @next/next/no-assign-module-variable
       const module = modules.find((m) => m.id === id);
       if (module) {
         setName(module.name);

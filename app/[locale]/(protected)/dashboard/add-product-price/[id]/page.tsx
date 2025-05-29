@@ -152,7 +152,7 @@ function AddProductPrice() {
                                     id="discount"
                                     type="number"
                                     placeholder="eg. 100"
-                                    value={stock}
+                                    value={discount}
                                     onChange={(e) => setDiscount(parseInt(e.target.value))}
                                     className="pr-10" // padding-right for icon space
                                 />
