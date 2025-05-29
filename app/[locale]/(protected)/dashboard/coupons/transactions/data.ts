@@ -1,7 +1,7 @@
 // Define the Coupon type
 type CouponType = "value" | "percentage";
 
-interface Coupon {
+export interface Coupon {
     id: number;
     code: string;
     type: CouponType;

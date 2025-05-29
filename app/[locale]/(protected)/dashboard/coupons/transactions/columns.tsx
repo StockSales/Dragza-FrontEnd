@@ -7,6 +7,7 @@ import {toast} from "sonner";
 import {Button} from "@/components/ui/button";
 import {Link} from "@/i18n/routing";
 import {SquarePen, Trash2} from "lucide-react";
+import {Coupon} from "@/app/[locale]/(protected)/dashboard/coupons/transactions/data";
 
 export const baseColumns = (): ColumnDef<Coupon>[] =>
     [
