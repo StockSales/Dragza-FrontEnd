@@ -46,8 +46,7 @@ import useGetUsersByRoleId from "@/services/users/GetUsersByRoleId";
 import Cookies from "js-cookie";
 import { Loader2 } from "lucide-react";
 import {ExportCSVButton} from "@/components/partials/export-csv/ExportCSVButton";
-import {CSVUploadModal, ImportCSVButton} from "@/components/partials/ImportCsv/ImportCsv";
-import {toast} from "sonner";
+import {CSVUploadModal} from "@/components/partials/ImportCsv/ImportCsv";
 
 const TransactionsTable = () => {
   const userRole = Cookies.get("userRole");
