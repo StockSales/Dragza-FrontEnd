@@ -26,15 +26,15 @@ import {
 import TablePagination from "./table-pagination";
 
 import { CardContent } from "@/components/ui/card";
-import {useEffect, useState} from "react";
-import SearchInput from "@/app/[locale]/(protected)/components/SearchInput/SearchInput";
-import {Coupon, coupons} from "@/app/[locale]/(protected)/dashboard/coupons/transactions/data";
+import { Link } from '@/i18n/routing';
 import {Button} from "@/components/ui/button";
-import {useRouter} from "@/i18n/routing";
+import {useEffect, useState} from "react";
+import {Loader2} from "lucide-react";
+import SearchInput from "@/app/[locale]/(protected)/components/SearchInput/SearchInput";
+import {ModuleType} from "@/types/module";
+import {modules} from "@/app/[locale]/(protected)/dashboard/modules/transactions/data";
 
 const TransactionsTable = () => {
-  const router = useRouter()
-
   const [sorting, setSorting] = React.useState<SortingState>([]);
   const [columnFilters, setColumnFilters] = React.useState<ColumnFiltersState>(
     []
@@ -42,15 +42,16 @@ const TransactionsTable = () => {
   const [columnVisibility, setColumnVisibility] =
     React.useState<VisibilityState>({});
   const [rowSelection, setRowSelection] = React.useState({});
-
-  const columns = baseColumns();
   const loading = false;
 
-  const [filteredCoupons, setFilteredCoupons] = useState<Coupon[]>([]);
+  // getting all Modules as mounted
 
+  const columns = baseColumns();
+
+  const [filteredModule, setFilteredModule] = useState<ModuleType[]>([]);
 
   const table = useReactTable({
-    data: filteredCoupons ?? [],
+    data: filteredModule ?? [],
     columns,
     onSortingChange: setSorting,
     onColumnFiltersChange: setColumnFilters,
@@ -69,28 +70,38 @@ const TransactionsTable = () => {
   });
 
 
+  // filtering data
+    useEffect(() => {
+        if (modules) {
+          setFilteredModule(modules);
+        }
+    }, [modules]);
+
+
+  if (loading) {
+    return (
+        <div className="flex mx-auto  justify-center items-center h-16 w-16">
+            <Loader2 size={32} />
+        </div>
+    )
+  }
+
+
   return (
-    <div className="w-full bg-white rounded-lg">
-      <div className="flex flex-wrap justify-end items-center py-4 px-6 border-b border-solid border-default-200 ">
+    <div className="w-full">
+      <div className="flex flex-wrap justify-end items-center py-4 px-6 border-b border-solid border-default-200">
+        <SearchInput data={modules ?? []} setFilteredData={setFilteredModule} filterKey={"name"}/>
         <div className="#flex-none">
           <div className="flex items-center gap-4 flex-wrap">
-            <SearchInput
-              data={coupons ?? []}
-              filterKey={"code"}
-              setFilteredData={setFilteredCoupons}
-            />
-            <Button
-              variant="outline"
-              className="ml-2"
-              onClick={() => {
-                router.push("/dashboard/add-coupon");
-              }}
-            >
-              Add Coupon
-            </Button>
+            <Link href="/dashboard/add-module">
+              <Button size={"md"} variant="outline" >
+                Add Module
+              </Button>
+            </Link>
           </div>
         </div>
       </div>
+
       <CardContent className="pt-6">
         <div className="border border-solid border-default-200 rounded-lg overflow-hidden border-t-0">
           <Table>

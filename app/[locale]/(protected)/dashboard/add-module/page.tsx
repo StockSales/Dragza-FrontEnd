@@ -8,22 +8,18 @@ import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 import { toast } from "sonner";
 import { useRouter } from "@/i18n/routing";
-import useCreateCategory from "@/services/categories/CreateCategory";
-import {Select, SelectContent, SelectItem, SelectTrigger, SelectValue} from "@/components/ui/select";
-import {modules} from "@/app/[locale]/(protected)/dashboard/modules/transactions/data";
 
-const AddCategory = () => {
-  const { creatingCategory, loading } = useCreateCategory()
+const AddModule = () => {
   const router = useRouter();
 
   const [name, setName] = useState("");
   const [pref, setPref] = useState("");
   const [description, setDescription] = useState("");
-  const [module, setModule] = useState("");
+  const [loading, setLoading] = useState(false);
 
-  const addCategory = async () => {
+  const addModule = async () => {
     if (!name.trim()) {
-      toast.error("Validation Error", { description: "Category Name is required." });
+      toast.error("Validation Error", { description: "Module Name is required." });
       return;
     }
     if (!pref.trim()) {
@@ -36,13 +32,15 @@ const AddCategory = () => {
     }
 
     try {
-      const success = await creatingCategory({ name, pref, description });
+      setLoading(true)
+      const success = true
+      setLoading(false)
       if (success) {
-        toast.success("Category Added", {
-          description: "Category added successfully!",
+        toast.success("Module Added", {
+          description: "Module added successfully!",
         });
         setTimeout(() => {
-          router.push("/dashboard/categories");
+          router.push("/dashboard/modules");
         }, 1000);
       }
     } catch (error: any) {
@@ -57,34 +55,15 @@ const AddCategory = () => {
         <div className="col-span-12">
           <Card>
             <CardHeader className="border-b border-solid border-default-200 mb-6">
-              <CardTitle>Category Information</CardTitle>
+              <CardTitle>Module Information</CardTitle>
             </CardHeader>
             <CardContent className="space-y-4">
-              <div className="flex items-center">
-                <Label className="w-[150px] flex-none" htmlFor="module">
+              <div className="flex items-center flex-wrap">
+                <Label className="w-[150px] flex-none" htmlFor="moduleName">
                   Module Name
                 </Label>
-                <Select onValueChange={(value) => setModule(value)}>
-                  <SelectTrigger id="module" className="felx-1">
-                    <SelectValue placeholder="Select Module" />
-                  </SelectTrigger>
-                  <SelectContent>
-                    {modules.map((module) => (
-                        <SelectItem key={module.id} value={module.id}>
-                          {module.name}
-                        </SelectItem>
-                    ))}
-                  </SelectContent>
-                </Select>
-              </div>
-            </CardContent>
-            <CardContent className="space-y-4">
-              <div className="flex items-center flex-wrap">
-                <Label className="w-[150px] flex-none" htmlFor="categoryName">
-                  Category Name
-                </Label>
                 <Input
-                    id="categoryName"
+                    id="moduleName"
                     type="text"
                     placeholder="Name"
                     value={name}
@@ -94,11 +73,11 @@ const AddCategory = () => {
             </CardContent>
             <CardContent className="space-y-4">
               <div className="flex items-center flex-wrap">
-                <Label className="w-[150px] flex-none" htmlFor="categoryPref">
+                <Label className="w-[150px] flex-none" htmlFor="Pref">
                   Pref
                 </Label>
                 <Input
-                    id="categoryPref"
+                    id="Pref"
                     type="text"
                     placeholder="Pref"
                     value={pref}
@@ -108,11 +87,11 @@ const AddCategory = () => {
             </CardContent>
             <CardContent className="space-y-4">
               <div className="flex items-center flex-wrap">
-                <Label className="w-[150px] flex-none" htmlFor="categoryDescription">
+                <Label className="w-[150px] flex-none" htmlFor="Description">
                   Description
                 </Label>
                 <Textarea
-                    id="categoryDescription"
+                    id="Description"
                     placeholder="Description"
                     value={description}
                     onChange={(e) => setDescription(e.target.value)}
@@ -122,12 +101,12 @@ const AddCategory = () => {
           </Card>
         </div>
         <div className="col-span-12 flex justify-center">
-          <Button onClick={addCategory} disabled={loading}>
-            {loading ? "Loading..." : "Add Category"}
+          <Button onClick={addModule} disabled={loading}>
+            {loading ? "Loading..." : "Add Module"}
           </Button>
         </div>
       </div>
   );
 };
 
-export default AddCategory;
+export default AddModule;

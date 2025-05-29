@@ -107,6 +107,13 @@ export function getMenuList(pathname: string, t: any, role: string, locale: stri
               icon: "heroicons:document-text",
             },
             {
+              href: "/dashboard/return-list",
+              label: t("returnList"),
+              active: pathname === "/dashboard/return-list",
+              children: [],
+              icon: "heroicons:document-text",
+            },
+            {
               href: "/dashboard/coupons",
               label: t("coupons"),
               active: pathname === "/dashboard/coupons",
@@ -114,9 +121,9 @@ export function getMenuList(pathname: string, t: any, role: string, locale: stri
               icon: "heroicons:document-text",
             },
             {
-              href: "/dashboard/return-list",
-              label: t("returnList"),
-              active: pathname === "/dashboard/return-list",
+              href: "/dashboard/modules",
+              label: t("modules"),
+              active: pathname === "/dashboard/modules",
               children: [],
               icon: "heroicons:document-text",
             },

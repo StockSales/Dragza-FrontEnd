@@ -12,6 +12,16 @@ import { useParams } from "next/navigation";
 import useGetCategoryById from "@/services/categories/getCategoryById";
 import Loader from "@/components/loader";
 import useUpdateCategoryById from "@/services/categories/UpdateCatergory";
+import {
+  Select,
+  SelectContent,
+  SelectGroup,
+  SelectItem,
+  SelectLabel,
+  SelectTrigger,
+  SelectValue
+} from "@/components/ui/select";
+import {modules} from "@/app/[locale]/(protected)/dashboard/modules/transactions/data";
 
 const EditCategory = () => {
   // Router navigator
@@ -29,6 +39,7 @@ const EditCategory = () => {
   const [name, setName] = useState("");
   const [pref, setPref] = useState("");
   const [description, setDescription] = useState("");
+  const [module, setModule] = useState("");
 
   // Call the API to get category by ID
   useEffect(() => {
@@ -99,6 +110,26 @@ const EditCategory = () => {
             <CardHeader className="border-b border-solid border-default-200 mb-6">
               <CardTitle>Category Information</CardTitle>
             </CardHeader>
+            <CardContent className="space-y-4">
+              <div className="flex items-center flex-wrap">
+                <Label className="w-[150px] flex-none" htmlFor="category-id">Module Name</Label>
+                <Select onValueChange={(value) => setModule(value)}>
+                  <SelectTrigger className="flex-1 cursor-pointer">
+                    <SelectValue placeholder="Select Category" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectGroup>
+                      <SelectLabel>Category</SelectLabel>
+                      {modules.map((module) => (
+                          <SelectItem key={module.id} value={module.id}>
+                            {module.name}
+                          </SelectItem>
+                      ))}
+                    </SelectGroup>
+                  </SelectContent>
+                </Select>
+              </div>
+            </CardContent>
 
             <CardContent className="space-y-4">
               <div className="flex items-center flex-wrap">
