@@ -8,8 +8,11 @@ import { cn } from "@/lib/utils";
 import {Link} from '@/i18n/routing';
 import {Orders} from "@/types/orders";
 import {formatDateToDMY} from "@/utils";
+import Cookies from "js-cookie";
+import ChangeInventoryUserDialog from "@/components/partials/ChangeInventoryUserDialog/ChangeInventoryUserDialog";
+import gettingAllOrders from "@/services/Orders/gettingAllOrders";
 
-export const columns: ColumnDef<Orders>[] = [
+export const baseColumns = ({refresh} : {refresh: () => void}) : ColumnDef<Orders>[] => [
   {
     accessorKey: "id",
     header: "Order",
@@ -52,7 +55,7 @@ export const columns: ColumnDef<Orders>[] = [
   },
   {
     accessorKey: "status",
-    header: "Payment Status",
+    header: "Order Status",
     cell: ({ row }) => {
       // Map status numbers to class names
       const statusColors: Record<number, string> = {
@@ -87,68 +90,14 @@ export const columns: ColumnDef<Orders>[] = [
       );
     },
   },
-  // {
-  //   accessorKey: "order_status",
-  //   header: "Order Status",
-  //   cell: ({ row }) => {
-  //     const statusColors: Record<string, string> = {
-  //       approve: "bg-success/20 text-success",
-  //       complete: "bg-success/40 text-success",
-  //       prepare: "bg-warning/20 text-warning",
-  //       reject: "bg-destructive/20 text-destructive",
-  //       ship: "bg-info/20 text-info",
-  //       deliver: "bg-info/40 text-info",
-  //     };
-  //     const status = row.getValue<string>("order_status");
-  //     const statusStyles = statusColors[status] || "default";
-  //     return (
-  //       <Badge className={cn("rounded-full px-5", statusStyles)}>
-  //         {status}
-  //       </Badge>
-  //     );
-  //   }
-  // },
   {
     id: "actions",
     accessorKey: "action",
     header: "Actions",
     enableHiding: false,
     cell: ({ row }) => {
-
-      // const deleteOrder = (id: any) => {
-      //   return () => {
-      //     toast.success("Order Deleted", {
-      //       description: "Order Deleted Successfully",
-      //       action: (
-      //         <div className="flex justify-end mx-auto items-center my-auto gap-2">
-      //           <Button
-      //             size="sm"
-      //             variant="shadow"
-      //             onClick={() => toast.dismiss()}
-      //             className="text-white px-3 py-1 rounded-md"
-      //           >
-      //             Cancel
-      //           </Button>
-      //           <Button
-      //             size="sm"
-      //             variant="shadow"
-      //             onClick={() => {
-      //               console.log("deleted order", id);
-      //               toast.dismiss(); // Dismiss confirmation toast
-      //               toast("Order deleted", {
-      //                 description: "The order was deleted successfully.",
-      //               });
-      //             }}
-      //             className="text-white px-3 py-1 rounded-md"
-      //           >
-      //             Confirm
-      //           </Button>
-      //         </div>
-      //       )
-      //     });
-      //   };
-      // }
-
+      const userRole = Cookies.get("userRole");
+      const isAdmin = userRole == "Admin";
       return (
         <div className="flex items-center gap-1">
           <Link
@@ -157,12 +106,21 @@ export const columns: ColumnDef<Orders>[] = [
           >
             <Eye className="w-4 h-4" />
           </Link>
-          <Link
-              href={`/dashboard/resign-order/${row.original.id}`}
-              className="flex items-center p-2 text-destructive bg-destructive/40 duration-200 transition-all hover:bg-destructive/80 hover:text-destructive-foreground rounded-full cursor-pointer"
-          >
-            <Trash2 className="w-4 h-4" />
-          </Link>
+          {isAdmin && (
+              <>
+                <Link
+                    href={`/dashboard/remove-item/${row.original.id}`}
+                    className="flex items-center p-2 text-destructive bg-destructive/40 duration-200 transition-all hover:bg-destructive/80 hover:text-destructive-foreground rounded-full cursor-pointer"
+                >
+                  <Trash2 className="w-4 h-4" />
+                </Link>
+                <ChangeInventoryUserDialog
+                  orderId={row.original.id}
+                  inventoryUserId={row.original.inventoryUserId}
+                  onSuccess={() => refresh()}
+                />
+              </>
+          )}
         </div>
       );
     },

@@ -6,10 +6,10 @@ function useGettingAllOrders() {
     const [error, setError] = useState<string | null>(null);
     const [orders, setOrders] = useState<any[]>([]);
 
-    const gettingAllOrders = async () => {
+    const gettingAllOrders = async (userId: string) => {
         setLoading(true);
         setError(null);
-        await AxiosInstance.get(`/api/Orders/vendor-orders`).then((res) => {
+        await AxiosInstance.get(`/api/Orders/vendor-orders?userId=${userId}`).then((res) => {
             if (res.status === 200 || res.status === 201 || !res.data.errors) {
                 setOrders(res.data);
             } else {
