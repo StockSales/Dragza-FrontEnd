@@ -1,7 +1,7 @@
 import { Card } from "@/components/ui/card";
 import TransactionsTable from "./transactions";
 
-const Sellers = () => {
+const InventoryManagement = () => {
   return (
     <div>
       <Card>
@@ -11,4 +11,4 @@ const Sellers = () => {
   );
 };
 
-export default Sellers;
+export default InventoryManagement;
