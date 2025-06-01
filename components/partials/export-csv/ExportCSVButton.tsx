@@ -2,6 +2,7 @@
 
 import React from "react";
 import {Button} from "@/components/ui/button";
+import {toast} from "sonner";
 
 type ExportCSVProps<T> = {
     data: T[];
@@ -17,7 +18,10 @@ export function ExportCSVButton<T extends Record<string, any>>({
                                                                    config,
                                                                }: ExportCSVProps<T>) {
     const handleExport = () => {
-        if (!data || data.length === 0) return;
+        if (!data || data.length === 0) {
+            toast.error("There is no data to export.")
+            return;
+        }
 
         const delimiter = config?.delimiter || ",";
         const headers = config?.headers || (Object.keys(data[0]) as (keyof T)[]);
