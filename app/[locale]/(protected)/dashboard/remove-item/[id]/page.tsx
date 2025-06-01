@@ -6,7 +6,7 @@ import { useState } from "react";
 import {RotateCcw} from "lucide-react";
 import {OrderItem} from "@/types/orders";
 import ItemsTable from "@/components/ui/ItemsTable";
-import BillSummary from "@/app/[locale]/(protected)/dashboard/resign-order/[id]/totaltable";
+import BillSummary from "@/app/[locale]/(protected)/dashboard/remove-item/[id]/BillSummary";
 
 // Static items data
 const staticItems: OrderItem[] = [
