@@ -1,20 +1,18 @@
 import {ColumnDef} from "@tanstack/react-table";
-import {ProductType} from "@/types/product";
-import Cookies from "js-cookie";
-import useDeleteProductById from "@/services/products/deleteProductById";
-import {usePathname} from "next/navigation";
 import {toast} from "sonner";
-import {Button} from "@/components/ui/button";
 import {Link} from "@/i18n/routing";
 import {SquarePen, Trash2} from "lucide-react";
-import {Coupon} from "@/app/[locale]/(protected)/dashboard/coupons/transactions/data";
+import {Coupon} from "@/types/coupons";
+import {formatDateToDMY} from "@/utils";
+import {Button} from "@/components/ui/button";
+import useDeleteCoupon from "@/services/coupons/deleteCoupon";
 
-export const baseColumns = (): ColumnDef<Coupon>[] =>
+export const baseColumns = ({refresh } : { refresh: () => void }): ColumnDef<Coupon>[] =>
     [
         {
             accessorKey: "code",
             header: "Code",
-            cell: ({ row }) => {
+            cell: ({row}) => {
                 const code = row.original.code;
                 return (
                     <div className="font-medium text-card-foreground/80">
@@ -26,10 +24,10 @@ export const baseColumns = (): ColumnDef<Coupon>[] =>
             },
         },
         {
-            accessorKey: "type",
+            accessorKey: "discountType",
             header: "Type",
-            cell: ({ row }) => {
-                const type = row.original.type;
+            cell: ({row}) => {
+                const type = row.original.discountType;
                 return (
                     <div className="font-medium text-card-foreground/80">
             <span className="text-sm text-default-600">
@@ -39,103 +37,93 @@ export const baseColumns = (): ColumnDef<Coupon>[] =>
                 );
             },
         },
-        // {
-        //     accessorKey: "description",
-        //     header: "Description",
-        //     cell: ({ row }) => {
-        //     const description = row.original.description;
-        //     return (
-        //         <div className="font-medium text-card-foreground/80">
-        //             <span className="text-sm text-default-600">
-        //             {description ?? "N/A"}
-        //             </span>
-        //         </div>
-        //     );
-        //     },
-        // },
         {
-            accessorKey: "numberOfUsers",
+            accessorKey: "discountValue",
+            header: "Discount Value",
+            cell: ({ row }) => {
+            const discountValue = row.original.discountValue;
+            return (
+                <div className="font-medium text-card-foreground/80">
+                    <span className="text-sm text-default-600">
+                    {discountValue ?? "N/A"}
+                    </span>
+                </div>
+            );
+            },
+        },
+        {
+            accessorKey: "usageLimit",
             header: "Number of Users",
-            cell: ({ row }) => <span>{row.original.numberOfUsers}</span>,
+            cell: ({row}) => <span>{row.original.usageLimit}</span>,
         },
         {
-            accessorKey: "value",
-            header: "value",
-            cell: ({ row }) => <span>{row.original.value || "N/A"}</span>,
+            accessorKey: "perUserLimit",
+            header: "Per User Limit",
+            cell: ({row}) => <span>{row.original.perUserLimit || "N/A"}</span>,
         },
         {
-          accessorKey: "startDate",
-          header: "Start Date",
-          cell: ({ row }) => <span>{row.getValue("startDate")}</span>,
+            accessorKey: "startDate",
+            header: "Start Date",
+            cell: ({row}) => <span>{formatDateToDMY(row.getValue("startDate"))}</span>,
         },
         {
-          accessorKey: "endDate",
-          header: "End Date",
-          cell: ({ row }) => {
-            return <span>{row.getValue("endDate")}</span>;
-          },
+            accessorKey: "endDate",
+            header: "End Date",
+            cell: ({row}) => {
+                return <span>{formatDateToDMY(row.getValue("endDate"))}</span>;
+            },
         },
-        // {
-        //   accessorKey: "basePrice",
-        //   header: "Selling Price",
-        //   cell: ({ row }) => {
-        //     const info = row.original.info;
-        //     return <span>{info.basePrice}</span>;
-        //   }
-        // },
-        // {
-        //   accessorKey: "purchasePrice",
-        //   header: "Purchase Price",
-        //   cell: ({ row }) => {
-        //     const info = row.original.info;
-        //     return <span>{info.purchasePrice}</span>;
-        //   }
-        // },
-        // {
-        //   accessorKey: "isAvailable",
-        //   header: "Availability",
-        //   cell: ({ row }) => {
-        //     const Colors: Record<string, string> = {
-        //       true: "bg-success/20 text-success",
-        //       false: "bg-destructive/20 text-destructive text-center",
-        //     };
-        //     const isAvailable = row?.original.isAvailable;
-        //     const statusStyles = Colors[`${isAvailable}`] || "default";
-        //     return (
-        //         <Badge className={cn("rounded-full px-5", statusStyles)}>
-        //           {isAvailable === true ? "Available" : "Not Available"}{" "}
-        //         </Badge>
-        //     );
-        //   },
-        // },
-        // {
-        //   accessorKey: "published",
-        //   header: "Published",
-        //   cell: ({ row }) => {
-        //     const published = row.original.published;
-        //     return <Switch color="success" />;
-        //   },
-        // },
         {
             id: "actions",
             accessorKey: "action",
             header: "Actions",
             enableHiding: false,
-            cell: ({ row }) => {
+            cell: ({row}) => {
+                const {deleteCoupon, loading} = useDeleteCoupon()
+
                 const getHref = () => {
                     const id = row.original.id;
                     return `/dashboard/edit-coupon/${id}`;
                 };
 
                 const handleDelete = (id: string | number | undefined) => {
-                    if (!id) return;
-                    // TODO: handle delete here
-                    toast.success("Coupon Deleted", {
-                        description: "Coupon Deleted Successfully"
-                    })
-                    setTimeout(() => {
-                        toast.dismiss();
-                    }, 2000);
+                    const toastId = toast("Delete Coupon", {
+                        description: "Are you sure you want to delete this Coupon?",
+                        action: (
+                            <div className="flex justify-end mx-auto items-center my-auto gap-2">
+                                <Button
+                                    size="sm"
+                                    onClick={() => toast.dismiss(toastId)}
+                                    className="text-white px-3 py-1 rounded-md"
+                                >
+                                    Cancel
+                                </Button>
+                                <Button
+                                    size="sm"
+                                    variant="shadow"
+                                    disabled={loading}
+                                    className="text-white px-3 py-1 rounded-md"
+                                    onClick={async () => {
+                                        const result = await deleteCoupon(id);
+                                        toast.dismiss(toastId);
+
+                                        if (result.success) {
+                                            toast("Coupon deleted", {
+                                                description: "The Coupon was deleted successfully.",
+                                            });
+                                            refresh();
+                                        } else {
+                                            toast("Error", {
+                                                description: result.error ?? "There was an error deleting the Coupon.",
+                                            });
+                                        }
+                                    }}
+                                >
+                                    Confirm
+                                </Button>
+                            </div>
+                        ),
+                    });
                 };
 
                 return (
@@ -144,16 +132,15 @@ export const baseColumns = (): ColumnDef<Coupon>[] =>
                             href={getHref()}
                             className="flex items-center p-2 border-b text-info hover:text-info-foreground bg-info/40 hover:bg-info duration-200 transition-all rounded-full"
                         >
-                            <SquarePen className="w-4 h-4" />
+                            <SquarePen className="w-4 h-4"/>
                         </Link>
                         <div
                             className="flex items-center p-2 text-destructive bg-destructive/40 duration-200 transition-all hover:bg-destructive/80 hover:text-destructive-foreground rounded-full cursor-pointer"
                             onClick={() => {
-                                const id = row.original.id;
-                                handleDelete(id);
+                                handleDelete(row.original.id);
                             }}
                         >
-                            <Trash2 className="w-4 h-4" />
+                            <Trash2 className="w-4 h-4"/>
                         </div>
                     </div>
                 );
