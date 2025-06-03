@@ -18,27 +18,13 @@ import { Textarea } from "@/components/ui/textarea";
 import { toast } from "sonner";
 import { Loader2 } from "lucide-react";
 import { useRouter } from "@/i18n/routing";
-
-// Dummy createCoupon service (replace with your real service)
-const useCreateCoupon = () => {
-  const [loading, setLoading] = useState(false);
-
-  const createCoupon = async (couponData: any) => {
-    setLoading(true);
-    return new Promise((resolve) => {
-      setTimeout(() => {
-        setLoading(false);
-        resolve(true);
-      }, 1000);
-    });
-  };
-
-  return { createCoupon, loading };
-};
+import useCreateCoupon from "@/services/coupons/createCoupon";
 
 const AddCoupon = () => {
   const router = useRouter();
-  const { createCoupon, loading } = useCreateCoupon();
+  // creating new Coupon
+  const {createCoupon, loading, error} = useCreateCoupon()
+
 
   // States for coupon form
   const [code, setCode] = useState("");
@@ -49,6 +35,10 @@ const AddCoupon = () => {
   const [endDate, setEndDate] = useState("");
   const [minCost, setMinCost] = useState("");
   const [description, setDescription] = useState("");
+  const [maxDiscount, setMaxDiscount] = useState("");
+  const [usageLimit, setUsageLimit] = useState("");
+  const [perUserLimit, setPerUserLimit] = useState("");
+  const [isActive, setIsActive] = useState(true);
 
   const onSubmit = async () => {
     // Simple validation
@@ -65,26 +55,52 @@ const AddCoupon = () => {
       toast.error("Validation Error", { description: "Start date must be less than end date." });
       return;
     }
-    const success = true
+
+    if (Number(minCost) < 0) {
+      toast.error("Validation Error", { description: "Min cost must be greater than 0." });
+      return;
+    }
+
+    if (Number(maxDiscount) < 0) {
+      toast.error("Validation Error", { description: "Max discount must be greater than 0." });
+      return;
+    }
+
+    if (Number(usageLimit) < 0) {
+      toast.error("Validation Error", { description: "Usage limit must be greater than 0." });
+      return;
+    }
+
+    if (Number(perUserLimit) < 0) {
+      toast.error("Validation Error", { description: "Per user limit must be greater than 0." });
+      return;
+    }
+
 
     const payload = {
       code,
-      type,
-      numberOfUsers: Number(numberOfUsers),
-      value: Number(value),
-      startDate,
-      endDate,
-      minCostToActivate: Number(minCost),
       description,
+      discountType: type,
+      discountValue: Number(value),
+      minimumOrderAmount: Number(minCost),
+      maximumDiscountAmount: Number(maxDiscount),
+      startDate: new Date(startDate).toISOString(),
+      endDate: new Date(endDate).toISOString(),
+      usageLimit: Number(usageLimit),
+      perUserLimit: Number(perUserLimit),
+      isActive,
     };
 
+
     try {
-      const success = await createCoupon(payload);
+      const { success, error } = await createCoupon(payload);
       if (success) {
-        toast.success("Coupon Created", { description: "Coupon has been added successfully." });
+        toast.success("Coupon Created");
         setTimeout(() => {
           router.push("/dashboard/coupons");
-        }, 1000);
+        }, 2000);
+      } else {
+        toast.error("Failed", { description: error });
       }
     } catch (err) {
       toast.error("Failed", { description: "Something went wrong." });
@@ -118,7 +134,7 @@ const AddCoupon = () => {
                   <SelectContent>
                     <SelectGroup>
                       <SelectLabel>Type</SelectLabel>
-                      <SelectItem value="value">Value</SelectItem>
+                      <SelectItem value="fixed_amount">Fixed Amount</SelectItem>
                       <SelectItem value="percentage">Percentage</SelectItem>
                     </SelectGroup>
                   </SelectContent>
@@ -170,6 +186,45 @@ const AddCoupon = () => {
                     placeholder="e.g. 50"
                     value={minCost}
                     onChange={(e) => setMinCost(e.target.value)}
+                />
+              </div>
+              <div className="flex items-center flex-wrap">
+                <Label className="w-[150px] flex-none">Max Discount Amount</Label>
+                <Input
+                    type="number"
+                    placeholder="e.g. 100"
+                    value={maxDiscount}
+                    onChange={(e) => setMaxDiscount(e.target.value)}
+                />
+              </div>
+
+              <div className="flex items-center flex-wrap">
+                <Label className="w-[150px] flex-none">Usage Limit</Label>
+                <Input
+                    type="number"
+                    placeholder="e.g. 500"
+                    value={usageLimit}
+                    onChange={(e) => setUsageLimit(e.target.value)}
+                />
+              </div>
+
+              <div className="flex items-center flex-wrap">
+                <Label className="w-[150px] flex-none">Per User Limit</Label>
+                <Input
+                    type="number"
+                    placeholder="e.g. 1"
+                    value={perUserLimit}
+                    onChange={(e) => setPerUserLimit(e.target.value)}
+                />
+              </div>
+
+              <div className="flex items-center flex-wrap gap-2">
+                <Label className="w-[150px] flex-none">Is Active</Label>
+                <Input
+                    type="checkbox"
+                    checked={isActive}
+                    className="cursor-pointer w-4 h-4 rounded-full"
+                    onChange={(e) => setIsActive(e.target.checked)}
                 />
               </div>
 

@@ -19,92 +19,66 @@ import {
 import { Textarea } from "@/components/ui/textarea";
 import { toast } from "sonner";
 import { Loader2 } from "lucide-react";
-
-const useUpdateCoupon = () => {
-  const [loading, setLoading] = useState(false);
-
-  const updateCoupon = async (couponData: any) => {
-    setLoading(true);
-    return new Promise((resolve) => {
-      setTimeout(() => {
-        setLoading(false);
-        resolve(true);
-      }, 1000);
-    });
-  };
-
-  return { updateCoupon, loading };
-};
-
-const useGetCouponById = (id: string | undefined) => {
-  const [coupon, setCoupon] = useState<any>(null);
-  const [loading, setLoading] = useState(true);
-
-  useEffect(() => {
-    if (!id) return;
-
-    setLoading(true);
-    setTimeout(() => {
-      // Dummy data — replace with real API logic
-      setCoupon({
-        code: "SUMMER50",
-        type: "percentage",
-        numberOfUsers: 100,
-        value: 50,
-        startDate: "2025-06-01",
-        endDate: "2025-07-01",
-        minCostToActivate: 200,
-        description: "Summer Super Sale Coupon",
-      });
-      setLoading(false);
-    }, 800);
-  }, [id]);
-
-  return { coupon, loading };
-};
+import useGettingCouponById from "@/services/coupons/gettingCouponById";
+import useUpdateCoupon from "@/services/coupons/updateCoupon";
 
 const EditCoupon = () => {
   const router = useRouter();
   const params = useParams();
-  const couponId = params?.id as string | undefined;
-  const isEdit = Boolean(couponId);
+  const id = params?.id as string;
+  const isEdit = Boolean(id);
 
-  const { coupon, loading: isLoadingCoupon } = useGetCouponById(couponId);
-  const { updateCoupon, loading: isSaving } = useUpdateCoupon();
+  // getting coupon data
+  const {coupon, getCouponById, loading: gettingCouponLoading, error: gettingCouponError} = useGettingCouponById()
+
+  // updating coupon data
+  const {updateCoupon, loading: updatingCouponLoading} = useUpdateCoupon()
+
+
 
   const [code, setCode] = useState("");
-  const [type, setType] = useState("");
-  const [numberOfUsers, setNumberOfUsers] = useState("");
-  const [value, setValue] = useState("");
+  const [description, setDescription] = useState("");
+  const [discountType, setDiscountType] = useState("");
+  const [discountValue, setDiscountValue] = useState("");
+  const [minimumOrderAmount, setMinimumOrderAmount] = useState("");
+  const [maximumDiscountAmount, setMaximumDiscountAmount] = useState("");
   const [startDate, setStartDate] = useState("");
   const [endDate, setEndDate] = useState("");
-  const [minCost, setMinCost] = useState("");
-  const [description, setDescription] = useState("");
+  const [usageLimit, setUsageLimit] = useState("");
+  const [perUserLimit, setPerUserLimit] = useState("");
+  const [isActive, setIsActive] = useState(false);
+
+  useEffect(() => {
+    getCouponById(id)
+  }, []);
 
   useEffect(() => {
     if (coupon) {
       setCode(coupon.code || "");
-      setType(coupon.type || "");
-      setNumberOfUsers(coupon.numberOfUsers?.toString() || "");
-      setValue(coupon.value?.toString() || "");
-      setStartDate(coupon.startDate || "");
-      setEndDate(coupon.endDate || "");
-      setMinCost(coupon.minCostToActivate?.toString() || "");
       setDescription(coupon.description || "");
+      setDiscountType(coupon.discountType || "");
+      setDiscountValue(coupon.discountValue?.toString() || "");
+      setMinimumOrderAmount(coupon.minimumOrderAmount?.toString() || "");
+      setMaximumDiscountAmount(coupon.maximumDiscountAmount?.toString() || "");
+      setStartDate(coupon.startDate?.slice(0, 10) || "");
+      setEndDate(coupon.endDate?.slice(0, 10) || "");
+      setUsageLimit(coupon.usageLimit?.toString() || "");
+      setPerUserLimit(coupon.perUserLimit?.toString() || "");
+      setIsActive(coupon.isActive || false);
     }
   }, [coupon]);
 
   const onSubmit = async () => {
-    if (!code.trim() || !type || !value || !startDate || !endDate) {
+    if (!code.trim() || !discountType || !discountValue || !startDate || !endDate) {
       toast.error("Validation Error", {
         description: "Please fill all required fields.",
       });
       return;
     }
 
-    if (Number(value) <= 0) {
+    if (Number(discountValue) <= 0) {
       toast.error("Validation Error", {
-        description: "Value must be greater than 0.",
+        description: "Discount Value must be greater than 0.",
       });
       return;
     }
@@ -118,17 +92,20 @@ const EditCoupon = () => {
 
     const payload = {
       code,
-      type,
-      numberOfUsers: Number(numberOfUsers),
-      value: Number(value),
+      description,
+      discountType,
+      discountValue: Number(discountValue),
+      minimumOrderAmount: Number(minimumOrderAmount),
+      maximumDiscountAmount: Number(maximumDiscountAmount),
       startDate,
       endDate,
-      minCostToActivate: Number(minCost),
-      description,
+      usageLimit: Number(usageLimit),
+      perUserLimit: Number(perUserLimit),
+      isActive,
     };
 
     try {
-      const success = await updateCoupon({ id: couponId, ...payload });
+      const { success , error} = await updateCoupon( id, payload );
       if (success) {
         toast.success(isEdit ? "Coupon Updated" : "Coupon Created", {
           description: isEdit
@@ -138,6 +115,12 @@ const EditCoupon = () => {
         setTimeout(() => {
           router.push("/dashboard/coupons");
         }, 1000);
+      }
+
+      if (error) {
+        toast.error("Failed", {
+          description: error,
+        });
       }
     } catch (err) {
       toast.error("Failed", {
@@ -154,7 +137,7 @@ const EditCoupon = () => {
               <CardTitle>{isEdit ? "Edit Coupon" : "Add New Coupon"}</CardTitle>
             </CardHeader>
             <CardContent className="space-y-4">
-              {isEdit && isLoadingCoupon ? (
+              {isEdit && gettingCouponLoading ? (
                   <div className="text-muted-foreground">Loading coupon data...</div>
               ) : (
                   <>
@@ -170,14 +153,14 @@ const EditCoupon = () => {
 
                     <div className="flex items-center flex-wrap gap-4 md:gap-0">
                       <Label className="w-[150px] flex-none">Coupon Type</Label>
-                      <Select value={type} onValueChange={(e) => setType(e)}>
+                      <Select value={discountType} onValueChange={(e) => setDiscountType(e)}>
                         <SelectTrigger className="flex-1 cursor-pointer">
                           <SelectValue placeholder="Select Type" />
                         </SelectTrigger>
                         <SelectContent>
                           <SelectGroup>
                             <SelectLabel>Type</SelectLabel>
-                            <SelectItem value="value">Value</SelectItem>
+                            <SelectItem value="fixed_amount">Fixed Amount</SelectItem>
                             <SelectItem value="percentage">Percentage</SelectItem>
                           </SelectGroup>
                         </SelectContent>
@@ -189,8 +172,8 @@ const EditCoupon = () => {
                       <Input
                           type="number"
                           placeholder="e.g. 10 or 20%"
-                          value={value}
-                          onChange={(e) => setValue(e.target.value)}
+                          value={discountValue}
+                          onChange={(e) => setDiscountValue(e.target.value)}
                       />
                     </div>
 
@@ -199,8 +182,8 @@ const EditCoupon = () => {
                       <Input
                           type="number"
                           placeholder="e.g. 100"
-                          value={numberOfUsers}
-                          onChange={(e) => setNumberOfUsers(e.target.value)}
+                          value={usageLimit}
+                          onChange={(e) => setUsageLimit(e.target.value)}
                       />
                     </div>
 
@@ -227,8 +210,18 @@ const EditCoupon = () => {
                       <Input
                           type="number"
                           placeholder="e.g. 50"
-                          value={minCost}
-                          onChange={(e) => setMinCost(e.target.value)}
+                          value={minimumOrderAmount}
+                          onChange={(e) => setMinimumOrderAmount(e.target.value)}
+                      />
+                    </div>
+
+                    <div className="flex items-center flex-wrap gap-2">
+                      <Label className="w-[150px] flex-none">Is Active</Label>
+                      <Input
+                          type="checkbox"
+                          checked={isActive}
+                          className="cursor-pointer w-4 h-4 rounded-full"
+                          onChange={(e) => setIsActive(e.target.checked)}
                       />
                     </div>
 
@@ -248,11 +241,11 @@ const EditCoupon = () => {
 
         <div className="col-span-12 flex justify-end">
           <Button
-              disabled={isSaving || (isEdit && isLoadingCoupon)}
+              disabled={updatingCouponLoading || (isEdit && gettingCouponLoading)}
               onClick={onSubmit}
-              className={`cursor-pointer ${isSaving ? "cursor-not-allowed" : ""}`}
+              className={`cursor-pointer ${updatingCouponLoading ? "cursor-not-allowed" : ""}`}
           >
-            {isSaving ? (
+            {updatingCouponLoading ? (
                 <Loader2 className="mr-2 h-4 w-4 animate-spin" />
             ) : isEdit ? (
                 "Update Coupon"

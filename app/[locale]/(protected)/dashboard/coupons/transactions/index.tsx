@@ -28,12 +28,15 @@ import TablePagination from "./table-pagination";
 import { CardContent } from "@/components/ui/card";
 import {useEffect, useState} from "react";
 import SearchInput from "@/app/[locale]/(protected)/components/SearchInput/SearchInput";
-import {Coupon, coupons} from "@/app/[locale]/(protected)/dashboard/coupons/transactions/data";
 import {Button} from "@/components/ui/button";
 import {useRouter} from "@/i18n/routing";
+import useGettingAllCoupons from "@/services/coupons/gettingAllCoupons";
+import {Loader2} from "lucide-react";
 
 const TransactionsTable = () => {
   const router = useRouter()
+  // getting all coupons
+  const {loading: gettingAllCouponsLoading, error: gettingAllCouponsError, coupons, getAllCoupons} = useGettingAllCoupons()
 
   const [sorting, setSorting] = React.useState<SortingState>([]);
   const [columnFilters, setColumnFilters] = React.useState<ColumnFiltersState>(
@@ -43,9 +46,7 @@ const TransactionsTable = () => {
     React.useState<VisibilityState>({});
   const [rowSelection, setRowSelection] = React.useState({});
 
-  const columns = baseColumns();
-  const loading = false;
-
+  const columns = baseColumns({refresh: getAllCoupons});
   const [filteredCoupons, setFilteredCoupons] = useState<Coupon[]>([]);
 
 
@@ -67,6 +68,10 @@ const TransactionsTable = () => {
       rowSelection,
     },
   });
+
+  useEffect(() => {
+    getAllCoupons()
+  }, [])
 
 
   return (
@@ -91,58 +96,64 @@ const TransactionsTable = () => {
           </div>
         </div>
       </div>
-      <CardContent className="pt-6">
-        <div className="border border-solid border-default-200 rounded-lg overflow-hidden border-t-0">
-          <Table>
-            <TableHeader className="bg-default-200">
-              {table.getHeaderGroups().map((headerGroup) => (
-                <TableRow key={headerGroup.id}>
-                  {headerGroup.headers.map((header) => {
-                    return (
-                      <TableHead className="last:text-start" key={header.id}>
-                        {header.isPlaceholder
-                          ? null
-                          : flexRender(
-                              header.column.columnDef.header,
-                              header.getContext()
-                            )}
-                      </TableHead>
-                    );
-                  })}
-                </TableRow>
-              ))}
-            </TableHeader>
-            <TableBody>
-              {table.getRowModel().rows?.length ? (
-                table.getRowModel().rows.map((row) => (
-                  <TableRow
-                    key={row.id}
-                    data-state={row.getIsSelected() && "selected"}
-                  >
-                    {row.getVisibleCells().map((cell) => (
-                      <TableCell key={cell.id} className="h-[75px]">
-                        {flexRender(
-                          cell.column.columnDef.cell,
-                          cell.getContext()
-                        )}
-                      </TableCell>
-                    ))}
-                  </TableRow>
-                ))
-              ) : (
-                <TableRow>
-                  <TableCell
-                    colSpan={columns.length}
-                    className="h-24 text-center"
-                  >
-                    No results.
-                  </TableCell>
-                </TableRow>
-              )}
-            </TableBody>
-          </Table>
+      {gettingAllCouponsLoading ? (
+        <div className="flex mx-auto items-center justify-center">
+          <Loader2 className="text-blue-500" />
         </div>
-      </CardContent>
+      ): (
+        <CardContent className="pt-6">
+          <div className="border border-solid border-default-200 rounded-lg overflow-hidden border-t-0">
+            <Table>
+              <TableHeader className="bg-default-200">
+                {table.getHeaderGroups().map((headerGroup) => (
+                  <TableRow key={headerGroup.id}>
+                    {headerGroup.headers.map((header) => {
+                      return (
+                        <TableHead className="last:text-start" key={header.id}>
+                          {header.isPlaceholder
+                            ? null
+                            : flexRender(
+                                header.column.columnDef.header,
+                                header.getContext()
+                              )}
+                        </TableHead>
+                      );
+                    })}
+                  </TableRow>
+                ))}
+              </TableHeader>
+              <TableBody>
+                {table.getRowModel().rows?.length ? (
+                  table.getRowModel().rows.map((row) => (
+                    <TableRow
+                      key={row.id}
+                      data-state={row.getIsSelected() && "selected"}
+                    >
+                      {row.getVisibleCells().map((cell) => (
+                        <TableCell key={cell.id} className="h-[75px]">
+                          {flexRender(
+                            cell.column.columnDef.cell,
+                            cell.getContext()
+                          )}
+                        </TableCell>
+                      ))}
+                    </TableRow>
+                  ))
+                ) : (
+                  <TableRow>
+                    <TableCell
+                      colSpan={columns.length}
+                      className="h-24 text-center"
+                    >
+                      No results.
+                    </TableCell>
+                  </TableRow>
+                )}
+              </TableBody>
+            </Table>
+          </div>
+        </CardContent>
+      )}
       <TablePagination table={table} />
     </div>
   );
