@@ -1,15 +1,16 @@
-import {useState} from "react";
+import {useState} from 'react';
+import {Orders} from "@/types/orders";
 import AxiosInstance from "@/lib/AxiosInstance";
 
-function useGettingAllOrders() {
-   const [loading, setLoading] = useState<boolean>(false);
+function useGettingMyOrders() {
+    const [orders, setOrders] = useState<Orders[]>([]);
+    const [loading, setLoading] = useState<boolean>(false);
     const [error, setError] = useState<string | null>(null);
-    const [orders, setOrders] = useState<any[]>([]);
 
-    const gettingAllOrders = async () => {
+    const gettingMyOrders = async () => {
         setLoading(true);
         setError(null);
-        await AxiosInstance.get(`/api/Orders/orders`).then((res) => {
+        await AxiosInstance.get(`/api/Orders/my-orders`).then((res) => {
             if (res.status === 200 || res.status === 201 || !res.data.errors) {
                 setOrders(res.data);
             } else {
@@ -31,12 +32,7 @@ function useGettingAllOrders() {
         });
     }
 
-    return {
-        loading,
-        error,
-        orders,
-        gettingAllOrders
-    }
+    return {orders, loading, error, gettingMyOrders};
 }
 
-export default useGettingAllOrders;
+export default useGettingMyOrders;
