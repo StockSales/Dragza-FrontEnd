@@ -25,17 +25,7 @@ import {
 } from "@/components/ui/table";
 
 import TablePagination from "./table-pagination";
-import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
-import {
-  Select,
-  SelectContent,
-  SelectGroup,
-  SelectItem,
-  SelectLabel,
-  SelectTrigger,
-  SelectValue,
-} from "@/components/ui/select";
 import {useRouter} from "@/i18n/routing";
 import useGettingAllOrders from "@/services/Orders/gettingAllOrders";
 import {useEffect, useState} from "react";
@@ -43,12 +33,15 @@ import {Loader2} from "lucide-react";
 import {Orders} from "@/types/orders";
 import SearchInput from "@/app/[locale]/(protected)/components/SearchInput/SearchInput";
 import useGetUsersByRoleId from "@/services/users/GetUsersByRoleId";
-import {UserType} from "@/types/users";
 import Cookies from "js-cookie";
+import useGettingMyOrders from "@/services/Orders/gettingMyOrders";
 
-const TransactionsTable = () => {
+// @ts-ignore
+export default function TransactionsTable (){
   const userRole = Cookies.get("userRole");
   const isAdmin = userRole == "Admin";
+
+  const {loading: myOrdersLoading, orders: myOrders, gettingMyOrders, error: myOrdersError} = useGettingMyOrders()
 
   const {
     gettingAllOrders,
@@ -72,7 +65,7 @@ const TransactionsTable = () => {
   const [filteredOrders, setFilteredOrders] = useState<Orders[]>([]);
   const [selectedManagerId, setSelectedManagerId] = useState<string | null>(null);
 
-  const columns = baseColumns({ refresh: () => gettingAllOrders(selectedManagerId || Cookies.get("userId") || "") });
+  const columns = baseColumns({ refresh: () => gettingAllOrders() });
 
   const table = useReactTable({
     data: filteredOrders ?? [],
@@ -96,24 +89,17 @@ const TransactionsTable = () => {
   // Load inventory managers once on mount
   useEffect(() => {
     if (isAdmin){
-      getUsersByRoleId("1A5A84FB-23C3-4F9B-A122-4C5BC6C5CB2D");
-    } else if (!isAdmin) {
-      // setSelectedManagerId(Cookies.get("userId") || "")
-      gettingAllOrders(selectedManagerId || Cookies.get("userId") || "");
+      // getUsersByRoleId("1A5A84FB-23C3-4F9B-A122-4C5BC6C5CB2D");
+      gettingAllOrders(); // Make sure this function accepts manager ID
+    } else {
+      gettingMyOrders();
     }
   }, []);
 
-  // Fetch orders whenever a manager is selected
-  useEffect(() => {
-    if (selectedManagerId) {
-      gettingAllOrders(selectedManagerId); // Make sure this function accepts manager ID
-    }
-  }, [selectedManagerId]);
-
   // Sync filteredOrders when orders are updated
   useEffect(() => {
-    if (orders) setFilteredOrders(orders);
-  }, [orders]);
+    if (orders || myOrders) setFilteredOrders(orders || myOrders);
+  }, [orders, myOrders]);
 
   return (
       <Card className="w-full">
@@ -123,26 +109,9 @@ const TransactionsTable = () => {
               setFilteredData={setFilteredOrders}
               filterKey="id"
           />
-          {isAdmin && (
-              <Select onValueChange={(value) => setSelectedManagerId(value)}>
-                <SelectTrigger className="w-[180px]">
-                  <SelectValue placeholder="Select inventory manager" />
-                </SelectTrigger>
-                <SelectContent>
-                  <SelectGroup>
-                    <SelectLabel>Inventory Manager</SelectLabel>
-                    {inventoryManagers.map((manager: UserType) => (
-                        <SelectItem key={manager.id} value={manager.id.toString()}>
-                          {manager.userName}
-                        </SelectItem>
-                    ))}
-                  </SelectGroup>
-                </SelectContent>
-              </Select>
-          )}
         </div>
 
-        {(loading || usersLoading) ? (
+        {(loading || usersLoading || myOrdersLoading) ? (
             <div className="flex items-center justify-center h-full py-8">
               <Loader2 className="w-6 h-6 animate-spin" />
             </div>
@@ -185,7 +154,7 @@ const TransactionsTable = () => {
                         ))
                     ) : (
                         <>
-                          {orders.length === 0 && selectedManagerId ? (
+                          {orders.length === 0 && (
                             <TableRow>
                               <TableCell
                                   colSpan={columns.length}
@@ -194,19 +163,6 @@ const TransactionsTable = () => {
                                 No results.
                               </TableCell>
                             </TableRow>
-                          ) : (
-                              <>
-                                {!loading && !usersLoading && !selectedManagerId && (
-                                    <TableRow>
-                                      <TableCell
-                                          colSpan={columns.length}
-                                          className="h-24 text-center"
-                                      >
-                                        Please select an inventory manager
-                                      </TableCell>
-                                    </TableRow>
-                                )}
-                              </>
                           )}
                         </>
                     )}
@@ -219,5 +175,3 @@ const TransactionsTable = () => {
       </Card>
   );
 };
-
-export default TransactionsTable;

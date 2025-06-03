@@ -11,9 +11,6 @@ const ItemsTable: React.FC<ItemsTableProps> = ({ items, deletedItems, onDeleteIt
                     <span className="block px-6 py-5 font-semibold">ITEM</span>
                 </th>
                 <th className="bg-default-50 text-xs font-medium leading-4 uppercase text-default-600 text-left">
-                    <span className="block px-6 py-5 font-semibold">DELIVERY</span>
-                </th>
-                <th className="bg-default-50 text-xs font-medium leading-4 uppercase text-default-600 text-left">
                     <span className="block px-6 py-5 font-semibold">QUANTITY</span>
                 </th>
                 <th className="bg-default-50 text-xs font-medium leading-4 uppercase text-default-600 text-left">
@@ -37,13 +34,10 @@ const ItemsTable: React.FC<ItemsTableProps> = ({ items, deletedItems, onDeleteIt
                         {data.item}
                     </td>
                     <td className="text-default-900 text-sm font-normal text-left px-6 py-4">
-                        {data.delivery}
-                    </td>
-                    <td className="text-default-900 text-sm font-normal text-left px-6 py-4">
                         {data.qty}
                     </td>
                     <td className="text-default-900 text-sm font-normal text-left px-6 py-4">
-                        ${data.price.toFixed(2)}
+                        ${parseFloat(String(data.price)).toFixed(2)}
                     </td>
                     <td className="text-default-900 text-sm font-normal text-left px-6 py-4">
                         ${data.total.toFixed(2)}

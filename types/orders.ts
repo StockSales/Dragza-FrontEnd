@@ -8,14 +8,12 @@ export type Orders = {
     status: number
     totalAmount: number
     deliverDate: string
-    items: ProductType[]
+    items: OrderItem[]
 }
 
 export interface OrderItem {
-    id: number;
+    id: string;
     item: string;
-    tax: string;
-    delivery: string;
     qty: number;
     price: number;
     total: number;
@@ -24,7 +22,7 @@ export interface OrderItem {
 export interface ItemsTableProps {
     items: OrderItem[];
     deletedItems: number[];
-    onDeleteItem: (itemId: number) => void;
+    onDeleteItem: (id: string) => void;
 }
 
 export interface BillSummaryProps {

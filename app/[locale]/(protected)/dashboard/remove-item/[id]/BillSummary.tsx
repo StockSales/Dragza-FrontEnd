@@ -1,7 +1,7 @@
 import {BillSummaryProps, OrderItem} from "@/types/orders";
 
 const BillSummary: React.FC<BillSummaryProps> = ({ items, deletedItems, defaultItems }) => {
-  const activeItems: OrderItem[] = items.filter((item: OrderItem) => !deletedItems.includes(item.id));
+  const activeItems: OrderItem[] = items.filter((item: OrderItem) => !deletedItems.includes(parseInt(item.id)));
   const subtotal: number = activeItems.reduce((sum: number, item: OrderItem) => sum + item.total, 0);
   const couponDiscount: number = 20.50;
   const invoiceTotal: number = subtotal - couponDiscount;
@@ -30,7 +30,7 @@ const BillSummary: React.FC<BillSummaryProps> = ({ items, deletedItems, defaultI
           </thead>
           <tbody>
           {defaultItems.map((data: OrderItem) => {
-            const isDeleted: boolean = deletedItems.includes(data.id);
+            const isDeleted: boolean = deletedItems.includes(parseInt(data.id));
             return (
                 <tr
                     key={data.id}
@@ -59,7 +59,7 @@ const BillSummary: React.FC<BillSummaryProps> = ({ items, deletedItems, defaultI
                   <td className={`text-default-900 text-sm font-normal text-left px-6 py-4 ${
                       isDeleted ? 'line-through' : ''
                   }`}>
-                    ${data.price.toFixed(2)}
+                    ${parseInt(String(data.price)).toFixed(2)}
                   </td>
                   <td className={`text-default-900 text-sm font-normal text-left last:text-right px-6 py-4 ${
                       isDeleted ? 'line-through' : ''
