@@ -3,7 +3,7 @@ import AxiosInstance from "@/lib/AxiosInstance";
 
 function GetUsers() {
     const [data, setData] = useState([])
-    const [loading, setLoading] = useState(true)
+    const [loading, setLoading] = useState(false)
 
     const gettingAllUsers = async () => {
         setLoading(true)

@@ -30,6 +30,7 @@ type Inputs = {
     RegionName: string;
     DesName: string;
     RoleId: string;
+    PharmacyDetails: null;
 };
 
 const RegForm = () => {
@@ -48,7 +49,7 @@ const RegForm = () => {
             IsActive: true,
             EmailConfirmed: true,
             PhoneConfirmed: true,
-            IsPharmacy: false,
+            PharmacyDetails: null,
             RegionName: "",
             DesName: "",
         },
@@ -60,7 +61,9 @@ const RegForm = () => {
 
             // Append all fields manually
             Object.entries(data).forEach(([key, value]) => {
-                formData.append(key, value.toString());
+                if (value != null) {
+                    formData.append(key, value.toString());
+                }
             });
 
             // Call the registerUser with formData
@@ -153,6 +156,12 @@ const RegForm = () => {
             <div className="space-y-2">
                 <Label htmlFor="desName">Des Name</Label>
                 <Input id="desName" placeholder="Des Name" {...register("DesName")} />
+            </div>
+
+            {/*is Pharmacy*/}
+            <div className="flex flex-row gap-4 justify-center items-center ">
+                <Label htmlFor="isPharmacy">Is Pharmacy</Label>
+                <Input type={"checkbox"} className="w-4 h-4"  id="isPharmacy" {...register("IsPharmacy")} />
             </div>
 
             {/* Confirm Terms */}
