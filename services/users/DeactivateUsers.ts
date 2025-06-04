@@ -2,9 +2,7 @@ import { useState } from "react";
 import GetUsers from "@/services/users/GetAllUsers";
 
 function useDeactivateUser() {
-  const { gettingAllUsers } = GetUsers();
   const [loading, setLoading] = useState(false);
-  const [isDeactivated, setIsDeactivated] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
   /**
@@ -12,10 +10,9 @@ function useDeactivateUser() {
    * @param userId - ID of the user to deactivate
    */
   const deactivateUser = async (
-    userId: string | number
+      userId: string | string[]
   ): Promise<{ success: boolean; error?: string }> => {
     setLoading(true);
-    setIsDeactivated(false);
     setError(null);
 
     try {
@@ -29,8 +26,6 @@ function useDeactivateUser() {
       });
 
       if (response.ok) {
-        gettingAllUsers();
-        setIsDeactivated(true);
         return { success: true };
       } else {
         const message = await response.text();
@@ -38,7 +33,6 @@ function useDeactivateUser() {
       }
     } catch (err: any) {
       setError(err.message);
-      setIsDeactivated(false);
       return { success: false, error: err.message };
     } finally {
       setLoading(false);
@@ -47,7 +41,6 @@ function useDeactivateUser() {
 
   return {
     deactivateUser,
-    isDeactivated,
     loading,
     error,
   };

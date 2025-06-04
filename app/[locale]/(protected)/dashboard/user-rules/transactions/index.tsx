@@ -38,9 +38,6 @@ const TransactionsTable = () => {
   // getting all users hooks
   const {data, loading, gettingAllUsers} = GetUsers()
 
-  // getting all users by role id
-  const {loading: usersLoading, users, getUsersByRoleId} = useGetUsersByRoleId()
-
   const [sorting, setSorting] = React.useState<SortingState>([]);
   const [columnFilters, setColumnFilters] = React.useState<ColumnFiltersState>(
     []
@@ -80,14 +77,6 @@ const TransactionsTable = () => {
     if (data) setFilteredUsers(data)
   }, []);
 
-  // checking if the data is loading or not
-  if (loading == true && usersLoading == true) {
-    return (
-        <div className="flex justify-center items-center">
-          <Loader2 size={24} />
-        </div>
-    )
-  }
 
   return (
       <div className={"flex flex-col"}>
@@ -98,61 +87,67 @@ const TransactionsTable = () => {
             setFilteredData={setFilteredUsers}
           />
         </div>
-        <Card className="w-full">
-          <CardContent>
-            <div className="border border-solid border-default-200 rounded-lg overflow-hidden border-t-0">
-              <Table>
-                <TableHeader className="bg-default-200">
-                  {table.getHeaderGroups().map((headerGroup) => (
-                    <TableRow key={headerGroup.id}>
-                      {headerGroup.headers.map((header) => {
-                        return (
-                          <TableHead className="last:text-start" key={header.id}>
-                            {header.isPlaceholder
-                              ? null
-                              : flexRender(
-                                header.column.columnDef.header,
-                                header.getContext()
-                              )}
-                          </TableHead>
-                        );
-                      })}
-                    </TableRow>
-                  ))}
-                </TableHeader>
-                <TableBody>
-                  {table.getRowModel().rows?.length ? (
-                    table.getRowModel().rows.map((row) => (
-                      <TableRow
-                        key={row.id}
-                        data-state={row.getIsSelected() && "selected"}
-                      >
-                        {row.getVisibleCells().map((cell) => (
-                          <TableCell key={cell.id} className="h-[75px]">
-                            {flexRender(
-                              cell.column.columnDef.cell,
-                              cell.getContext()
-                            )}
-                          </TableCell>
-                        ))}
-                      </TableRow>
-                    ))
-                  ) : (
-                    <TableRow>
-                      <TableCell
-                        colSpan={columns.length}
-                        className="h-24 text-center"
-                      >
-                        No results.
-                      </TableCell>
-                    </TableRow>
-                  )}
-                </TableBody>
-              </Table>
+        {loading == true ? (
+            <div className="flex justify-center items-center">
+              <Loader2 size={24} />
             </div>
-          </CardContent>
-          <TablePagination table={table} />
-        </Card>
+        ) : (
+          <Card className="w-full">
+            <CardContent>
+              <div className="border border-solid border-default-200 rounded-lg overflow-hidden border-t-0">
+                <Table>
+                  <TableHeader className="bg-default-200">
+                    {table.getHeaderGroups().map((headerGroup) => (
+                      <TableRow key={headerGroup.id}>
+                        {headerGroup.headers.map((header) => {
+                          return (
+                            <TableHead className="last:text-start" key={header.id}>
+                              {header.isPlaceholder
+                                ? null
+                                : flexRender(
+                                  header.column.columnDef.header,
+                                  header.getContext()
+                                )}
+                            </TableHead>
+                          );
+                        })}
+                      </TableRow>
+                    ))}
+                  </TableHeader>
+                  <TableBody>
+                    {table.getRowModel().rows?.length ? (
+                      table.getRowModel().rows.map((row) => (
+                        <TableRow
+                          key={row.id}
+                          data-state={row.getIsSelected() && "selected"}
+                        >
+                          {row.getVisibleCells().map((cell) => (
+                            <TableCell key={cell.id} className="h-[75px]">
+                              {flexRender(
+                                cell.column.columnDef.cell,
+                                cell.getContext()
+                              )}
+                            </TableCell>
+                          ))}
+                        </TableRow>
+                      ))
+                    ) : (
+                      <TableRow>
+                        <TableCell
+                          colSpan={columns.length}
+                          className="h-24 text-center"
+                        >
+                          No results.
+                        </TableCell>
+                      </TableRow>
+                    )}
+                  </TableBody>
+                </Table>
+              </div>
+            </CardContent>
+            <TablePagination table={table} />
+          </Card>
+        )}
       </div>
   );
 };
