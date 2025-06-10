@@ -4,36 +4,48 @@ import { useEffect, useState } from "react";
 import { useParams } from "next/navigation";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { RotateCcw } from "lucide-react";
+import { RotateCcw, Loader2 } from "lucide-react";
 import ItemsTable from "@/components/ui/ItemsTable";
-import BillSummary from "./BillSummary"; // adjust path if needed
-import {OrderItem, Orders} from "@/types/orders";
+import BillSummary from "./BillSummary";
+import { OrderItem } from "@/types/orders";
 import useGettingOrderById from "@/services/Orders/gettingOrderById";
 import AxiosInstance from "@/lib/AxiosInstance";
-import {ProductType} from "@/types/product";
+import { OrderStatus } from "@/enum";
+import useRemoveItemsFromOrder from "@/services/Orders/removeItemsFromOrder";
+import {useRouter} from "@/i18n/routing";
+import {toast} from "sonner";
 
-const OrderDetails: React.FC = () => {
-  const params = useParams(); // get dynamic route id
-  const id = params?.id;
+const RemoveItems: React.FC = () => {
+  const { loading: removeLoading, error: removeError, removeItemsFromOrder } = useRemoveItemsFromOrder()
+
+  const router = useRouter();
+  const params = useParams();
+  const id = params?.id as string;
   const { order, loading, error, getOrderById } = useGettingOrderById();
 
   const [items, setItems] = useState<OrderItem[]>([]);
   const [originalItems, setOriginalItems] = useState<OrderItem[]>([]);
-  const [deletedItems, setDeletedItems] = useState<number[]>([]);
+  const [deletedItems, setDeletedItems] = useState<string[]>([]);
   const [hasChanges, setHasChanges] = useState(false);
+  const [isInitialLoad, setIsInitialLoad] = useState(true);
 
   useEffect(() => {
-    if (id) getOrderById(id);
+    if (id) {
+      getOrderById(id).finally(() => setIsInitialLoad(false));
+    }
   }, [id]);
 
   useEffect(() => {
     if (order) {
-      const mappedItems = order.items.map((item: OrderItem, index) => ({
-        id: item.id,
-        item: item.item, // change to product name if available
-        qty: item.qty,
-        price: item.price,
-        total: item.total * item.qty,
+      // Safely transform the order items with fallback values
+      const mappedItems = order.items.map((item) => ({
+        id: item.productId,
+        item: `Product ${item.productId}`, // Default name if not available
+        quantity: item.quantity || 0,
+        unitPrice: item.unitPrice || 0,
+        total: (item.unitPrice || 0) * (item.quantity || 0),
+        productId: item.productId,
+        productPriceId: item.productPriceId,
       }));
 
       setItems(mappedItems);
@@ -42,8 +54,8 @@ const OrderDetails: React.FC = () => {
   }, [order]);
 
   const handleDeleteItem = (itemId: string) => {
-    setDeletedItems((prev: any) => [...prev, itemId]);
-    setItems((prev) => prev.filter((item) => item.id !== itemId));
+    setDeletedItems((prev) => [...prev, itemId]);
+    setItems((prev) => prev.filter((item) => item.productId !== itemId));
     setHasChanges(true);
   };
 
@@ -54,22 +66,34 @@ const OrderDetails: React.FC = () => {
   };
 
   const handleUpdate = async () => {
-    try {
-      // Example: send deleted product IDs to backend
-      await AxiosInstance.put(`/api/Orders/${id}/remove-items`, {
-        removedProductIds: deletedItems,
-      });
-      alert("Order updated successfully!");
-      setHasChanges(false);
-    } catch (error) {
-      console.error(error);
-      alert("Failed to update order.");
+    const {success, error} = await removeItemsFromOrder({
+      orderId: id,
+      itemId: deletedItems,
+    })
+    if (success) {
+      toast.success("Order updated successfully");
+        setHasChanges(false);
+      setTimeout(() => {
+        router.push("/dashboard/order-list");
+      }, 2000);
+    } else {
+        toast.error(`Failed to update order: ${error}`);
+        setTimeout(() => {
+          toast.dismiss();
+        }, 2000);
     }
   };
 
-  if (loading) return <div>Loading...</div>;
-  if (error) return <div className="text-red-600">{error}</div>;
-  if (!order) return null;
+  if (isInitialLoad) {
+    return (
+        <div className="flex items-center justify-center h-screen">
+          <Loader2 className="w-8 h-8 animate-spin" />
+        </div>
+    );
+  }
+
+  if (error) return <div className="text-red-600 text-center py-8">{error}</div>;
+  if (!order) return <div className="text-center py-8">Order not found</div>;
 
   return (
       <div className="space-y-6">
@@ -117,23 +141,28 @@ const OrderDetails: React.FC = () => {
               <div>
                 <span className="block text-default-900 font-medium text-xl">Bill to:</span>
                 <div className="text-default-500 font-normal mt-4 text-sm">
-                  Pharmacy ID: {order.pharmacyUserId}
+                  Pharmacy ID: {order.pharmacyUserId || 'N/A'}
                   <div className="flex space-x-2 mt-2">
                     <p>Inventory Manager:</p>
-                    <span>{order.inventoryUserId}</span>
+                    <span>{order.inventoryUserId || 'N/A'}</span>
                   </div>
                 </div>
               </div>
               <div className="space-y-1 text-xs text-default-600 uppercase">
-                <h4>Order Id: {order.id}</h4>
-                <h4>Order Date: {new Date(order.orderDate).toLocaleString()}</h4>
+                <h4>Order Id: {order.id || 'N/A'}</h4>
+                <h4>Order Date: {order.orderDate ? new Date(order.orderDate).toLocaleString() : 'N/A'}</h4>
+                <h4>Status: {order.status !== undefined ? OrderStatus[order.status] : 'N/A'}</h4>
                 <h4>Payment Method: Cash On Delivery</h4>
               </div>
             </div>
           </CardHeader>
 
           <CardContent>
-            <BillSummary defaultItems={originalItems} items={items} deletedItems={deletedItems} />
+            <BillSummary
+                defaultItems={order.items}
+                items={items}
+                deletedItems={deletedItems}
+            />
             <div className="col-span-12 flex justify-end mt-10">
               <Button variant="soft" size="md" className="cursor-pointer">
                 Print
@@ -145,4 +174,4 @@ const OrderDetails: React.FC = () => {
   );
 };
 
-export default OrderDetails;
+export default RemoveItems;

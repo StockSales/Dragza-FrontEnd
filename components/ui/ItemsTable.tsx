@@ -27,26 +27,26 @@ const ItemsTable: React.FC<ItemsTableProps> = ({ items, deletedItems, onDeleteIt
             <tbody>
             {items.map((data: OrderItem) => (
                 <tr
-                    key={data.id}
+                    key={data.productId}
                     className="border-b border-default-100 border-solid border-0"
                 >
                     <td className="text-default-900 text-sm font-normal text-left px-6 py-4">
-                        {data.item}
+                        {data.productId}
                     </td>
                     <td className="text-default-900 text-sm font-normal text-left px-6 py-4">
-                        {data.qty}
+                        {data.quantity}
                     </td>
                     <td className="text-default-900 text-sm font-normal text-left px-6 py-4">
-                        ${parseFloat(String(data.price)).toFixed(2)}
+                        ${parseFloat(String(data.unitPrice)).toFixed(2)}
                     </td>
-                    <td className="text-default-900 text-sm font-normal text-left px-6 py-4">
-                        ${data.total.toFixed(2)}
+                    <td className={`text-default-900 text-sm font-normal text-left last:text-right px-6 py-4 `}>
+                        {((data.unitPrice || 0)* (data.quantity || 0)).toFixed(2)}
                     </td>
                     <td className="text-center px-6 py-4">
                         <Button
                             variant="ghost"
                             size="sm"
-                            onClick={() => onDeleteItem(data.id)}
+                            onClick={() => onDeleteItem(data.productId)}
                             className="text-red-500 hover:text-red-700 hover:bg-red-50"
                         >
                             <Trash2 className="h-4 w-4" />
