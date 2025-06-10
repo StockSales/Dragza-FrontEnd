@@ -12,21 +12,21 @@ export type Orders = {
 }
 
 export interface OrderItem {
-    id: string;
-    item: string;
-    qty: number;
-    price: number;
-    total: number;
+    productId: string;
+    productPriceId: string;
+    quantity?: number;
+    unitPrice?: number;
+    total?: number;
 }
 
 export interface ItemsTableProps {
     items: OrderItem[];
-    deletedItems: number[];
+    deletedItems: string[];
     onDeleteItem: (id: string) => void;
 }
 
 export interface BillSummaryProps {
     items: OrderItem[];
-    deletedItems: number[];
+    deletedItems: string[];
     defaultItems: OrderItem[];
 }

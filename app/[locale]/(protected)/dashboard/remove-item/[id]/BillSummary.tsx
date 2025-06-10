@@ -1,10 +1,9 @@
 import {BillSummaryProps, OrderItem} from "@/types/orders";
 
 const BillSummary: React.FC<BillSummaryProps> = ({ items, deletedItems, defaultItems }) => {
-  const activeItems: OrderItem[] = items.filter((item: OrderItem) => !deletedItems.includes(parseInt(item.id)));
-  const subtotal: number = activeItems.reduce((sum: number, item: OrderItem) => sum + item.total, 0);
-  const couponDiscount: number = 20.50;
-  const invoiceTotal: number = subtotal - couponDiscount;
+  const activeItems: OrderItem[] = items.filter((item: OrderItem) => !deletedItems.includes(item?.productId || ''));
+  const subtotal: number = activeItems.reduce((sum: number, item: OrderItem) => sum + (item?.total || 0), 0);
+  const invoiceTotal: number = subtotal || 0;
 
   return (
       <div className="border border-solid border-default-400 rounded-md overflow-hidden">
@@ -30,10 +29,10 @@ const BillSummary: React.FC<BillSummaryProps> = ({ items, deletedItems, defaultI
           </thead>
           <tbody>
           {defaultItems.map((data: OrderItem) => {
-            const isDeleted: boolean = deletedItems.includes(parseInt(data.id));
+            const isDeleted: boolean = deletedItems.includes(data.productId || '');
             return (
                 <tr
-                    key={data.id}
+                    key={data.productId}
                     className={`border-b border-default-100 border-solid border-0 transition-all duration-300 ${
                         isDeleted ? 'opacity-50' : ''
                     }`}
@@ -44,7 +43,7 @@ const BillSummary: React.FC<BillSummaryProps> = ({ items, deletedItems, defaultI
                           isDeleted ? 'line-through' : ''
                       }`}
                   >
-                    {data.item}
+                    {data.productId}
                     {isDeleted && (
                         <div className="absolute inset-0 flex items-center">
                           <div className="w-full h-0.5 bg-red-500 animate-pulse"></div>
@@ -54,17 +53,17 @@ const BillSummary: React.FC<BillSummaryProps> = ({ items, deletedItems, defaultI
                   <td className={`text-default-900 text-sm font-normal text-left px-6 py-4 ${
                       isDeleted ? 'line-through' : ''
                   }`}>
-                    {data.qty}
+                    {data.quantity}
                   </td>
                   <td className={`text-default-900 text-sm font-normal text-left px-6 py-4 ${
                       isDeleted ? 'line-through' : ''
                   }`}>
-                    ${parseInt(String(data.price)).toFixed(2)}
+                    ${parseInt(String(data.unitPrice)).toFixed(2)}
                   </td>
                   <td className={`text-default-900 text-sm font-normal text-left last:text-right px-6 py-4 ${
                       isDeleted ? 'line-through' : ''
                   }`}>
-                    ${data.total.toFixed(2)}
+                    {((data.unitPrice || 0) * (data.quantity || 0)).toFixed(2)}
                   </td>
                 </tr>
             );
@@ -78,12 +77,6 @@ const BillSummary: React.FC<BillSummaryProps> = ({ items, deletedItems, defaultI
               Subtotal:
             </span>
               <span className="text-default-900">${subtotal.toFixed(2)}</span>
-            </div>
-            <div className="flex justify-between">
-            <span className="font-medium text-default-600 text-xs uppercase">
-              Coupon Discount:
-            </span>
-              <span className="text-default-900">${couponDiscount.toFixed(2)}</span>
             </div>
             <div className="flex justify-between border-solid border-t border-default-200 pt-3">
             <span className="font-medium text-default-600 text-xs uppercase">

@@ -3,7 +3,16 @@ import AxiosInstance from "@/lib/AxiosInstance";
 import {Orders} from "@/types/orders";
 
 function useGettingOrderById() {
-    const [order, setOrder] = React.useState<Orders | null >(null);
+    const [order, setOrder] = React.useState<Orders>({
+        id: '',
+        pharmacyUserId: '',
+        inventoryUserId: '',
+        orderDate: '',
+        status: 0,
+        totalAmount: 0,
+        deliverDate: '',
+        items: []
+    });
     const [loading, setLoading] = React.useState(false);
     const [error, setError] = React.useState(null);
 
