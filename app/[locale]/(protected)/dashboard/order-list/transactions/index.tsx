@@ -35,6 +35,8 @@ import SearchInput from "@/app/[locale]/(protected)/components/SearchInput/Searc
 import useGetUsersByRoleId from "@/services/users/GetUsersByRoleId";
 import Cookies from "js-cookie";
 import useGettingMyOrders from "@/services/Orders/gettingMyOrders";
+import {Button} from "@/components/ui/button";
+import {OrderStatus, OrderStatusLabel} from "@/enum";
 
 // @ts-ignore
 export default function TransactionsTable (){
@@ -63,7 +65,7 @@ export default function TransactionsTable (){
   const [columnVisibility, setColumnVisibility] = React.useState<VisibilityState>({});
   const [rowSelection, setRowSelection] = React.useState({});
   const [filteredOrders, setFilteredOrders] = useState<Orders[]>([]);
-  const [selectedManagerId, setSelectedManagerId] = useState<string | null>(null);
+  const [selectedStatus, setSelectedStatus] = useState<OrderStatus | "all">("all");
 
   const columns = baseColumns({ refresh: () => gettingAllOrders() });
 
@@ -86,11 +88,22 @@ export default function TransactionsTable (){
     },
   });
 
+  // Filter orders based on selected status
+  const filterOrdersByStatus = (status: OrderStatus | "all") => {
+    setSelectedStatus(status);
+    if (status === "all") {
+      setFilteredOrders(orders || myOrders || []);
+    } else {
+      const filtered = (orders || myOrders || []).filter(order => order.status === status);
+      setFilteredOrders(filtered);
+    }
+  };
+
   // Load inventory managers once on mount
   useEffect(() => {
     if (isAdmin){
       // getUsersByRoleId("1A5A84FB-23C3-4F9B-A122-4C5BC6C5CB2D");
-      gettingAllOrders(); // Make sure this function accepts manager ID
+      gettingAllOrders();
     } else {
       gettingMyOrders();
     }
@@ -98,7 +111,7 @@ export default function TransactionsTable (){
 
   // Sync filteredOrders when orders are updated
   useEffect(() => {
-    if (orders || myOrders) setFilteredOrders(orders || myOrders);
+    filterOrdersByStatus(selectedStatus);
   }, [orders, myOrders]);
 
   return (
@@ -109,6 +122,88 @@ export default function TransactionsTable (){
               setFilteredData={setFilteredOrders}
               filterKey="id"
           />
+
+          <div className="inline-flex flex-wrap items-center border border-solid divide-x divide-default-200 divide-solid rounded-md overflow-hidden">
+            <Button
+                size="md"
+                variant={selectedStatus === "all" ? "default" : "ghost"}
+                color="default"
+                className="ring-0 outline-0 hover:ring-0 hover:ring-offset-0 font-normal border-default-200 rounded-none cursor-pointer"
+                onClick={() => filterOrdersByStatus("all")}
+            >
+              All
+            </Button>
+
+            <Button
+                size="md"
+                variant={selectedStatus === OrderStatus.Pending ? "default" : "ghost"}
+                color="default"
+                className="ring-0 outline-0 hover:ring-0 hover:ring-offset-0 font-normal border-default-200 rounded-none cursor-pointer"
+                onClick={() => filterOrdersByStatus(OrderStatus.Pending)}
+            >
+              {OrderStatusLabel[OrderStatus.Pending]}
+            </Button>
+
+            <Button
+                size="md"
+                variant={selectedStatus === OrderStatus.Approved ? "default" : "ghost"}
+                color="default"
+                className="ring-0 outline-0 hover:ring-0 hover:ring-offset-0 font-normal border-default-200 rounded-none cursor-pointer"
+                onClick={() => filterOrdersByStatus(OrderStatus.Approved)}
+            >
+              {OrderStatusLabel[OrderStatus.Approved]}
+            </Button>
+
+            <Button
+                size="md"
+                variant={selectedStatus === OrderStatus.Rejected ? "default" : "ghost"}
+                color="default"
+                className="ring-0 outline-0 hover:ring-0 hover:ring-offset-0 font-normal border-default-200 rounded-none cursor-pointer"
+                onClick={() => filterOrdersByStatus(OrderStatus.Rejected)}
+            >
+              {OrderStatusLabel[OrderStatus.Rejected]}
+            </Button>
+
+            <Button
+                size="md"
+                variant={selectedStatus === OrderStatus.Prepared ? "default" : "ghost"}
+                color="default"
+                className="ring-0 outline-0 hover:ring-0 hover:ring-offset-0 font-normal border-default-200 rounded-none cursor-pointer"
+                onClick={() => filterOrdersByStatus(OrderStatus.Prepared)}
+            >
+              {OrderStatusLabel[OrderStatus.Prepared]}
+            </Button>
+
+            <Button
+                size="md"
+                variant={selectedStatus === OrderStatus.Shipped ? "default" : "ghost"}
+                color="default"
+                className="ring-0 outline-0 hover:ring-0 hover:ring-offset-0 font-normal border-default-200 rounded-none cursor-pointer"
+                onClick={() => filterOrdersByStatus(OrderStatus.Shipped)}
+            >
+              {OrderStatusLabel[OrderStatus.Shipped]}
+            </Button>
+
+            <Button
+                size="md"
+                variant={selectedStatus === OrderStatus?.Delivered ? "default" : "ghost"}
+                color="default"
+                className="ring-0 outline-0 hover:ring-0 hover:ring-offset-0 font-normal border-default-200 rounded-none cursor-pointer"
+                onClick={() => filterOrdersByStatus(OrderStatus.Delivered)}
+            >
+              {OrderStatusLabel[OrderStatus.Delivered]}
+            </Button>
+
+            <Button
+                size="md"
+                variant={selectedStatus === OrderStatus.Completed ? "default" : "ghost"}
+                color="default"
+                className="ring-0 outline-0 hover:ring-0 hover:ring-offset-0 font-normal border-default-200 rounded-none cursor-pointer"
+                onClick={() => filterOrdersByStatus(OrderStatus.Completed)}
+            >
+              {OrderStatusLabel[OrderStatus.Completed]}
+            </Button>
+          </div>
         </div>
 
         {(loading || usersLoading || myOrdersLoading) ? (
@@ -153,18 +248,14 @@ export default function TransactionsTable (){
                             </TableRow>
                         ))
                     ) : (
-                        <>
-                          {orders.length === 0 && (
-                            <TableRow>
-                              <TableCell
-                                  colSpan={columns.length}
-                                  className="h-24 text-center"
-                              >
-                                No results.
-                              </TableCell>
-                            </TableRow>
-                          )}
-                        </>
+                        <TableRow>
+                          <TableCell
+                              colSpan={columns.length}
+                              className="h-24 text-center"
+                          >
+                            No results.
+                          </TableCell>
+                        </TableRow>
                     )}
                   </TableBody>
                 </Table>
