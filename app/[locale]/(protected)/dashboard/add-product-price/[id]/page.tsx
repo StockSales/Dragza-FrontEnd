@@ -105,18 +105,6 @@ function AddProductPrice() {
                         <CardTitle>Product Information</CardTitle>
                     </CardHeader>
                     <CardContent className="space-y-4">
-                        <div className="flex items-center flex-wrap">
-                            <Label className="w-[150px] flex-none" htmlFor="purchasePrice">
-                                Purchase Price
-                            </Label>
-                            <Input
-                                id="purchasePrice"
-                                type="number"
-                                placeholder="purchase price"
-                                value={purchasePrice}
-                                onChange={(e) => setPurchasePrice(parseInt(e?.target?.value))}
-                            />
-                        </div>
 
                         <div className="flex items-center flex-wrap">
                             <Label className="w-[150px] flex-none" htmlFor="salesPrice">
@@ -128,6 +116,26 @@ function AddProductPrice() {
                                 placeholder="sales price"
                                 value={salesPrice}
                                 onChange={(e) => setSalesPrice(parseInt(e?.target?.value))}
+                            />
+                        </div>
+
+                        <div className="flex items-center flex-wrap">
+                            <Label className="w-[150px] flex-none" htmlFor="purchasePrice">
+                                Purchase Price
+                            </Label>
+                            <Input
+                                id="purchasePrice"
+                                type="number"
+                                placeholder="purchase price"
+                                value={purchasePrice}
+                                onChange={(e) => {
+                                    const value = parseFloat(e.target.value);
+                                    setPurchasePrice(value);
+                                    if (salesPrice) {
+                                        const calculatedDiscount = ((salesPrice - value) / salesPrice) * 100;
+                                        setDiscount(parseFloat(calculatedDiscount.toFixed(2)));
+                                    }
+                                }}
                             />
                         </div>
 
@@ -153,7 +161,16 @@ function AddProductPrice() {
                                     type="number"
                                     placeholder="eg. 100"
                                     value={discount}
-                                    onChange={(e) => setDiscount(parseInt(e.target.value))}
+                                    onChange={(e) => {
+                                        const input = parseFloat(e.target.value);
+                                        const value = Math.min(input, 100); // Clamp to max 100
+                                        setDiscount(value);
+
+                                        if (salesPrice) {
+                                            const calculatedPurchasePrice = salesPrice * (1 - value / 100);
+                                            setPurchasePrice(parseFloat(calculatedPurchasePrice.toFixed(2)));
+                                        }
+                                    }}
                                     className="pr-10" // padding-right for icon space
                                 />
                                 <span className="absolute inset-y-0 right-3 flex items-center pointer-events-none text-gray-500 text-sm">

@@ -38,6 +38,15 @@ export const columns: ColumnDef<Price>[] = [
     cell: ({ row }) => <span>{row.getValue("salesPrice")}</span>,
   },
   {
+    header: "Discount (%)",
+    cell: ({ row }) => {
+      const { salesPrice, purchasePrice } = row.original;
+      const discount = ((salesPrice - purchasePrice) / salesPrice) * 100;
+      const formattedDiscount = isFinite(discount) ? discount.toFixed(2) : "0.00";
+      return <span>{formattedDiscount}%</span>;
+    }
+  },
+  {
     accessorKey: "creationDate",
     header: "Creation Date",
     cell: ({ row }) => {
@@ -48,7 +57,7 @@ export const columns: ColumnDef<Price>[] = [
     accessorKey: "inventoryUserName",
     header: "InventoryUserName",
     cell: ({ row }) => {
-      return <span>{row.getValue("inventoryUserName") || "minaemad"}</span>;
+      return <span>{row.getValue("inventoryUserName") || "N/A"}</span>;
     },
   },
   // {
