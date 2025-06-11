@@ -14,7 +14,7 @@ import {
   useReactTable,
 } from "@tanstack/react-table";
 
-import { columns } from "./columns";
+import { getColumns } from "./columns";
 
 import { Input } from "@/components/ui/input";
 import {
@@ -44,9 +44,13 @@ import { ExportCSVButton } from "@/components/partials/export-csv/ExportCSVButto
 import { CSVUploadModal } from "@/components/partials/ImportCsv/ImportCsv";
 import {dummyAreas} from "@/app/[locale]/(protected)/dashboard/area/transactions/data";
 import {AreaType} from "@/types/areas";
+import { Button } from "@/components/ui/button";
+import {useRouter} from "@/i18n/routing";
 
 const AreasTable = () => {
-  const [selectedAreaType, setSelectedAreaType] = useState<string>("main");
+  const router = useRouter();
+
+  const [selectedAreaType, setSelectedAreaType] = useState<"main" | "secondary">("main");
   const [isLoading, setIsLoading] = useState(false);
 
   const [sorting, setSorting] = useState<SortingState>([]);
@@ -60,6 +64,8 @@ const AreasTable = () => {
       () => dummyAreas.filter((area) => area.type === selectedAreaType),
       [selectedAreaType]
   );
+
+  const columns = getColumns(selectedAreaType);
 
 
   const table = useReactTable({
@@ -91,9 +97,9 @@ const AreasTable = () => {
 
   return (
       <Card className="w-full">
-        <div className="flex flex-wrap gap-4 items-center py-4 px-5">
+        <div className="flex justify-between flex-wrap gap-4 items-center py-4 px-5">
           <div className="flex-1 text-xl flex gap-4 font-medium text-default-900">
-            <Select value={selectedAreaType} onValueChange={setSelectedAreaType}>
+            <Select value={selectedAreaType} onValueChange={(value: "main" | "secondary") => setSelectedAreaType(value)}>
               <SelectTrigger className="w-[180px] cursor-pointer">
                 <SelectValue placeholder="Select Area Type" />
               </SelectTrigger>
@@ -106,6 +112,9 @@ const AreasTable = () => {
               </SelectContent>
             </Select>
           </div>
+          <Button size={"md"} variant="outline" onClick={() => router.push(`/dashboard/add-area/${selectedAreaType}`)}>
+              Add Area
+          </Button>
         </div>
 
         <CardContent>

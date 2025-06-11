@@ -8,6 +8,7 @@ export interface Area {
     population: number;
     establishedDate: string;
     isActive: boolean;
+    mainAreaId?: string;
 }
 
 export type AreaType = "main" | "secondary";

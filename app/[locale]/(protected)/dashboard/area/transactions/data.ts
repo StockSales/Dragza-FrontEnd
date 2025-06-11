@@ -28,6 +28,7 @@ export const dummyAreas: Area[] = [
         population: 15000,
         establishedDate: "2021-03-10",
         isActive: true,
+        mainAreaId: "1", // related to Downtown Central
     },
     {
         id: "4",
@@ -46,6 +47,7 @@ export const dummyAreas: Area[] = [
         population: 8000,
         establishedDate: "2022-01-30",
         isActive: false,
+        mainAreaId: "4", // related to Shopping District
     },
     {
         id: "6",
@@ -64,6 +66,7 @@ export const dummyAreas: Area[] = [
         population: 3000,
         establishedDate: "2020-05-18",
         isActive: true,
+        mainAreaId: "2", // related to Industrial Zone A
     },
     {
         id: "8",
