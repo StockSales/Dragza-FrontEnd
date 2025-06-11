@@ -5,7 +5,7 @@ function useDeleteCoupon() {
     const [loading, setLoading] = useState(false);
     const [error, setError] = useState<string | null>(null);
 
-    const deleteCoupon = async (id: string | string[] | undefined): Promise<{ success: boolean; error?: string }> => {
+    const deleteCoupon = async (id: string | number | undefined): Promise<{ success: boolean; error?: string }> => {
         setLoading(true);
         setError(null);
         try {

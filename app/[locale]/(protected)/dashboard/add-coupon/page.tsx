@@ -28,7 +28,7 @@ const AddCoupon = () => {
 
   // States for coupon form
   const [code, setCode] = useState("");
-  const [type, setType] = useState(""); // "value" or "percentage"
+  const [type, setType] = useState<"percentage" | "fixed_amount">("percentage"); // Default to percentage
   const [numberOfUsers, setNumberOfUsers] = useState("");
   const [value, setValue] = useState("");
   const [startDate, setStartDate] = useState("");
@@ -127,7 +127,11 @@ const AddCoupon = () => {
 
               <div className="flex items-center flex-wrap gap-4 md:gap-0">
                 <Label className="w-[150px] flex-none">Coupon Type</Label>
-                <Select onValueChange={(e) => setType(e)}>
+                <Select onValueChange={(value) => {
+                  if (value === "percentage" || value === "fixed_amount") {
+                    setType(value as "percentage" | "fixed_amount");
+                  }
+                }}>
                   <SelectTrigger className="flex-1 cursor-pointer">
                     <SelectValue placeholder="Select Type" />
                   </SelectTrigger>
