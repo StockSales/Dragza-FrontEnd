@@ -72,7 +72,7 @@ const EditCategory = () => {
       }
     } catch (err) {
       toast.error("Update Failed", {
-        description: err?.message || "Something went wrong.",
+        description: err instanceof Error ? err.message : "Something went wrong.",
       });
     }
   };

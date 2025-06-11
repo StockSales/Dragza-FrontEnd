@@ -32,6 +32,7 @@ import {Button} from "@/components/ui/button";
 import {useRouter} from "@/i18n/routing";
 import useGettingAllCoupons from "@/services/coupons/gettingAllCoupons";
 import {Loader2} from "lucide-react";
+import {Coupon} from "@/types/coupons";
 
 const TransactionsTable = () => {
   const router = useRouter()

@@ -10,7 +10,7 @@ function useDeactivateUser() {
    * @param userId - ID of the user to deactivate
    */
   const deactivateUser = async (
-      userId: string | string[]
+      userId: string | string[] | undefined
   ): Promise<{ success: boolean; error?: string }> => {
     setLoading(true);
     setError(null);
