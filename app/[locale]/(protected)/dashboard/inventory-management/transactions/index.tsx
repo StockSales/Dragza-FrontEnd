@@ -165,7 +165,7 @@ const TransactionsTable = () => {
               <div className="flex flex-row justify-between w-full">
                 <ExportCSVButton config={{
                     filename: "inventory-data.csv",
-                    headers: ["id", "productName", "salesPrice", "creationDate"],
+                    headers: ["id", "productName", "salesPrice", "purchasePrice", "creationDate" ],
                   }}
                   data={tableData ?? []}
                 />

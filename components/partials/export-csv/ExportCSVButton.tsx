@@ -42,7 +42,7 @@ export function ExportCSVButton<T extends Record<string, any>>({
             csvRows.push(values.join(delimiter));
         }
 
-        const csvString = csvRows.join("\n");
+        const csvString = "\uFEFF" + csvRows.join("\n");
 
         // Create a blob and download it
         const blob = new Blob([csvString], { type: "text/csv" });

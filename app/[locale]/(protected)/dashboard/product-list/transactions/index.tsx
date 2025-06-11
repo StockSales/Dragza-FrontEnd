@@ -47,9 +47,12 @@ import Cookies from "js-cookie";
 import {ProductType} from "@/types/product";
 import product from "@/app/[locale]/(protected)/dashboard/dash-ecom/components/product";
 import SearchInput from "@/app/[locale]/(protected)/components/SearchInput/SearchInput";
+import {ExportCSVButton} from "@/components/partials/export-csv/ExportCSVButton";
+import {CSVUploadModal} from "@/components/partials/ImportCsv/ImportCsv";
 
 const TransactionsTable = () => {
   const userRole = Cookies.get("userRole");
+  const userId = Cookies.get("userId");
   // getting all products
   const { loading, getAllProducts, products: data, error, includeDeleted, setIncludeDeletedState } = useGettingAllProducts()
 
@@ -87,6 +90,54 @@ const TransactionsTable = () => {
     },
   });
 
+  // for CSV upload
+  const transformedProducts = (data ?? []).map((product) => {
+    const allPrices = product.prices ?? [];
+
+    // Prices added by the specific user
+    const userPrices = allPrices.filter(
+        (p) => p.inventoryUserId === userId
+    );
+
+    let selectedPrice;
+
+    if (userPrices.length > 0) {
+      // Pick latest price added by the user
+      selectedPrice = userPrices.sort(
+          (a, b) =>
+              new Date(b.creationDate).getTime() - new Date(a.creationDate).getTime()
+      )[0];
+    } else {
+      // Pick latest price globally
+      selectedPrice = allPrices.sort(
+          (a, b) =>
+              new Date(b.creationDate).getTime() - new Date(a.creationDate).getTime()
+      )[0];
+    }
+
+    return {
+      id: product.id ?? "",
+      name: product.name,
+      salesPrice: selectedPrice?.salesPrice ?? "",
+      purchasePrice: selectedPrice?.purchasePrice ?? "",
+      creationDate: selectedPrice?.creationDate ?? "",
+      categoryName: product.category.name ?? "",
+      categoryId: product.category.id ?? "",
+    };
+  });
+
+  const handleCSVUpload = async (file: File) => {
+    const formData = new FormData();
+    formData.append("file", file);
+
+    const res = await fetch("/api/upload-csv", {
+      method: "POST",
+      body: formData,
+    });
+
+    if (!res.ok) throw new Error("Upload failed");
+  };
+
   // mounted data
   useEffect(() => {
     gettingAllCategories()
@@ -119,9 +170,9 @@ const TransactionsTable = () => {
 
   return (
     <div className="w-full">
-      <div className="flex flex-wrap justify-end items-center py-4 px-6 border-b border-solid border-default-200">
-        <div className="#flex-none">
-          <div className="flex items-center gap-4 flex-wrap">
+      <div className="flex justify-between flex-row items-center py-4 px-6 border-b border-solid border-default-200">
+        <div className="flex flex-row items-center w-full gap-4 justify-between">
+          <div className="flex items-center gap-4 w-full flex-wrap">
             <SearchInput
               data={data ?? []}
               filterKey={"name"}
@@ -134,37 +185,20 @@ const TransactionsTable = () => {
                 </Button>
               </Link>
             )}
-            <Select>
-              <SelectTrigger className=" w-[150px] cursor-pointer">
-                <SelectValue placeholder="Select Category" />
-              </SelectTrigger>
-              <SelectContent>
-                <SelectGroup>
-                  <SelectLabel>Category</SelectLabel>
-                  {categories.map((category: any) => (
-                      <SelectItem
-                          key={category.id}
-                          value={category.id}
-                      >
-                        {category.name}
-                      </SelectItem>
-                  ))}
-                </SelectGroup>
-              </SelectContent>
-            </Select>
-
-            <Select onValueChange={ (value) => setIncludeDeletedState(value)}>
-              <SelectTrigger className=" w-[150px] cursor-pointer">
-                <SelectValue placeholder="Select Include Deleted" />
-              </SelectTrigger>
-              <SelectContent>
-                <SelectGroup>
-                  <SelectLabel>Include Deleted</SelectLabel>
-                    <SelectItem value={"true"}>True</SelectItem>
-                    <SelectItem value={"false"}>False</SelectItem>
-                </SelectGroup>
-              </SelectContent>
-            </Select>
+            {userRole !== "Admin" && (
+                <div className={"flex flex-row gap-6 justify-end"}>
+                  <ExportCSVButton
+                      data={transformedProducts.filter((item): item is { id: string; name: string; salesPrice: number; purchasePrice: number; creationDate: string; categoryName: string; categoryId: string } => item !== null)}
+                      config={{
+                        filename: "user-specific-inventory.csv",
+                        headers: ["id", "name", "salesPrice", "purchasePrice", "creationDate", "categoryName", "categoryId"],
+                      }}
+                  />
+                  <CSVUploadModal
+                      onUpload={handleCSVUpload}
+                  />
+                </div>
+            )}
           </div>
         </div>
       </div>
