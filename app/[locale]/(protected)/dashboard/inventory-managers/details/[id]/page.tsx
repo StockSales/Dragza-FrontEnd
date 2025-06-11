@@ -17,11 +17,16 @@ import {UserRole, UserRoleLabel} from "@/enum";
 import useGettingUserById from "@/services/users/gettingUserById";
 import useDeactivateUser from "@/services/users/DeactivateUsers";
 import {Loader2} from "lucide-react";
+import useGettingPricesByInventoryId from "@/services/productPrice/gettingPricesByInventoryId";
+import {Table, TableBody, TableCell, TableHead, TableHeader, TableRow} from "@/components/ui/table";
 
-const EditUser = () => {
+const InventoryPrices = () => {
   // Params
   const params = useParams();
   const id = params?.id;
+
+  // getting product prices by inventory id
+  const {gettingPricesByInventoryId, prices, loading: pricesLoading} = useGettingPricesByInventoryId()
 
   // getting user Data by id
   const {error, loading, user, getUserById} = useGettingUserById()
@@ -44,28 +49,13 @@ const EditUser = () => {
 
   // Handle update (you'd normally call an update API here)
   const updateUser = async () => {
-    // if (!user || !id || !userRole) {
-    //   toast.error("Validation Error", { description: "All fields are required." });
-    //   return;
-    // }
-
-    // const payload = {
-    //   userName,
-    //   email,
-    //   phoneNumber,
-    //   businessName,
-    //   minOrder,
-    //   region,
-    //   isActive: activate,
-    //   roleId: userRole
-    // };
 
     try {
       const {success, error} =  await deactivateUser(id);
       if (success) {
         toast.success("User Updated", { description: "User updated successfully." });
         setTimeout(() => {
-          router.push("/dashboard/user-rules");
+          router.push("/dashboard/inventory-managers");
         }, 1000)
       } else if (error) {
         throw new Error(error)
@@ -92,6 +82,7 @@ const EditUser = () => {
 
   useEffect(() => {
     getUserById(id);
+    gettingPricesByInventoryId(id);
   }, []);
 
 
@@ -116,6 +107,7 @@ const EditUser = () => {
                         id="userName"
                         className="flex-1"
                         value={userName}
+                        disabled
                         onChange={(e) => setUserName(e.target.value)}
                     />
                   </div>
@@ -126,6 +118,7 @@ const EditUser = () => {
                         id="email"
                         className="flex-1"
                         value={email}
+                        disabled
                         onChange={(e) => setEmail(e.target.value)}
                     />
                   </div>
@@ -136,6 +129,7 @@ const EditUser = () => {
                         id="phone"
                         className="flex-1"
                         value={phoneNumber}
+                        disabled
                         onChange={(e) => setPhoneNumber(e.target.value)}
                     />
                   </div>
@@ -146,6 +140,7 @@ const EditUser = () => {
                         id="business"
                         className="flex-1"
                         value={businessName}
+                        disabled
                         onChange={(e) => setBusinessName(e.target.value)}
                     />
                   </div>
@@ -155,6 +150,7 @@ const EditUser = () => {
                     <Input
                         id="region"
                         className="flex-1"
+                        disabled
                         value={region}
                         onChange={(e) => setRegion(e.target.value)}
                     />
@@ -166,6 +162,7 @@ const EditUser = () => {
                         id="minOrder"
                         type="number"
                         className="flex-1"
+                        disabled
                         value={minOrder}
                         onChange={(e) => setMinOrder(Number(e.target.value))}
                     />
@@ -197,14 +194,54 @@ const EditUser = () => {
                       </div>
                     </div>
                 ) : (
-                    "Update user"
+                    "Update user activation"
                 )}
               </Button>
             </div>
           </>
         )}
+
+        {pricesLoading ? (
+            <div className="flex mx-auto justify-center items-center">
+              <Loader2 className="animate-spin" />
+            </div>
+        ): (
+            <div className="col-span-12 mt-6">
+              <Card>
+                <CardHeader className="border-b border-solid border-default-200 mb-6">
+                  <CardTitle>Inventory Prices</CardTitle>
+                </CardHeader>
+
+                <CardContent className="space-y-4">
+                  {prices.length > 0 ? (
+                       // need to create table of prices
+                      <Table>
+                        <TableHeader>
+                          <TableRow>
+                            <TableHead className="w-[100px]">Product</TableHead>
+                            <TableHead className="w-[100px]">Purchase Price</TableHead>
+                            <TableHead className="w-[100px]">Sales Price</TableHead>
+                          </TableRow>
+                        </TableHeader>
+                        <TableBody>
+                          {prices.map((price) => (
+                              <TableRow key={price.id}>
+                                <TableCell className="font-medium">{price.productName}</TableCell>
+                                <TableCell className="font-medium">{price.purchasePrice}</TableCell>
+                                <TableCell className="font-medium">{price.salesPrice}</TableCell>
+                              </TableRow>
+                          ))}
+                        </TableBody>
+                      </Table>
+                  ) : (
+                      <div className="text-center text-default-600">No prices available for this inventory.</div>
+                  )}
+                </CardContent>
+              </Card>
+            </div>
+        )}
       </div>
   );
 };
 
-export default EditUser;
+export default InventoryPrices;

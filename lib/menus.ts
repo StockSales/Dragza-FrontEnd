@@ -245,22 +245,31 @@ export function getMenuList(pathname: string, t: any, role: string, locale: stri
   const filteredGroups: Group[] = [];
 
   for (const group of allMenus) {
+
     const filteredMenus: Menu[] = [];
 
     for (const menu of group.menus) {
-      // Filter submenus based on permissions
-      const filteredSubmenus: Submenu[] = menu.submenus?.filter((sub) =>
-          isAllowed(sub.href)
-      ) ?? [];
+      // 🚫 Skip /dashboard/inventory-management for admin
+      if (role == "Admin" && menu.href == "/dashboard/inventory-management") {
+        console.log("aaaaaaaaaa")
+        continue;
+      }
+      const filteredSubmenus: Submenu[] = menu.submenus?.filter((sub) => {
+        // 🚫 Skip /dashboard/inventory-management for admin
+        if (role === "Admin" && sub.href === "/dashboard/inventory-management") {
+          return false;
+        } if (role === "Inventory" && sub.href === "/dashboard/inventory-management") {
+          return true;
+        }
+        return isAllowed(sub.href);
+      }) ?? [];
 
-      // Determine if this menu should be included
       const includeMenu: boolean =
           isAllowed(menu.href) || filteredSubmenus.length > 0;
 
       if (includeMenu) {
         filteredMenus.push({
           ...menu,
-          // Fixed: Ensure menu.href is a non-empty string before using startsWith
           active: Boolean(menu.href && pathname.startsWith(menu.href)),
           submenus: filteredSubmenus.map((sub) => ({
             ...sub,

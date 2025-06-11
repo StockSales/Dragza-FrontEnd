@@ -1,10 +1,12 @@
 import { ColumnDef } from "@tanstack/react-table";
 import {
-  Trash2,
+    Eye,
+    Trash2,
 } from "lucide-react";
 import {toast} from "sonner";
 import {Button} from "@/components/ui/button";
 import useDeleteUser from "@/services/users/DeleteUser";
+import {Link} from "@/i18n/routing";
 
 export type DataProps = {
   id: string | number;
@@ -123,6 +125,12 @@ export const baseColumns = ({ refresh }: { refresh: () => void }): ColumnDef<Dat
 
       return (
           <div className="flex items-center gap-1">
+            <Link
+                href={`/dashboard/inventory-managers/details/${id}`}
+                className="flex items-center p-2 text-blue-100 bg-blue-300 duration-200 transition-all hover:bg-blue-100 hover:text-blue-300 rounded-full cursor-pointer"
+            >
+              <Eye className="w-4 h-4" />
+            </Link>
             <div
                 onClick={handleDelete}
                 className="flex items-center p-2 text-destructive bg-destructive/40 duration-200 transition-all hover:bg-destructive/80 hover:text-destructive-foreground rounded-full cursor-pointer"

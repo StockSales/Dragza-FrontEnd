@@ -19,10 +19,6 @@ function useGettingPricesForInventoryManager() {
                 setPrices(response.data)
             })
             .catch((error) => {
-                Cookies.remove("userRole");
-                Cookies.remove("userId");
-                Cookies.remove("authToken");
-                window.location.href = '/en';
                 setError(error.message);
             })
             .finally(() => {

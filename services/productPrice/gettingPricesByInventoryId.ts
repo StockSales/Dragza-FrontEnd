@@ -8,7 +8,7 @@ function useGettingPricesByInventoryId() {
     const [prices, setPrices] = useState<Price[]>([]);
 
     // getting prices by inventoryId
-    const gettingPricesByInventoryId = async (inventoryId: string) => {
+    const gettingPricesByInventoryId = async (inventoryId: string | string[] | undefined) => {
         setLoading(true);
         setError(null);
         await AxiosInstance.get(`/api/ProductPrices/by-inventory-user/${inventoryId}`)
