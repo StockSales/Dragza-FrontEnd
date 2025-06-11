@@ -1,9 +1,11 @@
 import { ColumnDef } from "@tanstack/react-table";
 import {formatDateToDMY} from "@/utils";
 import {Area} from "@/types/areas";
+import {Link, usePathname} from "@/i18n/routing";
+import {SquarePen, Trash2, TriangleAlert} from "lucide-react";
 
 
-export const columns: ColumnDef<Area>[] = [
+export const getColumns = (areaType: "main" | "secondary"): ColumnDef<Area>[] => [
   {
     accessorKey: "name",
     header: "Name",
@@ -46,44 +48,35 @@ export const columns: ColumnDef<Area>[] = [
       );
     },
   },
-  // {
-  //   id: "actions",
-  //   accessorKey: "action",
-  //   header: "Actions",
-  //   enableHiding: false,
-  //   cell: ({ row }) => {
-  //     const pathname = usePathname();
-  //     const getHref = () => {
-  //       if (pathname?.includes('/sellers')) {
-  //         return '/dashboard/edit-product';
-  //       } else if (pathname?.includes('/admin')) {
-  //         return '/admin/invoice/preview/1';
-  //       } else {
-  //         return '/utility/invoice/preview/1'; // Default path
-  //       }
-  //     };
-  //     return (
-  //       <div className="flex items-center gap-1">
-  //         <Link
-  //           href={getHref()}
-  //           className="flex items-center p-2 border-b text-info hover:text-info-foreground bg-info/40 hover:bg-info duration-200 transition-all rounded-full"
-  //         >
-  //           <SquarePen className="w-4 h-4" />
-  //         </Link>
-  //         <Link
-  //           href="#"
-  //           className="flex items-center p-2 border-b text-warning hover:text-warning-foreground bg-warning/40 hover:bg-warning duration-200 transition-all rounded-full"
-  //         >
-  //           <TriangleAlert className="w-4 h-4" />
-  //         </Link>
-  //         <Link
-  //           href="#"
-  //           className="flex items-center p-2 text-destructive bg-destructive/40 duration-200 transition-all hover:bg-destructive/80 hover:text-destructive-foreground rounded-full"
-  //         >
-  //           <Trash2 className="w-4 h-4" />
-  //         </Link>
-  //       </div>
-  //     );
-  //   },
-  // },
+  {
+    id: "actions",
+    accessorKey: "action",
+    header: "Actions",
+    enableHiding: false,
+    cell: ({ row }) => {
+      const pathname = usePathname();
+      const getHref = () => {
+        if (pathname?.includes('/area')) {
+          return `/dashboard/edit-area/${areaType}/${row.original.id}`;
+        }
+        return '#'; // Return a default value to satisfy TypeScript
+      };
+      return (
+        <div className="flex items-center gap-1">
+          <Link
+            href={getHref()}
+            className="flex items-center p-2 border-b text-info hover:text-info-foreground bg-info/40 hover:bg-info duration-200 transition-all rounded-full"
+          >
+            <SquarePen className="w-4 h-4" />
+          </Link>
+          {/*<Link*/}
+          {/*  href="#"*/}
+          {/*  className="flex items-center p-2 text-destructive bg-destructive/40 duration-200 transition-all hover:bg-destructive/80 hover:text-destructive-foreground rounded-full"*/}
+          {/*>*/}
+          {/*  <Trash2 className="w-4 h-4" />*/}
+          {/*</Link>*/}
+        </div>
+      );
+    },
+  },
 ];

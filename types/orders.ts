@@ -2,9 +2,11 @@ import {ProductType} from "@/types/product";
 
 export type Orders = {
     id: string;
-    pharmacyUserId: string
-    inventoryUserId: string
-    orderDate: string
+    pharmacyUserId: string;
+    pharmacyName?: string;
+    inventoryUserName?: string;
+    inventoryUserId: string;
+    orderDate: string;
     status: number
     totalAmount: number
     deliverDate: string
@@ -13,6 +15,7 @@ export type Orders = {
 
 export interface OrderItem {
     productId: string;
+    productName: string;
     productPriceId: string;
     quantity?: number;
     unitPrice?: number;
