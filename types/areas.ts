@@ -18,3 +18,11 @@ export interface AreaFilters {
     isActive?: boolean;
     name?: string;
 }
+
+
+export interface MainArea {
+    id?: string;
+    regionName: string;
+    lang: string;
+    lat: string;
+}

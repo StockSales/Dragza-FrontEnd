@@ -184,14 +184,14 @@ export const baseColumns = ({ refresh }: { refresh: () => void }): ColumnDef<Pro
           >
             <SquarePen className="w-4 h-4" />
           </Link>
-            {userRole == "Admin" && (
-              <div
-                onClick={() => handleDeleteProduct(row.original.id)}
-                className="flex items-center p-2 text-destructive bg-destructive/40 duration-200 transition-all hover:bg-destructive/80 hover:text-destructive-foreground rounded-full"
-              >
-                <Trash2 className="w-4 h-4" />
-              </div>
-            )}
+            {/*{userRole == "Admin" && (*/}
+            {/*  <div*/}
+            {/*    onClick={() => handleDeleteProduct(row.original.id)}*/}
+            {/*    className="flex items-center p-2 text-destructive bg-destructive/40 duration-200 transition-all hover:bg-destructive/80 hover:text-destructive-foreground rounded-full"*/}
+            {/*  >*/}
+            {/*    <Trash2 className="w-4 h-4" />*/}
+            {/*  </div>*/}
+            {/*)}*/}
         </div>
       );
     },
