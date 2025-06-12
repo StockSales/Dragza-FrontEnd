@@ -18,6 +18,7 @@ import useGettingUserById from "@/services/users/gettingUserById";
 import useDeactivateUser from "@/services/users/DeactivateUsers";
 import {Loader2} from "lucide-react";
 import useGettingBalanceForUser from "@/services/balance/gettingBalanceForUser";
+import useDepositCash from "@/services/balance/deposit-cash";
 
 const EditUser = () => {
   // Params
@@ -33,6 +34,9 @@ const EditUser = () => {
   // Deactivate user
   const { deactivateUser, loading: deactivateUserLoading, error: deactivateUserError } = useDeactivateUser()
 
+  // handling deposit cash
+  const {depositCash, loading: depositCashLoading} = useDepositCash()
+
   // Router navigator
   const router = useRouter();
 
@@ -45,6 +49,10 @@ const EditUser = () => {
   const [businessName, setBusinessName] = useState("");
   const [minOrder, setMinOrder] = useState(0);
   const [region, setRegion] = useState("");
+
+  // for debosit
+    const [amount, setAmount] = useState("");
+    const [description, setDescription] = useState("");
 
   // Handle update (you'd normally call an update API here)
   const updateUser = async () => {
@@ -80,6 +88,25 @@ const EditUser = () => {
       });
     }
   };
+
+  // Handle deposit cash
+    const handleDepositCash = async () => {
+        try {
+            const {success, error} =  await depositCash({amount, description}, id);
+            if (success) {
+                toast.success("Deposit Cash", { description: "Deposit cash successfully." });
+                setDescription("")
+                setAmount("");
+                getBalanceForUser(id); // Refresh balance after deposit
+            } else if (error) {
+                throw new Error(error)
+            }
+        } catch (err) {
+            toast.error("Deposit Cash Failed", {
+                description: err instanceof Error ? err.message : "Something went wrong.",
+            });
+        }
+    };
 
   useEffect(() => {
     if (user) {
@@ -188,23 +215,22 @@ const EditUser = () => {
                       </SelectContent>
                     </Select>
                   </div>
+                  <div className="col-span-12 flex justify-center mt-4">
+                    <Button onClick={updateUser}>
+                      {deactivateUserLoading ? (
+                          <div className="flex flex-row gap-3 items-center">
+                            <Loader />
+                            <div className="flex justify-center items-center">
+                              <Loader2 className="text-white animate-spin"/>
+                            </div>
+                          </div>
+                      ) : (
+                          "Update user"
+                      )}
+                    </Button>
+                  </div>
                 </CardContent>
               </Card>
-            </div>
-
-            <div className="col-span-12 flex justify-center mt-4">
-              <Button onClick={updateUser}>
-                {deactivateUserLoading ? (
-                    <div className="flex flex-row gap-3 items-center">
-                      <Loader />
-                      <div className="flex justify-center items-center">
-                        <Loader2 className="text-white animate-spin"/>
-                      </div>
-                    </div>
-                ) : (
-                    "Update user"
-                )}
-              </Button>
             </div>
           </>
         )}
@@ -253,6 +279,50 @@ const EditUser = () => {
                 </CardContent>
             </Card>
         )}
+
+
+        <Card>
+            <CardHeader className="border-b border-solid border-default-200 mb-6 mt-4">
+                <CardTitle>Deposit Cash</CardTitle>
+            </CardHeader>
+
+            <CardContent className="space-y-4">
+                <div className="flex items-center flex-wrap">
+                    <Label className="w-[150px] flex-none" htmlFor="amount">Amount</Label>
+                    <Input
+                        id="amount"
+                        type="number"
+                        className="flex-1"
+                        onChange={(e) => setAmount(e.target.value)}
+                        value={amount}
+                        placeholder="Enter amount to deposit"
+                    />
+                </div>
+
+                <div className="flex items-center flex-wrap">
+                    <Label className="w-[150px] flex-none" htmlFor="description">Description</Label>
+                    <Textarea
+                        id="description"
+                        className="flex-1"
+                        onChange={(e) => setDescription(e.target.value)}
+                        value={description}
+                        placeholder="Enter discription"
+                    />
+                </div>
+
+                <div  className={"flex items-center justify-center"}>
+                    <Button onClick={() => {
+                        handleDepositCash();
+                    }}>
+                        {depositCashLoading ? (
+                            <Loader />
+                        ) : (
+                            "Deposit Cash"
+                        )}
+                    </Button>
+                </div>
+            </CardContent>
+        </Card>
       </div>
   );
 };
