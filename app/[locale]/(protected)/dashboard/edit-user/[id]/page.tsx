@@ -17,6 +17,7 @@ import {UserRole, UserRoleLabel} from "@/enum";
 import useGettingUserById from "@/services/users/gettingUserById";
 import useDeactivateUser from "@/services/users/DeactivateUsers";
 import {Loader2} from "lucide-react";
+import useGettingBalanceForUser from "@/services/balance/gettingBalanceForUser";
 
 const EditUser = () => {
   // Params
@@ -25,6 +26,9 @@ const EditUser = () => {
 
   // getting user Data by id
   const {error, loading, user, getUserById} = useGettingUserById()
+
+  // getting balance for users
+  const {loading: balanceLoading, error: balanceError, balances, getBalanceForUser} = useGettingBalanceForUser()
 
   // Deactivate user
   const { deactivateUser, loading: deactivateUserLoading, error: deactivateUserError } = useDeactivateUser()
@@ -92,6 +96,7 @@ const EditUser = () => {
 
   useEffect(() => {
     getUserById(id);
+    getBalanceForUser(id);
   }, []);
 
 
@@ -202,6 +207,51 @@ const EditUser = () => {
               </Button>
             </div>
           </>
+        )}
+
+        {balanceLoading ? (
+            <div className="flex mx-auto justify-center items-center">
+              <Loader2 className="animate-spin" />
+            </div>
+        ) : (
+            <Card>
+                <CardHeader className="border-b border-solid border-default-200 mb-6 mt-4">
+                    <CardTitle>Balance Information</CardTitle>
+                </CardHeader>
+
+                <CardContent className="space-y-4">
+                    <table className="min-w-full border border-gray-300 text-sm text-left">
+                      {balances && balances.length > 0 ? (
+                          <table className="min-w-full border border-gray-300 text-sm text-left">
+                            <thead className="bg-gray-100">
+                            <tr>
+                              <th className="px-4 py-2 border">Account Type</th>
+                              <th className="px-4 py-2 border">Balance</th>
+                              <th className="px-4 py-2 border">Credit Limit</th>
+                              <th className="px-4 py-2 border">Created At</th>
+                            </tr>
+                            </thead>
+                            <tbody>
+                            {balances.map((balance) => (
+                                <tr key={balance.id}>
+                                  <td className="px-4 py-2 border">
+                                    {balance.accountType === '0' ? 'Cash' : 'Credit'}
+                                  </td>
+                                  <td className="px-4 py-2 border">{balance.balance.toFixed(2)}</td>
+                                  <td className="px-4 py-2 border">{balance.creditLimit.toFixed(2)}</td>
+                                  <td className="px-4 py-2 border">
+                                    {new Date(balance.createdAt).toLocaleString()}
+                                  </td>
+                                </tr>
+                            ))}
+                            </tbody>
+                          </table>
+                      ) : (
+                          <p>No balance information available.</p>
+                      )}
+                    </table>
+                </CardContent>
+            </Card>
         )}
       </div>
   );

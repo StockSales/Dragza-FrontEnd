@@ -1,7 +1,7 @@
 import {useState} from "react";
 import AxiosInstance from "@/lib/AxiosInstance";
 
-function GettingInvoiceByOrderId() {
+function useGettingInvoiceByOrderId() {
     const [loading, setLoading] = useState(false);
     const [error, setError] = useState<string | null>(null);
     const [invoice, setInvoice] = useState<any>(null);
@@ -30,4 +30,4 @@ function GettingInvoiceByOrderId() {
     }
 }
 
-export default GettingInvoiceByOrderId;
+export default useGettingInvoiceByOrderId;

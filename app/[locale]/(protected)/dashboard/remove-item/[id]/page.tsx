@@ -37,19 +37,8 @@ const RemoveItems: React.FC = () => {
 
   useEffect(() => {
     if (order) {
-      // Safely transform the order items with fallback values
-      const mappedItems = order.items.map((item) => ({
-        id: item.productId,
-        item: `Product ${item.productId}`, // Default name if not available
-        quantity: item.quantity || 0,
-        unitPrice: item.unitPrice || 0,
-        total: (item.unitPrice || 0) * (item.quantity || 0),
-        productId: item.productId,
-        productPriceId: item.productPriceId,
-      }));
-
-      setItems(mappedItems);
-      setOriginalItems(mappedItems);
+      setItems(order.items);
+      setOriginalItems(order.items);
     }
   }, [order]);
 

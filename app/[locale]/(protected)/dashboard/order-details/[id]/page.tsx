@@ -20,43 +20,25 @@ import { OrderData } from "@/types/order";
 import {toast} from "sonner";
 import {useRouter} from "@/i18n/routing";
 import {OrderStatus, OrderStatusLabel, UserRoleLabel} from "@/enum";
+import useGettingOrderById from "@/services/Orders/gettingOrderById";
+import useGettingInvoiceByOrderId from "@/services/invoices/order/gettingInvoiceByOrderId";
+import {Orders} from "@/types/orders";
 
 const OrderDetails = () => {
   // state for the order data
-  const [order, setOrder] = useState<any>(undefined);
   const params = useParams();
   const router = useRouter();
 
   const id: string | string[] | undefined = params?.id;
+  const [order, setOrder] = useState<Orders | null>(null);
+
+  // getting order details
+  const {order: orderData, getOrderById, error, loading: orderLoading} = useGettingOrderById()
+
+  // getting Order Invoice By id
+  const {loading: invoiceLoading, error: invoiceError, invoice, getInvoiceByOrderId} = useGettingInvoiceByOrderId()
 
 
-  // getting the order details
-  // const getOrder = (id: string | string[] | undefined) => {
-  //   const foundOrder = data.find((item) => item.id == id);
-  //   setOrder(foundOrder);
-  // }
-
-  // handling update the order status
-  const updateOrderStatus = (id: string | string[] | undefined) => {
-    toast.success("Order Updated", {
-      description: "Order Updated Successfully"
-    })
-    setTimeout(() => {
-      router.push("/dashboard/order-list");
-    }, 2000);
-  }
-
-
-  // // dependant data
-  // useEffect(() => {
-  //   if (id) {
-  //     getOrder(id);
-  //   }
-  // }, [id]);
-
-  useEffect(() => {
-    console.log(order)
-  }, [order]);
 
   return (
       <Card>
@@ -68,10 +50,10 @@ const OrderDetails = () => {
             <div className="flex items-center flex-wrap gap-4">
               <Label className="w-[150px] flex-none">Order Status: </Label>
               <Select
-                  value={order?.order_status?.toString()}
+                  value={order?.status?.toString()}
                   onValueChange={(value: string) => {
                     const numericValue = Number(value) as OrderStatus;
-                    setOrder({ ...order, status: numericValue });
+                    setOrder({ ...orderData, status: numericValue });
                   }}
               >
                 <SelectTrigger className="flex-1 cursor-pointer">
@@ -97,7 +79,6 @@ const OrderDetails = () => {
                   variant="outline"
                   className="w-[150px] flex-none"
                   type="submit"
-                  onClick={() => updateOrderStatus(id)}
               >
                 Update
               </Button>

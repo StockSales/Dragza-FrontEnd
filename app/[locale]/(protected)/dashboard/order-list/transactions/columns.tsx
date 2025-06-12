@@ -37,7 +37,27 @@ export const baseColumns = ({refresh} : {refresh: () => void}) : ColumnDef<Order
     accessorKey: "inventoryUserId",
     header: "Inventory Username",
     cell: ({ row }) => {
-      return <span>{row.getValue("inventoryUserId")}</span>;
+      const inventoryUserId = row.original.inventoryUserId;
+
+      // Ensure it's always treated as an array
+      const userIds = Array.isArray(inventoryUserId)
+          ? inventoryUserId
+          : inventoryUserId
+              ? [inventoryUserId]
+              : [];
+
+      // Fallback if no users at all
+      if (userIds.length === 0) {
+        return <span>John Doe</span>;
+      }
+
+      return (
+          <div className="flex flex-col gap-1">
+            {userIds?.map((id: string, index: number) => (
+                <span key={index}>{id}</span>
+            ))}
+          </div>
+      );
     },
   },
   {
