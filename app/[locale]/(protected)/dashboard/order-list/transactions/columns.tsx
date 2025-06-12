@@ -11,6 +11,7 @@ import {formatDateToDMY} from "@/utils";
 import Cookies from "js-cookie";
 import ChangeInventoryUserDialog from "@/components/partials/ChangeInventoryUserDialog/ChangeInventoryUserDialog";
 import gettingAllOrders from "@/services/Orders/gettingAllOrders";
+import GenerateInvoiceButton from "@/components/partials/GenerateInvoiceButton/GenerateInvoiceButton";
 
 export const baseColumns = ({refresh} : {refresh: () => void}) : ColumnDef<Orders>[] => [
   {
@@ -119,6 +120,9 @@ export const baseColumns = ({refresh} : {refresh: () => void}) : ColumnDef<Order
                   inventoryUserId={row.original.inventoryUserId}
                   onSuccess={() => refresh()}
                 />
+
+                <GenerateInvoiceButton orderId={row.original.id}/>
+
               </>
           )}
         </div>
