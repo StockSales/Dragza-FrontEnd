@@ -1,0 +1,42 @@
+"use client";
+
+import { useState } from "react";
+import { toast } from "sonner";
+import { Button } from "@/components/ui/button";
+import { FileText } from "lucide-react";
+import useGenerateOrderInvoice from "@/services/invoices/generate/generateOrderInvoice";
+
+interface Props {
+    orderId: string;
+}
+
+const GenerateInvoiceButton = ({ orderId }: Props) => {
+    const {loading, generateOrderInvoice} = useGenerateOrderInvoice()
+
+    const handleGenerateInvoice = async () => {
+        const {success, error} =  await generateOrderInvoice(orderId);
+
+        if (success) {
+            toast.success("Invoice generated successfully");
+        } else {
+            toast.error("Failed to generate invoice or that order already has an invoice");
+        }
+
+    };
+
+    return (
+        <div className="flex items-center gap-2">
+            <Button
+                onClick={handleGenerateInvoice}
+                disabled={loading}
+                size="icon"
+                variant="ghost"
+                className="flex items-center p-2 border text-green-600 hover:text-white bg-green-100 hover:bg-green-400 transition-all rounded-full w-[32px] h-[32px]"
+            >
+                <FileText className="w-4 h-4" />
+            </Button>
+        </div>
+    );
+};
+
+export default GenerateInvoiceButton;

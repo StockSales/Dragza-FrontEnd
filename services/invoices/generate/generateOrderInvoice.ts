@@ -6,23 +6,20 @@ export interface GenerateOrderInvoiceResponse {
     error?: string;
 }
 
-function GenerateOrderInvoice() {
+function useGenerateOrderInvoice() {
     const [loading, setLoading] = useState(false);
-    const [error, setError] = useState<string | null>(null);
 
     // Function to generate an order invoice
     const generateOrderInvoice = async (orderId: string): Promise<GenerateOrderInvoiceResponse> => {
         setLoading(true);
-        setError(null);
         try {
             const response = await AxiosInstance.post(`/api/Invoices/generate/${orderId}`);
-            if (response.status !== 200) {
+            if (response.status !== 201) {
                 throw new Error('Failed to generate invoice for order');
             }
-            return response.data;
+            return {success: true};
         } catch (error) {
-            setError(error instanceof Error ? error.message : 'Failed to generate invoice');
-            throw error;
+            return {success: false, error: error instanceof Error ? error.message : 'Failed to generate invoice'};
         } finally {
             setLoading(false);
         }
@@ -30,9 +27,8 @@ function GenerateOrderInvoice() {
 
     return {
         loading,
-        error,
         generateOrderInvoice
     }
 }
 
-export default GenerateOrderInvoice;
+export default useGenerateOrderInvoice;

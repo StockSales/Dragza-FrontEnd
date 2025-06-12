@@ -28,7 +28,7 @@ const EditModule = () => {
       const module = modules.find((m) => m.id === id);
       if (module) {
         setName(module.name);
-        setPref(module.pref);
+        setPref(module?.pref || "");
         setDescription(module.description);
       } else {
         toast.error("Module not found");

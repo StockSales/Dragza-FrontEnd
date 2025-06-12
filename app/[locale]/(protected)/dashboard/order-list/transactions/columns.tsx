@@ -11,6 +11,7 @@ import {formatDateToDMY} from "@/utils";
 import Cookies from "js-cookie";
 import ChangeInventoryUserDialog from "@/components/partials/ChangeInventoryUserDialog/ChangeInventoryUserDialog";
 import gettingAllOrders from "@/services/Orders/gettingAllOrders";
+import GenerateInvoiceButton from "@/components/partials/GenerateInvoiceButton/GenerateInvoiceButton";
 
 export const baseColumns = ({refresh} : {refresh: () => void}) : ColumnDef<Orders>[] => [
   {
@@ -36,7 +37,27 @@ export const baseColumns = ({refresh} : {refresh: () => void}) : ColumnDef<Order
     accessorKey: "inventoryUserId",
     header: "Inventory Username",
     cell: ({ row }) => {
-      return <span>{row.getValue("inventoryUserId")}</span>;
+      const inventoryUserId = row.original.inventoryUserId;
+
+      // Ensure it's always treated as an array
+      const userIds = Array.isArray(inventoryUserId)
+          ? inventoryUserId
+          : inventoryUserId
+              ? [inventoryUserId]
+              : [];
+
+      // Fallback if no users at all
+      if (userIds.length === 0) {
+        return <span>John Doe</span>;
+      }
+
+      return (
+          <div className="flex flex-col gap-1">
+            {userIds?.map((id: string, index: number) => (
+                <span key={index}>{id}</span>
+            ))}
+          </div>
+      );
     },
   },
   {
@@ -119,6 +140,9 @@ export const baseColumns = ({refresh} : {refresh: () => void}) : ColumnDef<Order
                   inventoryUserId={row.original.inventoryUserId}
                   onSuccess={() => refresh()}
                 />
+
+                <GenerateInvoiceButton orderId={row.original.id}/>
+
               </>
           )}
         </div>
