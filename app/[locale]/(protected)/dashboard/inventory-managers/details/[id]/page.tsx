@@ -107,7 +107,6 @@ const InventoryPrices = () => {
                         id="userName"
                         className="flex-1"
                         value={userName}
-                        disabled
                         onChange={(e) => setUserName(e.target.value)}
                     />
                   </div>
@@ -118,7 +117,6 @@ const InventoryPrices = () => {
                         id="email"
                         className="flex-1"
                         value={email}
-                        disabled
                         onChange={(e) => setEmail(e.target.value)}
                     />
                   </div>
@@ -129,7 +127,6 @@ const InventoryPrices = () => {
                         id="phone"
                         className="flex-1"
                         value={phoneNumber}
-                        disabled
                         onChange={(e) => setPhoneNumber(e.target.value)}
                     />
                   </div>
@@ -140,7 +137,6 @@ const InventoryPrices = () => {
                         id="business"
                         className="flex-1"
                         value={businessName}
-                        disabled
                         onChange={(e) => setBusinessName(e.target.value)}
                     />
                   </div>
@@ -150,7 +146,6 @@ const InventoryPrices = () => {
                     <Input
                         id="region"
                         className="flex-1"
-                        disabled
                         value={region}
                         onChange={(e) => setRegion(e.target.value)}
                     />
@@ -162,7 +157,6 @@ const InventoryPrices = () => {
                         id="minOrder"
                         type="number"
                         className="flex-1"
-                        disabled
                         value={minOrder}
                         onChange={(e) => setMinOrder(Number(e.target.value))}
                     />
@@ -194,7 +188,7 @@ const InventoryPrices = () => {
                       </div>
                     </div>
                 ) : (
-                    "Update user activation"
+                    "Update user"
                 )}
               </Button>
             </div>

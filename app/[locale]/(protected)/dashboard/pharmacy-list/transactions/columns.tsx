@@ -75,27 +75,27 @@ export const columns: ColumnDef<DataProps>[] = [
       return <span>{"Location"}</span>;
     },
   },
-  // {
-  //   id: "actions",
-  //   accessorKey: "action",
-  //   header: "Actions",
-  //   enableHiding: false,
-  //   cell: ({ row }) => {
-  //     return (
-  //       <div className="flex items-center gap-1">
-  //         {/*<Link*/}
-  //         {/*  href="/utility/invoice/preview/1"*/}
-  //         {/*  className="flex items-center p-2 border-b text-info hover:text-info-foreground bg-info/20 hover:bg-info duration-200 transition-all rounded-full"*/}
-  //         {/*>*/}
-  //         {/*  <SquarePen className="w-4 h-4" />*/}
-  //         {/*</Link>*/}
-  //         <div
-  //           className="flex items-center p-2 text-destructive bg-destructive/40 duration-200 transition-all hover:bg-destructive/80 hover:text-destructive-foreground rounded-full"
-  //         >
-  //           <Trash2 className="w-4 h-4" />
-  //         </div>
-  //       </div>
-  //     );
-  //   },
-  // },
+  {
+    id: "actions",
+    accessorKey: "action",
+    header: "Actions",
+    enableHiding: false,
+    cell: ({ row }) => {
+      return (
+        <div className="flex items-center gap-1">
+          <Link
+            href={`/dashboard/edit-user/${row.original.id}`}
+            className="flex items-center p-2 border-b text-info hover:text-info-foreground bg-info/20 hover:bg-info duration-200 transition-all rounded-full"
+          >
+            <SquarePen className="w-4 h-4" />
+          </Link>
+          {/*<div*/}
+          {/*  className="flex items-center p-2 text-destructive bg-destructive/40 duration-200 transition-all hover:bg-destructive/80 hover:text-destructive-foreground rounded-full"*/}
+          {/*>*/}
+          {/*  <Trash2 className="w-4 h-4" />*/}
+          {/*</div>*/}
+        </div>
+      );
+    },
+  },
 ];
