@@ -4,27 +4,30 @@ import {MainArea} from "@/types/areas";
 
 function useCreateMainArea() {
     const [loading, setLoading] = useState(false);
-    const [error, setError] = useState<string | null>(null);
 
     // Function to create a new main area
-    const createMainArea = async (areaData: MainArea) => {
+    const createMainArea = async (areaData: MainArea): Promise<{success: boolean, error?: string}> => {
         setLoading(true);
-        setError(null);
 
-        await AxiosInstance.post("/api/Regions", areaData).then((res) =>{
-        if (res.status !== 200) {
-            throw new Error("Failed to create main area");}
-        }).catch((error) => {
-            setError(error.message);
-        }).finally(() => {
+        try {
+            const response = await AxiosInstance.post('/api/Regions', areaData);
+            if (response.status !== 201) {
+                throw new Error('Failed to create main area');
+            }
+            return { success: true };
+        } catch (error: any) {
+            const errorMessage = error.response?.data?.message || error.message || 'Failed to create main area';
+            return { success: false, error: errorMessage };
+        }
+        // Finally block to reset loading state
+        finally {
             setLoading(false);
-        });
+        }
     };
 
     return ({
         createMainArea,
         loading,
-        error
     })
 }
 

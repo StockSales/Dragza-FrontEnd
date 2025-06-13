@@ -1,53 +1,47 @@
 import { ColumnDef } from "@tanstack/react-table";
-import {formatDateToDMY} from "@/utils";
-import {Area} from "@/types/areas";
+import {MainArea} from "@/types/areas";
 import {Link, usePathname} from "@/i18n/routing";
-import {SquarePen, Trash2, TriangleAlert} from "lucide-react";
+import {SquarePen} from "lucide-react";
 
 
-export const getColumns = (areaType: "main" | "secondary"): ColumnDef<Area>[] => [
+export const getColumns = (areaType: "main" | "secondary"): ColumnDef<MainArea>[] => [
   {
-    accessorKey: "name",
+    accessorKey: "regionName",
     header: "Name",
     cell: ({ row }) => {
       return (
         <div className="font-medium text-card-foreground/80">
           <div className="flex gap-3 items-center">
             <span className="text-sm text-default-600 whitespace-nowrap">
-              {row.getValue("name")}
+              {row.getValue("regionName")}
             </span>
           </div>
         </div>
       );
     },
   },
-  {
-    accessorKey: "description",
-    header: "Description",
-    cell: ({ row }) => <span>{row.getValue("description")}</span>,
-  },
-  {
-    accessorKey: "establishedDate",
-    header: "establishedDate",
-    cell: ({ row }) => <span>{row.getValue("establishedDate")}</span>,
-  },
-  {
-    accessorKey: "isActive",
-    header: "Is Active",
-    cell: ({ row }) => {
-      const isActive = row.getValue("isActive");
-      const label = isActive ? "Active" : "Inactive";
-      const badgeColor = isActive ? "bg-green-100 text-green-800" : "bg-red-100 text-red-800";
-
-      return (
-          <span
-              className={`px-3 py-1 rounded-full text-xs font-semibold ${badgeColor}`}
-          >
-        {label}
-      </span>
-      );
-    },
-  },
+  // {
+  //   accessorKey: "description",
+  //   header: "Description",
+  //   cell: ({ row }) => <span>{row.getValue("description")}</span>,
+  // },
+  // {
+  //   accessorKey: "isActive",
+  //   header: "Is Active",
+  //   cell: ({ row }) => {
+  //     const isActive = row.getValue("isActive");
+  //     const label = isActive ? "Active" : "Inactive";
+  //     const badgeColor = isActive ? "bg-green-100 text-green-800" : "bg-red-100 text-red-800";
+  //
+  //     return (
+  //         <span
+  //             className={`px-3 py-1 rounded-full text-xs font-semibold ${badgeColor}`}
+  //         >
+  //       {label}
+  //     </span>
+  //     );
+  //   },
+  // },
   {
     id: "actions",
     accessorKey: "action",

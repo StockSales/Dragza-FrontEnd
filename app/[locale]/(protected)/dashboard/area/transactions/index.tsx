@@ -16,7 +16,6 @@ import {
 
 import { getColumns } from "./columns";
 
-import { Input } from "@/components/ui/input";
 import {
   Table,
   TableBody,
@@ -38,20 +37,23 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 
-import Cookies from "js-cookie";
 import { Loader2 } from "lucide-react";
-import { ExportCSVButton } from "@/components/partials/export-csv/ExportCSVButton";
-import { CSVUploadModal } from "@/components/partials/ImportCsv/ImportCsv";
-import {dummyAreas} from "@/app/[locale]/(protected)/dashboard/area/transactions/data";
-import {AreaType} from "@/types/areas";
 import { Button } from "@/components/ui/button";
 import {useRouter} from "@/i18n/routing";
+import useGettingAllMainAreas from "@/services/area/gettingAllMainAreas";
+import useGettingAllSubArea from "@/services/subArea/gettingAllSubArea";
+import {AreaType, MainArea} from "@/types/areas";
 
 const AreasTable = () => {
+  //getting all areas
+  const {loading: mainAreasLoading, mainAreas, getAllMainAreas, error: mainAreasError} = useGettingAllMainAreas()
+
+  // getting all secondary areas
+  const {error: subAreasError, allSubArea, loading: subAreasLoading, getAllSubArea} = useGettingAllSubArea()
+
   const router = useRouter();
 
   const [selectedAreaType, setSelectedAreaType] = useState<"main" | "secondary">("main");
-  const [isLoading, setIsLoading] = useState(false);
 
   const [sorting, setSorting] = useState<SortingState>([]);
   const [columnFilters, setColumnFilters] = useState<ColumnFiltersState>([]);
@@ -60,10 +62,11 @@ const AreasTable = () => {
 
 
   // Filter areas based on selected type
-  const filteredAreas = React.useMemo(
-      () => dummyAreas.filter((area) => area.type === selectedAreaType),
-      [selectedAreaType]
-  );
+  const filteredAreas = React.useMemo<MainArea[]>(() => {
+    if (selectedAreaType === "main") return mainAreas || [];
+    if (selectedAreaType === "secondary") return allSubArea || [];
+    return [];
+  }, [selectedAreaType, mainAreas, allSubArea]);
 
   const columns = getColumns(selectedAreaType);
 
@@ -87,7 +90,16 @@ const AreasTable = () => {
     },
   });
 
-  if (isLoading) {
+  useEffect(() => {
+    if (selectedAreaType === "main") {
+      getAllMainAreas();
+    } else if (selectedAreaType === "secondary") {
+      getAllSubArea();
+    }
+  }, [selectedAreaType]);
+
+
+  if (subAreasLoading || mainAreasLoading) {
     return (
         <div className="flex items-center justify-center h-full">
           <Loader2 className="w-6 h-6 animate-spin" />
