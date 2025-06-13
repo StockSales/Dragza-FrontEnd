@@ -116,7 +116,7 @@ export default function TransactionsTable (){
 
   return (
       <Card className="w-full">
-        <div className="px-5 py-4 flex items-center gap-4">
+        <div className="px-5 py-4 flex flex-col xl:flex-row items-center gap-4">
           <SearchInput
               data={orders ?? []}
               setFilteredData={setFilteredOrders}

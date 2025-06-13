@@ -141,12 +141,12 @@ export const baseColumns = ({ refresh }: { refresh: () => void }): ColumnDef<Dat
             >
               <SquarePen className="w-4 h-4" />
             </Link>
-            <div
-                onClick={handleDelete}
-                className="flex items-center p-2 text-destructive bg-destructive/40 duration-200 transition-all hover:bg-destructive/80 hover:text-destructive-foreground rounded-full cursor-pointer"
-            >
-              <Trash2 className="w-4 h-4" />
-            </div>
+            {/*<div*/}
+            {/*    onClick={handleDelete}*/}
+            {/*    className="flex items-center p-2 text-destructive bg-destructive/40 duration-200 transition-all hover:bg-destructive/80 hover:text-destructive-foreground rounded-full cursor-pointer"*/}
+            {/*>*/}
+            {/*  <Trash2 className="w-4 h-4" />*/}
+            {/*</div>*/}
           </div>
       );
     },
