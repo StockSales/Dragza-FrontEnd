@@ -1,6 +1,7 @@
 "use client";
 
-import { useState } from "react";
+import dynamic from "next/dynamic";
+import {useEffect, useState} from "react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
@@ -18,52 +19,92 @@ import {
   SelectValue
 } from "@/components/ui/select";
 import {useParams} from "next/navigation";
-import {dummyAreas} from "@/app/[locale]/(protected)/dashboard/area/transactions/data";
-
+import useGettingAllMainAreas from "@/services/area/gettingAllMainAreas";
+import useCreateSubArea from "@/services/subArea/createSubArea";
+import useCreateMainArea from "@/services/area/CreateMainArea";
+import MapSelector from "@/components/partials/MapSelector/MapSelector";
+import gettingAllMainAreas from "@/services/area/gettingAllMainAreas";
+import {Loader2} from "lucide-react";
 const AddArea = () => {
+  // getting all main areas
+
+  const {loading: gettingMainAreaLoading, mainAreas, getAllMainAreas} = useGettingAllMainAreas()
+
+  // creating new area (main or secondary)
+  const {loading: subAreaLoading, createSubArea} = useCreateSubArea()
+  const {loading: mainAreaLoading, createMainArea} = useCreateMainArea()
+
   const router = useRouter();
   const params = useParams();
   const areaType = params?.areaType as string;
 
   const [name, setName] = useState("");
-  const [pref, setPref] = useState("");
-  const [description, setDescription] = useState("");
   const [isActive, setIsActive] = useState(true);
   const [mainArea, setMainArea] = useState("");
-  const [loading, setLoading] = useState(false);
+  const [lat, setLat] = useState("");
+  const [lang, setLang] = useState("");
+
 
   const addArea = async () => {
-    if (!name.trim()) {
-      toast.error("Validation Error", { description: "Area Name is required." });
+    if (areaType === "main") {
+      if (!name.trim() || !lat.trim() || !lang.trim()) {
+        toast.error("Validation Error", {
+          description: "Region name, lat, and lang are required.",
+        });
+        return;
+      }
+
+      try {
+        const {success, error} =await createMainArea({
+          regionName: name,
+          lat,
+          lang,
+        });
+        if (error) {
+          throw new Error(error || "Failed to create main area");
+        }
+        toast.success("Main area added!");
+        router.push("/dashboard/area");
+      } catch (error: any) {
+        toast.error("Error", {description: error.message || "Failed to add main area"});
+      }
       return;
     }
-    if (!pref.trim()) {
-      toast.error("Validation Error", { description: "Pref is required." });
-      return;
-    }
-    if (!description.trim()) {
-      toast.error("Validation Error", { description: "Description is required." });
+
+    // For secondary areas
+    if (!name.trim() || !mainArea.trim()) {
+      toast.error("Validation Error", {
+        description: "Sub-area name and main area are required.",
+      });
       return;
     }
 
     try {
-      setLoading(true)
-      const success = true
-      setLoading(false)
-      if (success) {
-        toast.success("Area Added", {
-          description: "Area added successfully!",
-        });
-        setTimeout(() => {
-          router.push("/dashboard/area");
-        }, 1000);
-      }
-    } catch (error: any) {
-      toast.error("Network Error", {
-        description: error,
+      const {success, error} = await createSubArea({
+        name: name,
+        regionId: mainArea,
       });
+      if (error) {
+          throw new Error(error || "Failed to create sub area");
+      }
+      toast.success("Sub area added!");
+      router.push("/dashboard/area");
+    } catch (error: any) {
+      toast.error("Error", { description: error.message || "Failed to add sub area" });
     }
   };
+
+  useEffect(() => {
+    getAllMainAreas()
+  }, []);
+
+  if (gettingMainAreaLoading) {
+    return (
+        <div className="flex items-center justify-center h-screen">
+            <Loader2 className="w-6 h-6 animate-spin" />
+        </div>
+    )
+  }
 
   return (
       <div className="grid grid-cols-12 gap-4 rounded-lg">
@@ -88,13 +129,11 @@ const AddArea = () => {
                         <SelectContent>
                           <SelectGroup>
                             <SelectLabel>Available Main Areas</SelectLabel>
-                            {dummyAreas
-                                .filter(area => area.type === "main")
-                                .map((area) => (
-                                    <SelectItem key={area.id} value={area.name}>
-                                        {area.name}
-                                    </SelectItem>
-                                ))}
+                            {mainAreas.map((area) => (
+                                <SelectItem key={area.id} value={area.id}>
+                                    {area.regionName}
+                                </SelectItem>
+                            ))}
                           </SelectGroup>
                         </SelectContent>
                     </Select>
@@ -115,57 +154,28 @@ const AddArea = () => {
                 />
               </div>
             </CardContent>
-            <CardContent className="space-y-4">
-              <div className="flex items-center flex-wrap">
-                <Label className="w-[150px] flex-none" htmlFor="Pref">
-                  Pref
-                </Label>
-                <Input
-                    id="Pref"
-                    type="text"
-                    placeholder="Pref"
-                    value={pref}
-                    onChange={(e) => setPref(e.target.value)}
-                />
-              </div>
-            </CardContent>
-            <CardContent className="space-y-4">
-              <div className="flex items-center flex-wrap">
-                <Label className="w-[150px] flex-none" htmlFor="Description">
-                  Description
-                </Label>
-                <Textarea
-                    id="Description"
-                    placeholder="Description"
-                    value={description}
-                    onChange={(e) => setDescription(e.target.value)}
-                />
-              </div>
-            </CardContent>
-            <CardContent className="space-y-4">
-              <div className="flex items-center flex-wrap">
-                <Label className="w-[150px] flex-none" htmlFor="isActive">
-                  Active
-                </Label>
-                <Select
-                    value={String(isActive)}
-                    onValueChange={(value) => setIsActive(value === "true")}
-                >
-                  <SelectTrigger id="isActive" className="flex-1">
-                    <SelectValue placeholder="Select status" />
-                  </SelectTrigger>
-                  <SelectContent>
-                    <SelectItem value="true">True</SelectItem>
-                    <SelectItem value="false">False</SelectItem>
-                  </SelectContent>
-                </Select>
-              </div>
-            </CardContent>
+            {areaType === "main" && (
+                <CardContent className="space-y-4">
+                  <div className="flex flex-col gap-4">
+                    <Label>Pick Location on Map (Egypt)</Label>
+                    <div className="flex-1">
+                      <MapSelector
+                          lat={lat}
+                          lang={lang}
+                          onChange={(newLat, newLang) => {
+                            setLat(newLat);
+                            setLang(newLang);
+                          }}
+                      />
+                    </div>
+                  </div>
+                </CardContent>
+            )}
           </Card>
         </div>
         <div className="col-span-12 flex justify-center">
-          <Button onClick={addArea} disabled={loading}>
-            {loading ? "Loading..." : "Add Area"}
+          <Button onClick={addArea} disabled={mainAreaLoading || subAreaLoading } className="w-full max-w-[200px]">
+            {mainAreaLoading || subAreaLoading ? "Loading..." : "Add Area"}
           </Button>
         </div>
       </div>

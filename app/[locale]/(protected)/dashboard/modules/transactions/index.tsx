@@ -32,9 +32,13 @@ import {useEffect, useState} from "react";
 import {Loader2} from "lucide-react";
 import SearchInput from "@/app/[locale]/(protected)/components/SearchInput/SearchInput";
 import {ModuleType} from "@/types/module";
-import {modules} from "@/app/[locale]/(protected)/dashboard/modules/transactions/data";
+import useGettingAllMainCategories from "@/services/MainCategories/gettingAllMainCategories";
+import gettingAllMainCategories from "@/services/MainCategories/gettingAllMainCategories";
 
 const TransactionsTable = () => {
+  // getting all modules
+  const {loading: loadingMainCategories, getAllMainCategories, mainCategories, error} = useGettingAllMainCategories()
+
   const [sorting, setSorting] = React.useState<SortingState>([]);
   const [columnFilters, setColumnFilters] = React.useState<ColumnFiltersState>(
     []
@@ -42,7 +46,6 @@ const TransactionsTable = () => {
   const [columnVisibility, setColumnVisibility] =
     React.useState<VisibilityState>({});
   const [rowSelection, setRowSelection] = React.useState({});
-  const loading = false;
 
   // getting all Modules as mounted
 
@@ -69,19 +72,23 @@ const TransactionsTable = () => {
     },
   });
 
+  // getting all main categories as mounted
+  useEffect(() => {
+    getAllMainCategories()
+  }, []);
 
   // filtering data
     useEffect(() => {
-        if (modules) {
-          setFilteredModule(modules);
+        if (mainCategories) {
+          setFilteredModule(mainCategories);
         }
-    }, [modules]);
+    }, [mainCategories]);
 
 
-  if (loading) {
+  if (loadingMainCategories) {
     return (
         <div className="flex mx-auto  justify-center items-center h-16 w-16">
-            <Loader2 size={32} />
+            <Loader2 size={32} className="animate-spin" />
         </div>
     )
   }
@@ -90,7 +97,7 @@ const TransactionsTable = () => {
   return (
     <div className="w-full">
       <div className="flex flex-wrap justify-end items-center py-4 px-6 border-b border-solid border-default-200">
-        <SearchInput data={modules ?? []} setFilteredData={setFilteredModule} filterKey={"name"}/>
+        <SearchInput data={mainCategories ?? []} setFilteredData={setFilteredModule} filterKey={"name"}/>
         <div className="#flex-none">
           <div className="flex items-center gap-4 flex-wrap">
             <Link href="/dashboard/add-module">

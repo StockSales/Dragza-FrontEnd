@@ -8,7 +8,7 @@ export interface UpdateMainCategoryResponse {
     error?: string;
 }
 
-function UpdateMainCategory() {
+function useUpdateMainCategory() {
     const [loading, setLoading] = useState(false);
     const [error, setError] = useState<string | null>(null);
 
@@ -50,4 +50,4 @@ function UpdateMainCategory() {
     };
 }
 
-export default UpdateMainCategory;
+export default useUpdateMainCategory;

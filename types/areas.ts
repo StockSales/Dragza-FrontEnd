@@ -1,5 +1,3 @@
-// @/types/area.ts
-
 export interface Area {
     id: string;
     name: string;
@@ -25,4 +23,12 @@ export interface MainArea {
     regionName: string;
     lang: string;
     lat: string;
+}
+
+
+//////////// SubArea //////////////
+export interface SubArea {
+    id?: string;
+    name: string;
+    regionId: string;
 }
