@@ -1,13 +1,13 @@
 import {useState} from "react";
 import AxiosInstance from "@/lib/AxiosInstance";
+import {ModuleType} from "@/types/module";
 
 function useGettingMainCategoryById() {
     const [loading, setLoading] = useState(false);
     const [error, setError] = useState<string | null>(null);
+    const [mainCategory, setMainCategory] = useState<ModuleType | null>(null);
 
-    const [mainCategory, setMainCategory] = useState<any[]>([]);
-
-    const getAllMainCategory = async (id: string | string[] | undefined) => {
+    const getMainCategory = async (id: string | string[] | undefined) => {
         setLoading(true);
         setError(null);
         await AxiosInstance.get(`/api/MainCategories/${id}`)
@@ -25,7 +25,7 @@ function useGettingMainCategoryById() {
             });
     };
 
-    return { mainCategory, loading, error, getAllMainCategory };
+    return { mainCategory, loading, error, getMainCategory };
 }
 
 export default useGettingMainCategoryById;
