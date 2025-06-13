@@ -33,15 +33,32 @@ import {Select, SelectContent, SelectItem, SelectTrigger, SelectValue} from "@/c
 import {SelectItemText, SelectViewport} from "@radix-ui/react-select";
 import {UserRoles} from "@/lib/data";
 import SearchInput from "@/app/[locale]/(protected)/components/SearchInput/SearchInput";
+import {Button} from "@/components/ui/button";
+import {OrderStatus, OrderStatusLabel, UserRole, UserRoleLabel} from "@/enum";
 
 const TransactionsTable = () => {
   // getting all users hooks
   const {data, loading, gettingAllUsers} = GetUsers()
 
+  // getting users by role id hooks
+  const {users: usersByRole, loading: loadingByRole, getUsersByRoleId} = useGetUsersByRoleId()
+
   const [sorting, setSorting] = React.useState<SortingState>([]);
   const [columnFilters, setColumnFilters] = React.useState<ColumnFiltersState>(
     []
   );
+  const [selectedRole, setSelectedRole] = useState<"all" | UserRole>("all");
+
+// Update filteredUsers when data changes
+  useEffect(() => {
+    if (selectedRole === "all" && data) {
+      setFilteredUsers(data);
+    } else if (selectedRole !== "all" && usersByRole) {
+      setFilteredUsers(usersByRole);
+    }
+  }, [data, usersByRole, selectedRole]);
+
+
   const [columnVisibility, setColumnVisibility] =
     React.useState<VisibilityState>({});
   const [rowSelection, setRowSelection] = React.useState({});
@@ -49,6 +66,15 @@ const TransactionsTable = () => {
   const columns = baseColumns({ refresh: () => gettingAllUsers() });
 
   const [filteredUsers, setFilteredUsers] = useState<any[]>([]);
+
+  const handleRoleFilter = (role: "all" | UserRole) => {
+    setSelectedRole(role);
+    if (role === "all") {
+      gettingAllUsers();
+    } else {
+      getUsersByRoleId(role);
+    }
+  };
 
   const table = useReactTable({
     data: filteredUsers ?? [],
@@ -80,16 +106,41 @@ const TransactionsTable = () => {
 
   return (
       <div className={"flex flex-col"}>
-        <div className="px-5 py-4">
+        <div className="px-5 py-4 flex flex-col lg:flex-row lg:items-center lg:justify-between gap-4">
           <SearchInput
             data={data ?? []}
             filterKey={"userName"}
             setFilteredData={setFilteredUsers}
           />
+
+          <div className="inline-flex flex-wrap items-center border border-solid divide-x divide-default-200 divide-solid rounded-md overflow-hidden">
+            <Button
+                size="md"
+                variant={selectedRole === "all" ? "default" : "ghost"}
+                color="default"
+                className="ring-0 outline-0 hover:ring-0 hover:ring-offset-0 font-normal border-default-200 rounded-none cursor-pointer"
+                onClick={() => handleRoleFilter("all")}
+            >
+              All
+            </Button>
+
+            {Object.values(UserRole).map((roleId) => (
+                <Button
+                    key={roleId}
+                    size="md"
+                    variant={selectedRole === roleId ? "default" : "ghost"}
+                    color="default"
+                    className="ring-0 outline-0 hover:ring-0 hover:ring-offset-0 font-normal border-default-200 rounded-none cursor-pointer"
+                    onClick={() => handleRoleFilter(roleId)}
+                >
+                  {UserRoleLabel[roleId]}
+                </Button>
+            ))}
+          </div>
         </div>
-        {loading == true ? (
+        {loading == true || loadingByRole == true ? (
             <div className="flex justify-center items-center">
-              <Loader2 size={24} />
+              <Loader2 size={24} className="animate-spin" />
             </div>
         ) : (
           <Card className="w-full">

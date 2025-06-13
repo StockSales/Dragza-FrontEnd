@@ -29,7 +29,7 @@ const SearchInput: React.FC<SearchInputProps> = ({ data, setFilteredData, filter
             placeholder={`Search by ${filterKey}`}
             value={searchValue}
             onChange={(e) => setSearchValue(e.target.value)}
-            className="w-full max-w-sm"
+            className="w-full max-w-xl"
         />
     );
 };

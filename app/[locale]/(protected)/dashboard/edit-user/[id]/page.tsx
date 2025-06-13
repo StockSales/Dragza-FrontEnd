@@ -315,7 +315,7 @@ const EditUser = () => {
                         handleDepositCash();
                     }}>
                         {depositCashLoading ? (
-                            <Loader />
+                            <Loader2 color="white" className={"animate-spin"} />
                         ) : (
                             "Deposit Cash"
                         )}
