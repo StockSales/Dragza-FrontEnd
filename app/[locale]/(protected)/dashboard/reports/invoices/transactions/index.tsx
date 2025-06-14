@@ -54,7 +54,7 @@ import InvoicesReports from "@/app/[locale]/(protected)/dashboard/reports/invoic
 export default function TransactionsTable() {
     const router = useRouter();
     // using custom hook to fetch Invoice reports
-    const {loading: loadingOrderReports, invoicesReports, fetchInvoiceReports} = useInvoiceReports();
+    const {loading: loadingInvoiceReports, invoicesReports, fetchInvoiceReports} = useInvoiceReports();
 
     // getting users by role id
     const {loading: loadingUsers, error: errorUsers, users, getUsersByRoleId} = useGetUsersByRoleId()
@@ -360,7 +360,7 @@ export default function TransactionsTable() {
                 </div>
             </div>
 
-            {loadingOrderReports ? (
+            {loadingInvoiceReports ? (
                 <div className="flex items-center justify-center h-full py-8">
                     <Loader2 className="w-6 h-6 animate-spin" />
                 </div>
