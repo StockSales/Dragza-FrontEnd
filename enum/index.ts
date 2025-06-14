@@ -45,3 +45,42 @@ export const ReturnStatusLabel: Record<ReturnStatus, string> = {
     [ReturnStatus.Processing]: "Processing",
     [ReturnStatus.Completed]: "Completed"
 };
+
+export enum PaymentMethod {
+    Cash = "Cash",
+    Credit = "Credit",
+    Mixed = "Mixed",
+}
+
+export const PaymentMethodLabel: Record<PaymentMethod, string> = {
+    [PaymentMethod.Cash]: "Cash",
+    [PaymentMethod.Credit]: "Credit",
+    [PaymentMethod.Mixed]: "Mixed",
+};
+
+export enum BalanceAccountType {
+    Cash = "Cash",
+    Credit = "Credit",
+}
+
+export const BalanceAccountTypeLabel: Record<BalanceAccountType, string> = {
+    [BalanceAccountType.Cash]: "Cash",
+    [BalanceAccountType.Credit]: "Credit",
+};
+
+export enum TransactionType {
+    Deposit = "Deposit",
+    Withdrawal = "Withdrawal",
+    Payment = "Payment",
+    Refund = "Refund",
+    Adjustment = "Adjustment",
+}
+
+export const TransactionTypeLabel: Record<TransactionType, string> = {
+    [TransactionType.Deposit]: "Deposit",
+    [TransactionType.Withdrawal]: "Withdrawal",
+    [TransactionType.Payment]: "Payment",
+    [TransactionType.Refund]: "Refund",
+    [TransactionType.Adjustment]: "Adjustment",
+};
+

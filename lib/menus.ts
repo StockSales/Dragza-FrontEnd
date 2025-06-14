@@ -177,6 +177,13 @@ export function getMenuList(pathname: string, t: any, role: string, locale: stri
               icon: "heroicons:document-text",
             },
             {
+              href: "/dashboard/reports",
+              label: t("Reports"),
+              active: pathname === "/dashboard/reports",
+              children: [],
+              icon: "heroicons:document-text",
+            },
+            {
               href: "/dashboard/sales",
               label: t("sales"),
               active: pathname === "/dashboard/sales",
@@ -251,7 +258,6 @@ export function getMenuList(pathname: string, t: any, role: string, locale: stri
     for (const menu of group.menus) {
       // 🚫 Skip /dashboard/inventory-management for admin
       if (role == "Admin" && menu.href == "/dashboard/inventory-management") {
-        console.log("aaaaaaaaaa")
         continue;
       }
       const filteredSubmenus: Submenu[] = menu.submenus?.filter((sub) => {
