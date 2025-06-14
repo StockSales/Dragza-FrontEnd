@@ -28,6 +28,14 @@ function Reports() {
                         Invoices
                     </Button>
                 </Link>
+                <Link
+                    href={"/dashboard/reports/summary"}
+                    className="w-full"
+                >
+                    <Button size={"lg"} variant={"outline"} className="w-full">
+                        Summary
+                    </Button>
+                </Link>
             </div>
         </>
     );
