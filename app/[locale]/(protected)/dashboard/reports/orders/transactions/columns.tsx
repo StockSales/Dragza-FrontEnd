@@ -8,7 +8,7 @@ import { cn } from "@/lib/utils";
 import {Orders} from "@/types/orders";
 import {formatDateToDMY} from "@/utils";
 
-export const baseColumns = ({refresh} : {refresh: () => void}) : ColumnDef<Orders>[] => [
+export const baseColumns = ({refresh} : {refresh: () => void}) : ColumnDef<any>[] => [
   {
     accessorKey: "id",
     header: "Order",

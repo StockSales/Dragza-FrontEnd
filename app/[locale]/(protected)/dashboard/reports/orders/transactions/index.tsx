@@ -174,7 +174,7 @@ export default function TransactionsTable() {
         setInventoryUserId("");
         setRegionId("");
         setStatus(undefined);
-        setPaymentMethod("");
+        setPaymentMethod(undefined);
         setPageNumber(1);
         setPageSize(20);
 
