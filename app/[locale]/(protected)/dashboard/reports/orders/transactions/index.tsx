@@ -50,6 +50,7 @@ import useGettingAllMainAreas from "@/services/area/gettingAllMainAreas";
 import useGettingAllPharmacies from "@/services/users/gettingAllPharmacies";
 import {UserType} from "@/types/users";
 import {AreaType, MainArea} from "@/types/areas";
+import {Label} from "@/components/ui/label";
 
 export default function TransactionsTable() {
     const router = useRouter();
@@ -195,15 +196,18 @@ export default function TransactionsTable() {
     return (
         <Card className="w-full">
             <div className="px-5 py-4 flex flex-col gap-4">
+                <Label>Filters</Label>
+                <hr className="border-default-200" />
                 {/* Date Range Picker */}
-                <div className="grid gap-2">
+                <div className="flex flex-row items-center justify-center gap-2">
+                    <Label htmlFor="date">Date Range</Label>
                     <Popover>
                         <PopoverTrigger asChild>
                             <Button
                                 id="date"
                                 variant={"outline"}
                                 className={cn(
-                                    "w-full justify-start text-left font-normal",
+                                    "w-full justify-start text-left font-normal flex-1",
                                     !dateRange && "text-muted-foreground"
                                 )}
                             >
@@ -236,12 +240,14 @@ export default function TransactionsTable() {
                 </div>
 
                 {/* Pharmacy User Select */}
-                <div className="flex items-center">
+                <div className="flex items-center gap-2">
+                    <Label htmlFor="pharmacyUser">Pharmacy User</Label>
                     <Select
                         value={pharmacyUserId}
+                        disabled={inventoryUserId !== ""}
                         onValueChange={(value) => setPharmacyUserId(value)}
                     >
-                        <SelectTrigger>
+                        <SelectTrigger className={"flex-1"}>
                             <SelectValue placeholder="Select Pharmacy User" />
                         </SelectTrigger>
                         <SelectGroup>
@@ -257,94 +263,107 @@ export default function TransactionsTable() {
                 </div>
 
                 {/* Inventory User Select */}
-                <Select
-                    value={inventoryUserId}
-                    onValueChange={(value) => setInventoryUserId(value)}
-                >
-                    <SelectTrigger>
-                        <SelectValue placeholder="Select Inventory User" />
-                    </SelectTrigger>
-                    <SelectGroup>
-                        <SelectContent>
-                            {users.map((user: UserType) => (
-                                <SelectItem key={user.id} value={user.id}>
-                                    {user.userName}
-                                </SelectItem>
-                            ))}
-                        </SelectContent>
-                    </SelectGroup>
-                </Select>
+                <div className="flex items-center gap-2">
+                    <Label htmlFor="inventoryUser">Inventory User</Label>
+                    <Select
+                        value={inventoryUserId}
+                        onValueChange={(value) => setInventoryUserId(value)}
+                        disabled={pharmacyUserId !== ""}
+                    >
+                        <SelectTrigger className={"flex-1"}>
+                            <SelectValue placeholder="Select Inventory User" />
+                        </SelectTrigger>
+                        <SelectGroup>
+                            <SelectContent>
+                                {users.map((user: UserType) => (
+                                    <SelectItem key={user.id} value={user.id}>
+                                        {user.userName}
+                                    </SelectItem>
+                                ))}
+                            </SelectContent>
+                        </SelectGroup>
+                    </Select>
+                </div>
 
                 {/* Region Select */}
-                <Select
-                    value={regionId}
-                    onValueChange={(value) => setRegionId(value)}
-                >
-                    <SelectTrigger>
-                        <SelectValue placeholder="Select Region" />
-                    </SelectTrigger>
-                    <SelectGroup>
+                <div className="flex items-center gap-2">
+                    <Label htmlFor="region">Region</Label>
+                    <Select
+                        value={regionId}
+                        onValueChange={(value) => setRegionId(value)}
+                    >
+                        <SelectTrigger className={"flex-1"}>
+                            <SelectValue placeholder="Select Region" />
+                        </SelectTrigger>
+                        <SelectGroup>
+                            <SelectContent>
+                                {mainAreas.map((region:MainArea) => (
+                                    <SelectItem key={region.id} value={region.id || ""}>
+                                        {region.regionName}
+                                    </SelectItem>
+                                ))}
+                            </SelectContent>
+                        </SelectGroup>
+                    </Select>
+                </div>
+
+                {/* Status Filter */}
+                <div className="flex items-center gap-2">
+                    <Label htmlFor="status">Status</Label>
+                    <Select
+                        value={status === undefined ? "" : status.toString()}
+                        onValueChange={(value) => {
+                            const statusValue = parseInt(value);
+                            if (Object.values(OrderStatus).includes(statusValue)) {
+                                setStatus(statusValue as OrderStatus);
+                            }
+                        }}
+                    >
+                        <SelectTrigger className={"flex-1"}>
+                            <SelectValue placeholder="Filter by status" />
+                        </SelectTrigger>
                         <SelectContent>
-                            {mainAreas.map((region:MainArea) => (
-                                <SelectItem key={region.id} value={region.id || ""}>
-                                    {region.regionName}
+                            <SelectItem value="all">All Statuses</SelectItem>
+                            {Object.keys(OrderStatus)
+                                .filter(key => !isNaN(Number(key)))
+                                .map((key) => {
+                                    const status = Number(key) as OrderStatus;
+                                    return (
+                                        <SelectItem key={status} value={status.toString()}>
+                                            {OrderStatusLabel[status]}
+                                        </SelectItem>
+                                    );
+                                })}
+                        </SelectContent>
+                    </Select>
+                </div>
+
+                {/* Payment Method Filter */}
+                <div className="flex items-center gap-2">
+                    <Label htmlFor="paymentMethod">Payment Method</Label>
+                    <Select
+                        value={paymentMethod === undefined ? "" : paymentMethod}
+                        onValueChange={(value) => {
+                            if (value === "all") {
+                                setPaymentMethod(undefined);
+                            } else if (Object.values(PaymentMethod).includes(value as PaymentMethod)) {
+                                setPaymentMethod(value as PaymentMethod);
+                            }
+                        }}
+                    >
+                        <SelectTrigger className={"flex-1"}>
+                            <SelectValue placeholder="Filter by Payment Method" />
+                        </SelectTrigger>
+                        <SelectContent>
+                            <SelectItem value="all">All Payment Methods</SelectItem>
+                            {Object.values(PaymentMethod).map((method) => (
+                                <SelectItem key={method} value={method}>
+                                    {PaymentMethodLabel[method]}
                                 </SelectItem>
                             ))}
                         </SelectContent>
-                    </SelectGroup>
-                </Select>
-
-                {/* Status Filter */}
-                <Select
-                    value={status === undefined ? "" : status.toString()}
-                    onValueChange={(value) => {
-                        const statusValue = parseInt(value);
-                        if (Object.values(OrderStatus).includes(statusValue)) {
-                            setStatus(statusValue as OrderStatus);
-                        }
-                    }}
-                >
-                    <SelectTrigger>
-                        <SelectValue placeholder="Filter by status" />
-                    </SelectTrigger>
-                    <SelectContent>
-                        <SelectItem value="all">All Statuses</SelectItem>
-                        {Object.keys(OrderStatus)
-                            .filter(key => !isNaN(Number(key)))
-                            .map((key) => {
-                                const status = Number(key) as OrderStatus;
-                                return (
-                                    <SelectItem key={status} value={status.toString()}>
-                                        {OrderStatusLabel[status]}
-                                    </SelectItem>
-                                );
-                            })}
-                    </SelectContent>
-                </Select>
-
-                {/* Payment Method Filter */}
-                <Select
-                    value={paymentMethod === undefined ? "" : paymentMethod}
-                    onValueChange={(value) => {
-                        if (value === "all") {
-                            setPaymentMethod(undefined);
-                        } else if (Object.values(PaymentMethod).includes(value as PaymentMethod)) {
-                            setPaymentMethod(value as PaymentMethod);
-                        }
-                    }}
-                >
-                    <SelectTrigger>
-                        <SelectValue placeholder="Filter by Payment Method" />
-                    </SelectTrigger>
-                    <SelectContent>
-                        <SelectItem value="all">All Payment Methods</SelectItem>
-                        {Object.values(PaymentMethod).map((method) => (
-                            <SelectItem key={method} value={method}>
-                                {PaymentMethodLabel[method]}
-                            </SelectItem>
-                        ))}
-                    </SelectContent>
-                </Select>
+                    </Select>
+                </div>
 
                 <div className="flex gap-2">
                     <Button onClick={handleApplyFilters} className="w-full">

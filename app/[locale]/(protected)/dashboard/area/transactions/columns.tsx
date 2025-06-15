@@ -6,26 +6,23 @@ import {SquarePen} from "lucide-react";
 
 export const getColumns = (areaType: "main" | "secondary"): ColumnDef<MainArea>[] => [
   {
-    accessorKey: "regionName",
+    accessorKey: areaType === "secondary" ? "name" : "regionName",
     header: "Name",
     cell: ({ row }) => {
+      // If the areaType is 'secondary', we use 'regionName' for display
+      const isSecondary = areaType === "secondary";
       return (
         <div className="font-medium text-card-foreground/80">
           <div className="flex gap-3 items-center">
             <span className="text-sm text-default-600 whitespace-nowrap">
-              {row.getValue("regionName")}
+              {isSecondary ? row.getValue("name") : row.getValue("regionName")}
             </span>
           </div>
         </div>
       );
     },
   },
-  // {
-  //   accessorKey: "description",
-  //   header: "Description",
-  //   cell: ({ row }) => <span>{row.getValue("description")}</span>,
-  // },
-  // {
+
   //   accessorKey: "isActive",
   //   header: "Is Active",
   //   cell: ({ row }) => {

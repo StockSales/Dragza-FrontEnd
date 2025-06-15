@@ -10,7 +10,7 @@ function useCreateSubArea() {
         setLoading(true);
         try {
             const response = await AxiosInstance.post('/api/SubAreas', subAreaData);
-            if (response.status !== 200) {
+            if (response.status !== 201) {
                 throw new Error('Failed to create sub-area');
             }
             return { success: true };
