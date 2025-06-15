@@ -38,15 +38,6 @@ import {UserType} from "@/types/users";
 import {AreaType, MainArea} from "@/types/areas";
 import useSummaryReports from "@/services/Reports/summary/summaryReports";
 
-// Define the type for summary reports response
-interface SummaryReportsData {
-    totalSales: number;
-    totalCash: number;
-    totalCredit: number;
-    totalOrders: number;
-    totalInvoices: number;
-}
-
 export default function TransactionsTable() {
     const router = useRouter();
     // using custom hook to fetch Summary reports

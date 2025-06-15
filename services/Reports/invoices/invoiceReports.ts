@@ -1,16 +1,15 @@
 import {useState} from "react";
 import AxiosInstance from "@/lib/AxiosInstance";
+import { PaginatedInvoiceReports } from "@/types/reports";
 
 function useInvoiceReports() {
     const [loading, setLoading] = useState(false);
-    const [invoicesReports, setInvoiceReports] = useState([]);
+    const [invoicesReports, setInvoiceReports] = useState<PaginatedInvoiceReports | null>(null);
 
-    // Function to fetch Invoices reports
     const fetchInvoiceReports = async (url: string) => {
         setLoading(true);
         try {
-            // Simulate an API call to fetch Invoices reports
-            const response = await AxiosInstance.get(`/api/reports/invoices?${url}`); // Replace with your actual API endpoint
+            const response = await AxiosInstance.get<PaginatedInvoiceReports>(`/api/reports/invoices?${url}`);
             if (response.status !== 200) {
                 throw new Error('Failed to fetch Invoices reports');
             }

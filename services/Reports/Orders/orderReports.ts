@@ -1,9 +1,10 @@
 import {useState} from "react";
 import AxiosInstance from "@/lib/AxiosInstance";
+import {PaginatedInvoiceReports} from "@/types/reports";
 
 function useOrderReports() {
     const [loading, setLoading] = useState(false);
-    const [orderReports, setOrderReports] = useState([]);
+    const [orderReports, setOrderReports] = useState<PaginatedInvoiceReports | null>(null);
 
     // Function to fetch order reports
     const fetchOrderReports = async (url: string) => {
