@@ -171,6 +171,26 @@ const AddArea = () => {
                   </div>
                 </CardContent>
             )}
+
+            <CardContent className="space-y-4">
+              <div className="flex items-center flex-wrap">
+                <Label className="w-[150px] flex-none" htmlFor="isActive">
+                  Active
+                </Label>
+                <Select
+                    value={String(isActive)}
+                    onValueChange={(value) => setIsActive(value === "true")}
+                >
+                  <SelectTrigger id="isActive" className="flex-1">
+                    <SelectValue placeholder="Select status" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value="true">Active</SelectItem>
+                    <SelectItem value="false">Inactive</SelectItem>
+                  </SelectContent>
+                </Select>
+              </div>
+            </CardContent>
           </Card>
         </div>
         <div className="col-span-12 flex justify-center">

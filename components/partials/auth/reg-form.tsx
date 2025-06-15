@@ -3,6 +3,7 @@ import { Button } from "@/components/ui/button";
 import { Checkbox } from "@/components/ui/checkbox";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
+import { useController } from "react-hook-form";
 import { Controller, useForm, SubmitHandler } from "react-hook-form";
 import {
     Select,
@@ -13,8 +14,12 @@ import {
 } from "@/components/ui/select";
 import useRegister from "@/services/auth/register";
 import {toast} from "sonner";
-import {Cookie} from "lucide-react";
+import {Cookie, Loader2} from "lucide-react";
 import Cookies from "js-cookie";
+import useGettingAllMainAreas from "@/services/area/gettingAllMainAreas";
+import {useEffect} from "react";
+import gettingAllMainAreas from "@/services/area/gettingAllMainAreas";
+import useGettingAllSubArea from "@/services/subArea/gettingAllSubArea";
 
 type Inputs = {
     BussinesName: string;
@@ -29,12 +34,15 @@ type Inputs = {
     PhoneConfirmed: boolean;
     RegionName: string;
     DesName: string;
+    MinOrder: number;
     RoleId: string;
     PharmacyDetails: null;
 };
 
 const RegForm = () => {
     const {registerUser} = useRegister()
+
+    const {loading, mainAreas, getAllMainAreas, error} = useGettingAllMainAreas()
 
     const userRole = Cookies.get("userRole");
     
@@ -71,12 +79,40 @@ const RegForm = () => {
 
             if (result) {
                 toast.success("Registration successful!");
+                // reset the whole form
+                setValue("BussinesName", "");
+                setValue("UserName", "");
+                setValue("Email", "");
+                setValue("Password", "");
+                setValue("PhoneNumber", "");
+                setValue("NomalizedUserName", "");
+                setValue("RoleId", "");
+                setValue("PhoneNumber", "");
+                setValue("RegionName", "");
+                setValue("DesName", "");
+                setValue("IsPharmacy", false);
+                setValue("IsActive", true);
+                setValue("EmailConfirmed", true);
+                setValue("PhoneConfirmed", true);
+                setValue("PharmacyDetails", null);
             }
         } catch (error) {
             toast.error("Registration failed. Please try again.");
             console.error("Registration error:", error);
         }
     };
+
+    useEffect(() => {
+        getAllMainAreas()
+    }, []);
+
+    if (loading) {
+        return (
+            <div className="flex items-center justify-center h-screen">
+                <Loader2 className="w-6 h-6 animate-spin" />
+            </div>
+        )
+    }
 
     return (
         <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
@@ -148,8 +184,33 @@ const RegForm = () => {
 
             {/* Region Name */}
             <div className="space-y-2">
-                <Label htmlFor="regionName">Region</Label>
-                <Input id="regionName" placeholder="e.g. Cairo" {...register("RegionName")} />
+                <Controller
+                    name="RegionName"
+                    control={control}
+                    render={({ field }) => (
+                        <>
+                            <Label htmlFor="regionName">Region</Label>
+                            <Select onValueChange={field.onChange} value={field.value}>
+                                <SelectTrigger>
+                                    <SelectValue placeholder="Select a region" />
+                                </SelectTrigger>
+                                <SelectContent>
+                                    {mainAreas.map((area) => (
+                                        <SelectItem key={area.id} value={area.id}>
+                                            {area.regionName}
+                                        </SelectItem>
+                                    ))}
+                                </SelectContent>
+                            </Select>
+                        </>
+                    )}
+                />
+            </div>
+
+            {/* Min Order */}
+            <div className="space-y-2">
+                <Label htmlFor="minOrder">Min Order</Label>
+                <Input id="minOrder" type="number" placeholder="Min Order" {...register("MinOrder")} />
             </div>
 
             {/* Description Name */}

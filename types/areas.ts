@@ -21,6 +21,7 @@ export interface AreaFilters {
 export interface MainArea {
     id?: string;
     regionName: string;
+    isActive?: boolean;
     lang: string;
     lat: string;
 }

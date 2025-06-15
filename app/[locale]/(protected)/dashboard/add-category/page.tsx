@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import {useEffect, useState} from "react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
@@ -10,11 +10,15 @@ import { toast } from "sonner";
 import { useRouter } from "@/i18n/routing";
 import useCreateCategory from "@/services/categories/CreateCategory";
 import {Select, SelectContent, SelectItem, SelectTrigger, SelectValue} from "@/components/ui/select";
-import {modules} from "@/app/[locale]/(protected)/dashboard/modules/transactions/data";
+import useGettingAllMainCategories from "@/services/MainCategories/gettingAllMainCategories";
+import {Loader2} from "lucide-react";
 
 const AddCategory = () => {
   const { creatingCategory, loading } = useCreateCategory()
   const router = useRouter();
+
+  // getting all main Categories
+  const {loading: mainCategoriesLoading, mainCategories, getAllMainCategories, error: mainCategoriesError} = useGettingAllMainCategories()
 
   const [name, setName] = useState("");
   const [pref, setPref] = useState("");
@@ -36,7 +40,7 @@ const AddCategory = () => {
     }
 
     try {
-      const success = await creatingCategory({ name, pref, description });
+      const success = await creatingCategory({ name,mainCategoryId: module , pref, description });
       if (success) {
         toast.success("Category Added", {
           description: "Category added successfully!",
@@ -51,6 +55,18 @@ const AddCategory = () => {
       });
     }
   };
+
+  useEffect(() => {
+    getAllMainCategories()
+  }, []);
+
+  if(mainCategoriesLoading) {
+    return (
+        <div className="flex items-center justify-center h-screen">
+          <Loader2 className="animate-spin h-6 w-6 text-gray-500" />
+        </div>
+    );
+  }
 
   return (
       <div className="grid grid-cols-12 gap-4 rounded-lg">
@@ -69,7 +85,7 @@ const AddCategory = () => {
                     <SelectValue placeholder="Select Module" />
                   </SelectTrigger>
                   <SelectContent>
-                    {modules.map((module) => (
+                    {mainCategories.map((module) => (
                         <SelectItem key={module.id} value={module.id}>
                           {module.name}
                         </SelectItem>

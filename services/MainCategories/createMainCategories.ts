@@ -10,7 +10,7 @@ function useCreateMainCategories() {
 
         try {
             const response = await AxiosInstance.post("/api/MainCategories", categoryData);
-            if (response.status !== 200) {
+            if (response.status !== 201) {
                 return { success: false, error: "Failed to create main category" };
             }
             return { success: true };

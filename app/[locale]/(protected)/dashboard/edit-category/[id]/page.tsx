@@ -21,7 +21,7 @@ import {
   SelectTrigger,
   SelectValue
 } from "@/components/ui/select";
-import {modules} from "@/app/[locale]/(protected)/dashboard/modules/transactions/data";
+import useGettingAllMainCategories from "@/services/MainCategories/gettingAllMainCategories";
 
 const EditCategory = () => {
   // Router navigator
@@ -34,6 +34,7 @@ const EditCategory = () => {
   // API Call
   const { category, gettingCategoryById, loading: categoryLoading } = useGetCategoryById();
   const { updatingCategoryById, loading: updatingCategoryLoading, error} = useUpdateCategoryById()
+  const {mainCategories, loading: mainCategoriesLoading, getAllMainCategories, error: mainCategoriesError} = useGettingAllMainCategories()
 
   // Form states
   const [name, setName] = useState("");
@@ -52,6 +53,7 @@ const EditCategory = () => {
       setName(category.name || "");
       setPref(category.pref || "");
       setDescription(category.description || "");
+      setModule(category.mainCategoryId || "");
     }
   }, [category]);
 
@@ -83,7 +85,7 @@ const EditCategory = () => {
     }
 
     // Simulate update success (replace with real update logic)
-    updatingCategoryById(id, { name, pref, description });
+    updatingCategoryById(id, { name, pref, mainCategoryId: module, description });
     if ( error !== null ) {
       toast.success("Category Updated", {
         description: "Category Updated Successfully"
@@ -100,6 +102,10 @@ const EditCategory = () => {
       }, 2000);
     }
   };
+
+  useEffect(() => {
+    getAllMainCategories();
+  }, []);
 
   if (categoryLoading) return <Loader />;
 
@@ -120,7 +126,7 @@ const EditCategory = () => {
                   <SelectContent>
                     <SelectGroup>
                       <SelectLabel>Category</SelectLabel>
-                      {modules.map((module) => (
+                      {mainCategories.map((module) => (
                           <SelectItem key={module.id} value={module.id}>
                             {module.name}
                           </SelectItem>

@@ -9,7 +9,6 @@ import { Textarea } from "@/components/ui/textarea";
 import { toast } from "sonner";
 import {useRouter} from "@/i18n/routing";
 import {useParams} from "next/navigation";
-import {dummyAreas} from "@/app/[locale]/(protected)/dashboard/area/transactions/data";
 import {
   Select,
   SelectContent,
@@ -20,52 +19,72 @@ import {
   SelectValue
 } from "@/components/ui/select";
 import {Area} from "@/types/areas";
+import useGettingAllMainAreas from "@/services/area/gettingAllMainAreas";
+import gettingAllMainAreas from "@/services/area/gettingAllMainAreas";
+import {Loader2} from "lucide-react";
+import useUpdateMainArea from "@/services/area/updateMainArea";
+import MapSelector from "@/components/partials/MapSelector/MapSelector";
 
 
 const EditArea = () => {
+  // getting all main area
+  const {loading: mainAreaLoading, mainAreas, getAllMainAreas, error: mainAreaError} = useGettingAllMainAreas()
+
+  // update area
+  const {loading: updateAreaLoading, updateMainArea, error: updateAreaError} = useUpdateMainArea()
+
   const router = useRouter();
   const params = useParams();
   const areaType = params?.areaType as string;
     const areaId = params?.id as string;
 
   const [name, setName] = useState("");
+  const [lat, setLat] = useState("");
+  const [lang, setLang] = useState("");
   const [isActive, setIsActive] = useState(true);
   const [mainArea, setMainArea] = useState("");
-  const [description, setDescription] = useState("");
-  const [loading, setLoading] = useState(false);
 
   useEffect(() => {
-    if (areaType) {
-      const area = dummyAreas.find((m: Area) => m.id === areaId);
-      if (area) {
-        setName(area.name);
-        setDescription(area.description);
-        setIsActive(area.isActive);
-        if (areaType === "secondary") {
-          setMainArea(area?.mainAreaId || "");
-        } else {
-          setMainArea(""); // Reset main area for main type
-        }
-      } else {
+    if (mainAreas.length > 0) {
+      const area = mainAreas.find((m: Area) => m.id === areaId);
+      if (!area) {
         toast.error("Area not found");
+        return;
+      }
+
+      if (areaType === "main") {
+        setName(area.regionName);
+        setLat(area.lat || "");
+        setLang(area.lang || "");
+        setIsActive(area.isActive);
+        setMainArea(""); // reset main area
+      }
+
+      if (areaType === "secondary") {
+        setName(area.name);
+        setMainArea(area?.mainAreaId || "");
+        setLat(area.lat || "");
+        setLang(area.lang || "");
       }
     }
-  }, [areaType]);
+  }, [mainAreas]);
 
   const updateArea = async () => {
     if (!name.trim()) {
       toast.error("Validation Error", { description: "Area Name is required." });
       return;
     }
-    if (!description.trim()) {
-      toast.error("Validation Error", { description: "Description is required." });
-      return;
+    if (!lat.trim()) {
+        toast.error("Validation Error", { description: "Latitude is required." });
+        return;
+    }
+    if (!lang.trim()) {
+        toast.error("Validation Error", { description: "Longitude is required." });
+        return;
     }
 
     try {
-      setLoading(true);
-      const success = true; // Simulated success
-      setLoading(false);
+      const {success, error} = await updateMainArea(areaId, {regionName: name, lat, lang, isActive});
 
       if (success) {
         toast.success("Area Updated", {
@@ -81,6 +100,18 @@ const EditArea = () => {
       });
     }
   };
+
+  useEffect(() => {
+    getAllMainAreas()
+  }, []);
+
+  if (mainAreaLoading) {
+    return (
+        <div className="flex items-center justify-center h-full">
+            <Loader2 className="w-6 h-6 animate-spin" />
+        </div>
+    )
+  }
 
   return (
       <div className="grid grid-cols-12 gap-4 rounded-lg">
@@ -106,11 +137,11 @@ const EditArea = () => {
                       <SelectContent>
                         <SelectGroup>
                           <SelectLabel>Available Main Areas</SelectLabel>
-                          {dummyAreas
+                          {mainAreas
                               .filter((area) => area.type === "main")
                               .map((area) => (
                                   <SelectItem key={area.id} value={area.id}>
-                                    {area.name}
+                                    {area.regionName}
                                   </SelectItem>
                               ))}
                         </SelectGroup>
@@ -135,19 +166,23 @@ const EditArea = () => {
               </div>
             </CardContent>
 
-            <CardContent className="space-y-4">
-              <div className="flex items-center flex-wrap">
-                <Label className="w-[150px] flex-none" htmlFor="Description">
-                  Description
-                </Label>
-                <Textarea
-                    id="Description"
-                    placeholder="Description"
-                    value={description}
-                    onChange={(e) => setDescription(e.target.value)}
-                />
-              </div>
-            </CardContent>
+            {areaType === "main" && (
+                <CardContent className="space-y-4">
+                  <div className="flex flex-col gap-4">
+                    <Label>Pick Location on Map (Egypt)</Label>
+                    <div className="flex-1">
+                      <MapSelector
+                          lat={lat}
+                          lang={lang}
+                          onChange={(newLat, newLang) => {
+                            setLat(newLat);
+                            setLang(newLang);
+                          }}
+                      />
+                    </div>
+                  </div>
+                </CardContent>
+            )}
 
             <CardContent className="space-y-4">
               <div className="flex items-center flex-wrap">
@@ -162,8 +197,8 @@ const EditArea = () => {
                     <SelectValue placeholder="Select status" />
                   </SelectTrigger>
                   <SelectContent>
-                    <SelectItem value="true">True</SelectItem>
-                    <SelectItem value="false">False</SelectItem>
+                    <SelectItem value="true">Active</SelectItem>
+                    <SelectItem value="false">Inactive</SelectItem>
                   </SelectContent>
                 </Select>
               </div>
@@ -172,8 +207,8 @@ const EditArea = () => {
         </div>
 
         <div className="col-span-12 flex justify-center">
-          <Button onClick={updateArea} disabled={loading}>
-            {loading ? "Updating..." : "Update Area"}
+          <Button onClick={updateArea} disabled={updateAreaLoading}>
+            {updateAreaLoading ? "Updating..." : "Update Area"}
           </Button>
         </div>
       </div>
