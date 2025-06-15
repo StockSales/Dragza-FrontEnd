@@ -10,6 +10,7 @@ const withNextra = nextra({
   themeConfig: "./theme.config.tsx",
 });
 const nextConfig = {
+  // output: 'export',
   images: {
     remotePatterns: [
       {
