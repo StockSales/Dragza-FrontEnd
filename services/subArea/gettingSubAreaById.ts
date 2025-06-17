@@ -3,7 +3,7 @@ import {SubArea} from "@/types/areas";
 import AxiosInstance from "@/lib/AxiosInstance";
 
 function useGettingSubAreaById() {
-    const [loading, setLoading] = useState(true);
+    const [loading, setLoading] = useState(false);
     const [error, setError] = useState<string | null>(null);
     const [subArea, setSubArea] = useState<SubArea | null>(null);
 

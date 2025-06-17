@@ -25,6 +25,7 @@ import {Loader2} from "lucide-react";
 import useUpdateMainArea from "@/services/area/updateMainArea";
 import MapSelector from "@/components/partials/MapSelector/MapSelector";
 import useGettingSubAreaById from "@/services/subArea/gettingSubAreaById";
+import useUpdateSubArea from "@/services/subArea/updateSubArea";
 
 
 const EditArea = () => {
@@ -37,10 +38,13 @@ const EditArea = () => {
   // update area
   const {loading: updateAreaLoading, updateMainArea, error: updateAreaError} = useUpdateMainArea()
 
+  // update subarea
+  const {loading: updateSubAreaLoading, updateSubArea} = useUpdateSubArea()
+
   const router = useRouter();
   const params = useParams();
   const areaType = params?.areaType as string;
-    const areaId = params?.id as string;
+  const areaId = params?.id as string;
 
   const [name, setName] = useState("");
   const [lat, setLat] = useState("");
@@ -48,53 +52,92 @@ const EditArea = () => {
   const [isActive, setIsActive] = useState(true);
   const [mainArea, setMainArea] = useState("");
 
-  useEffect(() => {
-    if (mainAreas.length > 0 && subArea != null) {
-      const area = mainAreas.find((m: MainArea) => m.id === subArea?.regionId);
-      if (!area) {
-        toast.error("Area not found");
-        return;
-      }
+  // Helper function to convert backend isDeleted to frontend isActive
+  const convertToIsActive = (isDeleted: boolean | undefined) => {
+    // If isDeleted is true or null, it means active
+    // If isDeleted is false, it means inactive
+    return isDeleted === false ? false : true;
+  };
 
-      if (areaType === "main") {
+  // Helper function to convert frontend isActive to backend isDeleted
+  const convertToIsDeleted = (isActive: boolean) => {
+    // If isActive is true, set isDeleted to true (active)
+    // If isActive is false, set isDeleted to false (inactive)
+    return isActive ? true : false;
+  };
+
+  useEffect(() => {
+    if (mainAreas.length > 0 || subArea != null) {
+      if (areaType == "main") {
+        const area = mainAreas.find((m: MainArea) => m.id === areaId);
+        if (!area) {
+          toast.error("Area not found");
+          return;
+        }
+
         setName(area.regionName);
         setLat(area.lat || "");
         setLang(area.lang || "");
-        setIsActive(area.isActive || false);
+        // Convert backend isDeleted to frontend isActive
+        setIsActive(convertToIsActive(area.isDeleted));
         setMainArea(""); // reset main area
       }
 
       if (areaType === "secondary") {
+
         setName(subArea?.name || "");
         setMainArea(subArea?.regionId || "");
+        // Assuming subArea also has isDeleted field
+        if (subArea?.isDeleted !== undefined) {
+          setIsActive(convertToIsActive(subArea.isDeleted));
+        }
       }
     }
-  }, [mainAreas]);
+  }, [mainAreas, subArea]);
 
   const updateArea = async () => {
     if (!name.trim()) {
       toast.error("Validation Error", { description: "Area Name is required." });
       return;
     }
-    if (!lat.trim()) {
+
+    // Only validate lat/lang for main areas
+    if (areaType === "main") {
+      if (!lat.trim()) {
         toast.error("Validation Error", { description: "Latitude is required." });
         return;
-    }
-    if (!lang.trim()) {
+      }
+      if (!lang.trim()) {
         toast.error("Validation Error", { description: "Longitude is required." });
         return;
+      }
     }
+
     if (areaType === "secondary" && !mainArea) {
       toast.error("Validation Error", { description: "Main Area is required." });
       return;
     }
+
     if (isActive == null) {
-        toast.error("Validation Error", { description: "Status is required." });
-        return;
+      toast.error("Validation Error", { description: "Status is required." });
+      return;
     }
 
     try {
-      const {success, error} = await updateMainArea(areaId, {regionName: name, lat, lang, isActive});
+      // Convert frontend isActive to backend isDeleted
+      const isDeleted = convertToIsDeleted(isActive);
+
+      const updateData = {
+        regionName: name,
+        isDeleted: isDeleted,
+        ...(areaType === "main" && { lat, lang }) // Only include lat/lang for main areas
+      };
+
+      const {success, error} = areaType === "secondary" ? await updateSubArea(areaId, {
+          name,
+          regionId: mainArea,
+          isDeleted: isDeleted,
+      }) : await updateMainArea(areaId, updateData);
 
       if (success) {
         toast.success("Area Updated", {
@@ -117,13 +160,15 @@ const EditArea = () => {
 
   useEffect(() => {
     getAllMainAreas()
-    getSubAreaById(areaId)
+    if (areaType === "secondary") {
+      getSubAreaById(areaId)
+    }
   }, []);
 
   if (mainAreaLoading || subAreaLoading) {
     return (
         <div className="flex items-center justify-center h-full">
-            <Loader2 className="w-6 h-6 animate-spin" />
+          <Loader2 className="w-6 h-6 animate-spin" />
         </div>
     )
   }
@@ -203,11 +248,13 @@ const EditArea = () => {
             <CardContent className="space-y-4">
               <div className="flex items-center flex-wrap">
                 <Label className="w-[150px] flex-none" htmlFor="isActive">
-                  Active
+                  Status
                 </Label>
                 <Select
                     value={String(isActive)}
-                    onValueChange={(value) => setIsActive(value === "true")}
+                    onValueChange={(value) => {
+                      setIsActive(value === "true");
+                    }}
                 >
                   <SelectTrigger id="isActive" className="flex-1">
                     <SelectValue placeholder="Select status" />
