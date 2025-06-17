@@ -8,7 +8,6 @@ function useRemoveItemsFromOrder() {
     const removeItemsFromOrder = async (data: any): Promise<{ success: boolean, error?: string }> => {
         setLoading(true);
         setError(null);
-        console.log(data, "lolllllllllz")
 
         // Add 'return' here
         return await AxiosInstance.post(`/api/Orders/remove-item`, data)

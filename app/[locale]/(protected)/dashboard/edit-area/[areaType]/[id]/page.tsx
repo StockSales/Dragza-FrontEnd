@@ -18,25 +18,33 @@ import {
   SelectTrigger,
   SelectValue
 } from "@/components/ui/select";
-import {Area} from "@/types/areas";
+import {Area, MainArea} from "@/types/areas";
 import useGettingAllMainAreas from "@/services/area/gettingAllMainAreas";
 import gettingAllMainAreas from "@/services/area/gettingAllMainAreas";
 import {Loader2} from "lucide-react";
 import useUpdateMainArea from "@/services/area/updateMainArea";
 import MapSelector from "@/components/partials/MapSelector/MapSelector";
+import useGettingSubAreaById from "@/services/subArea/gettingSubAreaById";
+import useUpdateSubArea from "@/services/subArea/updateSubArea";
 
 
 const EditArea = () => {
   // getting all main area
   const {loading: mainAreaLoading, mainAreas, getAllMainAreas, error: mainAreaError} = useGettingAllMainAreas()
 
+  // getting SubArea by id
+  const {getSubAreaById, subArea, error: subAreaError, loading: subAreaLoading} = useGettingSubAreaById()
+
   // update area
   const {loading: updateAreaLoading, updateMainArea, error: updateAreaError} = useUpdateMainArea()
+
+  // update subarea
+  const {loading: updateSubAreaLoading, updateSubArea} = useUpdateSubArea()
 
   const router = useRouter();
   const params = useParams();
   const areaType = params?.areaType as string;
-    const areaId = params?.id as string;
+  const areaId = params?.id as string;
 
   const [name, setName] = useState("");
   const [lat, setLat] = useState("");
@@ -44,47 +52,92 @@ const EditArea = () => {
   const [isActive, setIsActive] = useState(true);
   const [mainArea, setMainArea] = useState("");
 
-  useEffect(() => {
-    if (mainAreas.length > 0) {
-      const area = mainAreas.find((m: Area) => m.id === areaId);
-      if (!area) {
-        toast.error("Area not found");
-        return;
-      }
+  // Helper function to convert backend isDeleted to frontend isActive
+  const convertToIsActive = (isDeleted: boolean | undefined) => {
+    // If isDeleted is true or null, it means active
+    // If isDeleted is false, it means inactive
+    return isDeleted === false ? false : true;
+  };
 
-      if (areaType === "main") {
+  // Helper function to convert frontend isActive to backend isDeleted
+  const convertToIsDeleted = (isActive: boolean) => {
+    // If isActive is true, set isDeleted to true (active)
+    // If isActive is false, set isDeleted to false (inactive)
+    return isActive ? true : false;
+  };
+
+  useEffect(() => {
+    if (mainAreas.length > 0 || subArea != null) {
+      if (areaType == "main") {
+        const area = mainAreas.find((m: MainArea) => m.id === areaId);
+        if (!area) {
+          toast.error("Area not found");
+          return;
+        }
+
         setName(area.regionName);
         setLat(area.lat || "");
         setLang(area.lang || "");
-        setIsActive(area.isActive);
+        // Convert backend isDeleted to frontend isActive
+        setIsActive(convertToIsActive(area.isDeleted));
         setMainArea(""); // reset main area
       }
 
       if (areaType === "secondary") {
-        setName(area.name);
-        setMainArea(area?.mainAreaId || "");
-        setLat(area.lat || "");
-        setLang(area.lang || "");
+
+        setName(subArea?.name || "");
+        setMainArea(subArea?.regionId || "");
+        // Assuming subArea also has isDeleted field
+        if (subArea?.isDeleted !== undefined) {
+          setIsActive(convertToIsActive(subArea.isDeleted));
+        }
       }
     }
-  }, [mainAreas]);
+  }, [mainAreas, subArea]);
 
   const updateArea = async () => {
     if (!name.trim()) {
       toast.error("Validation Error", { description: "Area Name is required." });
       return;
     }
-    if (!lat.trim()) {
+
+    // Only validate lat/lang for main areas
+    if (areaType === "main") {
+      if (!lat.trim()) {
         toast.error("Validation Error", { description: "Latitude is required." });
         return;
-    }
-    if (!lang.trim()) {
+      }
+      if (!lang.trim()) {
         toast.error("Validation Error", { description: "Longitude is required." });
         return;
+      }
+    }
+
+    if (areaType === "secondary" && !mainArea) {
+      toast.error("Validation Error", { description: "Main Area is required." });
+      return;
+    }
+
+    if (isActive == null) {
+      toast.error("Validation Error", { description: "Status is required." });
+      return;
     }
 
     try {
-      const {success, error} = await updateMainArea(areaId, {regionName: name, lat, lang, isActive});
+      // Convert frontend isActive to backend isDeleted
+      const isDeleted = convertToIsDeleted(isActive);
+
+      const updateData = {
+        regionName: name,
+        isDeleted: isDeleted,
+        ...(areaType === "main" && { lat, lang }) // Only include lat/lang for main areas
+      };
+
+      const {success, error} = areaType === "secondary" ? await updateSubArea(areaId, {
+          name,
+          regionId: mainArea,
+          isDeleted: isDeleted,
+      }) : await updateMainArea(areaId, updateData);
 
       if (success) {
         toast.success("Area Updated", {
@@ -93,6 +146,10 @@ const EditArea = () => {
         setTimeout(() => {
           router.push("/dashboard/area");
         }, 1000);
+      }
+
+      if (error) {
+        throw new Error(error);
       }
     } catch (error: any) {
       toast.error("Network Error", {
@@ -103,12 +160,15 @@ const EditArea = () => {
 
   useEffect(() => {
     getAllMainAreas()
+    if (areaType === "secondary") {
+      getSubAreaById(areaId)
+    }
   }, []);
 
-  if (mainAreaLoading) {
+  if (mainAreaLoading || subAreaLoading) {
     return (
         <div className="flex items-center justify-center h-full">
-            <Loader2 className="w-6 h-6 animate-spin" />
+          <Loader2 className="w-6 h-6 animate-spin" />
         </div>
     )
   }
@@ -137,13 +197,14 @@ const EditArea = () => {
                       <SelectContent>
                         <SelectGroup>
                           <SelectLabel>Available Main Areas</SelectLabel>
-                          {mainAreas
-                              .filter((area) => area.type === "main")
-                              .map((area) => (
-                                  <SelectItem key={area.id} value={area.id}>
-                                    {area.regionName}
-                                  </SelectItem>
-                              ))}
+                          {mainAreas.map((area) => (
+                              <SelectItem
+                                  key={area.id}
+                                  value={area.id || ""}
+                              >
+                                {area.regionName}
+                              </SelectItem>
+                          ))}
                         </SelectGroup>
                       </SelectContent>
                     </Select>
@@ -187,11 +248,13 @@ const EditArea = () => {
             <CardContent className="space-y-4">
               <div className="flex items-center flex-wrap">
                 <Label className="w-[150px] flex-none" htmlFor="isActive">
-                  Active
+                  Status
                 </Label>
                 <Select
                     value={String(isActive)}
-                    onValueChange={(value) => setIsActive(value === "true")}
+                    onValueChange={(value) => {
+                      setIsActive(value === "true");
+                    }}
                 >
                   <SelectTrigger id="isActive" className="flex-1">
                     <SelectValue placeholder="Select status" />

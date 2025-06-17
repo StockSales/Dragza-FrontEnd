@@ -25,11 +25,11 @@ export interface OrderItem {
 export interface ItemsTableProps {
     items: OrderItem[];
     deletedItems: string[];
-    onDeleteItem: (id: string) => void;
+    onDeleteItem: (itemId: string, productName: string) => void;
 }
 
 export interface BillSummaryProps {
     items: OrderItem[];
     deletedItems: string[];
-    defaultItems: OrderItem[];
+    defaultItems?: OrderItem[];
 }

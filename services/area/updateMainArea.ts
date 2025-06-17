@@ -1,6 +1,6 @@
 import AxiosInstance from "@/lib/AxiosInstance";
 import {useState} from "react";
-import { MainArea } from '@/types/areas';
+import {MainArea, SubArea} from '@/types/areas';
 
 interface UpdateMainAreaResponse {
     success: boolean;
@@ -15,7 +15,7 @@ function useUpdateMainArea() {
     // Function to update the main area
     const updateMainArea = async (
         areaId: string, 
-        areaData: Omit<MainArea, 'id'>,
+        areaData: any,
     ): Promise<UpdateMainAreaResponse> => {
         try {
             setLoading(true);
@@ -23,7 +23,7 @@ function useUpdateMainArea() {
 
             const response = await AxiosInstance.put<MainArea>(`/api/Regions/${areaId}`, areaData);
             
-            if (response.status !== 200) {
+            if (response.status !== 204) {
                 throw new Error('Failed to update main area');
             }
 

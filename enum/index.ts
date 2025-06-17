@@ -30,6 +30,16 @@ export const OrderStatusLabel: Record<OrderStatus, string> = {
     [OrderStatus.Completed]: "Completed",
 };
 
+export const StatusPathMap: Record<OrderStatus, string> = {
+    [OrderStatus.Pending]: "pending",
+    [OrderStatus.Approved]: "approve",
+    [OrderStatus.Rejected]: "reject",
+    [OrderStatus.Prepared]: "prepare",
+    [OrderStatus.Shipped]: "ship",
+    [OrderStatus.Delivered]: "deliver",
+    [OrderStatus.Completed]: "complete",
+};
+
 export enum ReturnStatus {
     Requested = 0,
     Approved = 1,

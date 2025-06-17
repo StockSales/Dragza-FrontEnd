@@ -21,7 +21,7 @@ export interface AreaFilters {
 export interface MainArea {
     id?: string;
     regionName: string;
-    isActive?: boolean;
+    isDeleted?: boolean;
     lang: string;
     lat: string;
 }
@@ -31,5 +31,7 @@ export interface MainArea {
 export interface SubArea {
     id?: string;
     name: string;
-    regionId: string;
+    regionId?: string;
+    regionName?: string;
+    isDeleted?: boolean;
 }

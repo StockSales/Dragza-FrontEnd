@@ -39,27 +39,44 @@ import {
 
 import { Loader2 } from "lucide-react";
 import { Button } from "@/components/ui/button";
-import {useRouter} from "@/i18n/routing";
+import { useRouter } from "@/i18n/routing";
 import useGettingAllMainAreas from "@/services/area/gettingAllMainAreas";
 import useGettingAllSubArea from "@/services/subArea/gettingAllSubArea";
-import {AreaType, MainArea} from "@/types/areas";
+import { AreaType, MainArea } from "@/types/areas";
 
 const AreasTable = () => {
-  //getting all areas
-  const {loading: mainAreasLoading, mainAreas, getAllMainAreas, error: mainAreasError} = useGettingAllMainAreas()
+  // Getting all areas
+  const {
+    loading: mainAreasLoading,
+    mainAreas,
+    getAllMainAreas,
+    error: mainAreasError
+  } = useGettingAllMainAreas();
 
-  // getting all secondary areas
-  const {error: subAreasError, allSubArea, loading: subAreasLoading, getAllSubArea} = useGettingAllSubArea()
+  // Getting all secondary areas
+  const {
+    error: subAreasError,
+    allSubArea,
+    loading: subAreasLoading,
+    getAllSubArea
+  } = useGettingAllSubArea();
 
   const router = useRouter();
 
   const [selectedAreaType, setSelectedAreaType] = useState<"main" | "secondary">("main");
-
   const [sorting, setSorting] = useState<SortingState>([]);
   const [columnFilters, setColumnFilters] = useState<ColumnFiltersState>([]);
   const [columnVisibility, setColumnVisibility] = useState<VisibilityState>({});
   const [rowSelection, setRowSelection] = useState({});
 
+  // Create refresh function
+  const handleRefresh = React.useCallback(() => {
+    if (selectedAreaType === "main") {
+      getAllMainAreas();
+    } else if (selectedAreaType === "secondary") {
+      getAllSubArea();
+    }
+  }, [selectedAreaType, getAllMainAreas, getAllSubArea]);
 
   // Filter areas based on selected type
   const filteredAreas = React.useMemo<MainArea[]>(() => {
@@ -68,8 +85,13 @@ const AreasTable = () => {
     return [];
   }, [selectedAreaType, mainAreas, allSubArea]);
 
-  const columns = getColumns(selectedAreaType);
-
+  // Get columns with proper refresh function
+  const columns = React.useMemo(() => {
+    return getColumns({
+      areaType: selectedAreaType,
+      onRefresh: handleRefresh
+    });
+  }, [selectedAreaType, handleRefresh]);
 
   const table = useReactTable({
     data: filteredAreas,
@@ -90,20 +112,38 @@ const AreasTable = () => {
     },
   });
 
+  // Load data when component mounts or area type changes
   useEffect(() => {
-    if (selectedAreaType === "main") {
-      getAllMainAreas();
-    } else if (selectedAreaType === "secondary") {
-      getAllSubArea();
-    }
+    handleRefresh();
   }, [selectedAreaType]);
 
+  // Handle loading states
+  const isLoading = selectedAreaType === "main" ? mainAreasLoading : subAreasLoading;
+  const hasError = selectedAreaType === "main" ? mainAreasError : subAreasError;
 
-  if (subAreasLoading || mainAreasLoading) {
+  if (isLoading) {
     return (
-        <div className="flex items-center justify-center h-full">
-          <Loader2 className="w-6 h-6 animate-spin" />
+        <div className="flex items-center justify-center h-64">
+          <div className="flex flex-col items-center gap-2">
+            <Loader2 className="w-8 h-8 animate-spin" />
+            <p className="text-sm text-gray-600">Loading {selectedAreaType} areas...</p>
+          </div>
         </div>
+    );
+  }
+
+  if (hasError) {
+    return (
+        <Card className="w-full">
+          <CardContent className="flex items-center justify-center h-64">
+            <div className="text-center">
+              <p className="text-red-600 mb-2">Error loading {selectedAreaType} areas</p>
+              <Button onClick={handleRefresh} variant="outline">
+                Try Again
+              </Button>
+            </div>
+          </CardContent>
+        </Card>
     );
   }
 
@@ -111,7 +151,10 @@ const AreasTable = () => {
       <Card className="w-full">
         <div className="flex justify-between flex-wrap gap-4 items-center py-4 px-5">
           <div className="flex-1 text-xl flex gap-4 font-medium text-default-900">
-            <Select value={selectedAreaType} onValueChange={(value: "main" | "secondary") => setSelectedAreaType(value)}>
+            <Select
+                value={selectedAreaType}
+                onValueChange={(value: "main" | "secondary") => setSelectedAreaType(value)}
+            >
               <SelectTrigger className="w-[180px] cursor-pointer">
                 <SelectValue placeholder="Select Area Type" />
               </SelectTrigger>
@@ -124,9 +167,31 @@ const AreasTable = () => {
               </SelectContent>
             </Select>
           </div>
-          <Button size={"md"} variant="outline" onClick={() => router.push(`/dashboard/add-area/${selectedAreaType}`)}>
-              Add Area
-          </Button>
+
+          <div className="flex gap-2">
+            <Button
+                size="md"
+                variant="outline"
+                onClick={handleRefresh}
+                disabled={isLoading}
+            >
+              {isLoading ? (
+                  <>
+                    <Loader2 className="w-4 h-4 mr-2 animate-spin" />
+                    Refreshing...
+                  </>
+              ) : (
+                  "Refresh"
+              )}
+            </Button>
+            <Button
+                size="md"
+                variant="outline"
+                onClick={() => router.push(`/dashboard/add-area/${selectedAreaType}`)}
+            >
+              Add {selectedAreaType === "main" ? "Area" : "Sub-Area"}
+            </Button>
+          </div>
         </div>
 
         <CardContent>
@@ -171,7 +236,7 @@ const AreasTable = () => {
                           colSpan={columns.length}
                           className="h-24 text-center"
                       >
-                        No results.
+                        No {selectedAreaType} areas found.
                       </TableCell>
                     </TableRow>
                 )}
