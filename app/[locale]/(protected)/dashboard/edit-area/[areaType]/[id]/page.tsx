@@ -18,17 +18,21 @@ import {
   SelectTrigger,
   SelectValue
 } from "@/components/ui/select";
-import {Area} from "@/types/areas";
+import {Area, MainArea} from "@/types/areas";
 import useGettingAllMainAreas from "@/services/area/gettingAllMainAreas";
 import gettingAllMainAreas from "@/services/area/gettingAllMainAreas";
 import {Loader2} from "lucide-react";
 import useUpdateMainArea from "@/services/area/updateMainArea";
 import MapSelector from "@/components/partials/MapSelector/MapSelector";
+import useGettingSubAreaById from "@/services/subArea/gettingSubAreaById";
 
 
 const EditArea = () => {
   // getting all main area
   const {loading: mainAreaLoading, mainAreas, getAllMainAreas, error: mainAreaError} = useGettingAllMainAreas()
+
+  // getting SubArea by id
+  const {getSubAreaById, subArea, error: subAreaError, loading: subAreaLoading} = useGettingSubAreaById()
 
   // update area
   const {loading: updateAreaLoading, updateMainArea, error: updateAreaError} = useUpdateMainArea()
@@ -45,8 +49,8 @@ const EditArea = () => {
   const [mainArea, setMainArea] = useState("");
 
   useEffect(() => {
-    if (mainAreas.length > 0) {
-      const area = mainAreas.find((m: Area) => m.id === areaId);
+    if (mainAreas.length > 0 && subArea != null) {
+      const area = mainAreas.find((m: MainArea) => m.id === subArea?.regionId);
       if (!area) {
         toast.error("Area not found");
         return;
@@ -56,15 +60,13 @@ const EditArea = () => {
         setName(area.regionName);
         setLat(area.lat || "");
         setLang(area.lang || "");
-        setIsActive(area.isActive);
+        setIsActive(area.isActive || false);
         setMainArea(""); // reset main area
       }
 
       if (areaType === "secondary") {
-        setName(area.name);
-        setMainArea(area?.mainAreaId || "");
-        setLat(area.lat || "");
-        setLang(area.lang || "");
+        setName(subArea?.name || "");
+        setMainArea(subArea?.regionId || "");
       }
     }
   }, [mainAreas]);
@@ -82,6 +84,14 @@ const EditArea = () => {
         toast.error("Validation Error", { description: "Longitude is required." });
         return;
     }
+    if (areaType === "secondary" && !mainArea) {
+      toast.error("Validation Error", { description: "Main Area is required." });
+      return;
+    }
+    if (isActive == null) {
+        toast.error("Validation Error", { description: "Status is required." });
+        return;
+    }
 
     try {
       const {success, error} = await updateMainArea(areaId, {regionName: name, lat, lang, isActive});
@@ -94,6 +104,10 @@ const EditArea = () => {
           router.push("/dashboard/area");
         }, 1000);
       }
+
+      if (error) {
+        throw new Error(error);
+      }
     } catch (error: any) {
       toast.error("Network Error", {
         description: error?.message || "Something went wrong",
@@ -103,9 +117,10 @@ const EditArea = () => {
 
   useEffect(() => {
     getAllMainAreas()
+    getSubAreaById(areaId)
   }, []);
 
-  if (mainAreaLoading) {
+  if (mainAreaLoading || subAreaLoading) {
     return (
         <div className="flex items-center justify-center h-full">
             <Loader2 className="w-6 h-6 animate-spin" />
@@ -137,13 +152,14 @@ const EditArea = () => {
                       <SelectContent>
                         <SelectGroup>
                           <SelectLabel>Available Main Areas</SelectLabel>
-                          {mainAreas
-                              .filter((area) => area.type === "main")
-                              .map((area) => (
-                                  <SelectItem key={area.id} value={area.id}>
-                                    {area.regionName}
-                                  </SelectItem>
-                              ))}
+                          {mainAreas.map((area) => (
+                              <SelectItem
+                                  key={area.id}
+                                  value={area.id || ""}
+                              >
+                                {area.regionName}
+                              </SelectItem>
+                          ))}
                         </SelectGroup>
                       </SelectContent>
                     </Select>

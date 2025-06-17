@@ -31,5 +31,5 @@ export interface ItemsTableProps {
 export interface BillSummaryProps {
     items: OrderItem[];
     deletedItems: string[];
-    defaultItems: OrderItem[];
+    defaultItems?: OrderItem[];
 }

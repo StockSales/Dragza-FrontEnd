@@ -1,10 +1,11 @@
 import {useState} from "react";
 import AxiosInstance from "@/lib/AxiosInstance";
+import {MainArea} from "@/types/areas";
 
 function useGettingAllMainAreas() {
     const [loading, setLoading] = useState(false);
     const [error, setError] = useState<string | null>(null);
-    const [mainAreas, setMainAreas] = useState<any[]>([]);
+    const [mainAreas, setMainAreas] = useState<MainArea[]>([]);
 
     const getAllMainAreas = async () => {
         setLoading(true);

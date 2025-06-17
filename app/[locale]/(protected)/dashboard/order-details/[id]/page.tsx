@@ -23,6 +23,10 @@ import {OrderStatus, OrderStatusLabel, UserRoleLabel} from "@/enum";
 import useGettingOrderById from "@/services/Orders/gettingOrderById";
 import useGettingInvoiceByOrderId from "@/services/invoices/order/gettingInvoiceByOrderId";
 import {Orders} from "@/types/orders";
+import BillSummary from "@/app/[locale]/(protected)/dashboard/remove-item/[id]/BillSummary";
+import loading from "@/app/[locale]/(protected)/app/projects/loading";
+import {Loader2} from "lucide-react";
+import useUpdateOrderStatus from "@/services/Orders/updateOrderStatus";
 
 const OrderDetails = () => {
   // state for the order data
@@ -38,8 +42,31 @@ const OrderDetails = () => {
   // getting Order Invoice By id
   const {loading: invoiceLoading, error: invoiceError, invoice, getInvoiceByOrderId} = useGettingInvoiceByOrderId()
 
+  // updating order status
+  const {loading: updateLoading, updateOrderStatus} = useUpdateOrderStatus()
 
 
+
+  useEffect(() => {
+    if (id) {
+      getOrderById(id as string);
+      getInvoiceByOrderId(id as string);
+    }
+  }, []);
+
+  useEffect(() => {
+    if (orderData) {
+      setOrder(orderData);
+    }
+  }, [orderData]);
+
+  if (orderLoading || invoiceLoading) {
+    return (
+        <div className="flex items-center justify-center h-full">
+          <Loader2 className="h-6 w-6 animate-spin text-muted-foreground" />
+        </div>
+    );
+  }
   return (
       <Card>
         <CardHeader>
@@ -65,7 +92,10 @@ const OrderDetails = () => {
                     {Object.values(OrderStatus)
                         .filter((value) => typeof value === "number")
                         .map((status) => (
-                            <SelectItem key={status} value={status.toString()}>
+                            <SelectItem key={status} value={status.toString()}
+                                        disabled={status === OrderStatus.Pending}
+                            >
+
                               {OrderStatusLabel[status as OrderStatus]}
                             </SelectItem>
                         ))}
@@ -78,64 +108,63 @@ const OrderDetails = () => {
                   size="md"
                   variant="outline"
                   className="w-[150px] flex-none"
-                  type="submit"
+                  type="button"
+                  disabled={updateLoading || order?.status === OrderStatus.Pending}
+                  onClick={async () => {
+                    if (!id || !order?.status || order.status === OrderStatus.Pending) {
+                      toast.warning("Invalid status selected.");
+                      return;
+                    }
+
+                    const result = await updateOrderStatus(id, order.status);
+
+                    if (result.success) {
+                      toast.success("Order status updated successfully!");
+                      getOrderById(id as string); // Refresh data
+                    } else {
+                      toast.error(`Update failed: ${result.error}`);
+                    }
+                  }}
               >
-                Update
+                {updateLoading ? <Loader2 className="h-4 w-4 animate-spin" /> : "Update"}
               </Button>
             </div>
           </div>
         </CardContent>
-        <CardHeader className="border-0">
-          <div className="flex justify-between flex-wrap gap-4 items-center">
-            <div>
-            <span className="block text-default-900 font-medium leading-5 text-xl">
-              Bill to:
-            </span>
-
-              <div className="text-default-500 font-normal leading-5 mt-4 text-sm">
-                Annette black-500 <br />
-                4140 Parker Rd. Allentown, New <br />
-                Mexico 31134
-                <div className="flex space-x-2 mt-2 leading-none rtl:space-x-reverse">
-                  <Icon icon="heroicons-outline:phone" />
-                  <span>(252) 555-0126,(201) 555-0124</span>
-                </div>
-                <div className="mt-[6px] flex space-x-2 leading-none rtl:space-x-reverse">
-                  <Icon icon="heroicons-outline:mail" />
-                  <span>Dashcode@example.com</span>
+        <Card>
+          <CardHeader className="border-0">
+            <div className="flex justify-between flex-wrap gap-4 items-center">
+              <div>
+                <span className="block text-default-900 font-medium text-xl">Bill to:</span>
+                <div className="text-default-500 font-normal mt-4 text-sm">
+                  Pharmacy ID: {orderData.pharmacyUserId || 'N/A'}
+                  <div className="flex space-x-2 mt-2">
+                    <p>Inventory Manager:</p>
+                    <span>{orderData.inventoryUserId || 'N/A'}</span>
+                  </div>
                 </div>
               </div>
+              <div className="space-y-1 text-xs text-default-600 uppercase">
+                <h4>Order Id: {orderData.id || 'N/A'}</h4>
+                <h4>Order Date: {orderData.orderDate ? new Date(orderData.orderDate).toLocaleString() : 'N/A'}</h4>
+                <h4>Status: {orderData.status !== undefined ? OrderStatus[orderData.status] : 'N/A'}</h4>
+              </div>
             </div>
-            <div className="space-y-1">
-              <h4 className="text-default-600 font-medium text-xs uppercase">
-                Order Id: 22332285 - 33221144
-              </h4>
+          </CardHeader>
 
-              <h4 className="text-default-600 font-medium text-xs uppercase">
-                Order Date: July 07, 2023. 09:36 AM
-              </h4>
-              <h4 className="text-default-600 font-medium text-xs uppercase">
-                Payment Method: Cash On Delivery
-              </h4>
+          <CardContent>
+            <BillSummary
+                defaultItems={orderData.items}
+                items={orderData.items}
+                deletedItems={[]}
+            />
+            <div className="col-span-12 flex justify-end mt-10">
+              <Button variant="soft" size="md" className="cursor-pointer">
+                Print
+              </Button>
             </div>
-          </div>
-        </CardHeader>
-
-        <CardContent>
-          <div className="border border-solid border-default-400 rounded-md overflow-hidden">
-            <TotalTable />
-          </div>
-          <div className="col-span-12 flex justify-end mt-10">
-            <Button
-                variant="soft"
-                color="default"
-                size="md"
-                className="cursor-pointer"
-            >
-              Print
-            </Button>
-          </div>
-        </CardContent>
+          </CardContent>
+        </Card>
       </Card>
   );
 };

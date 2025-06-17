@@ -1,8 +1,11 @@
 import {BillSummaryProps, OrderItem} from "@/types/orders";
 
-const BillSummary: React.FC<BillSummaryProps> = ({ items, deletedItems, defaultItems }) => {
-  const activeItems: OrderItem[] = items.filter((item: OrderItem) => !deletedItems.includes(item?.productId || ''));
-  const subtotal: number = activeItems.reduce((sum: number, item: OrderItem) => sum + (item?.total || 0), 0);
+const BillSummary: React.FC<BillSummaryProps> = ({ items, deletedItems, defaultItems = [] }) => {
+  const activeItems: OrderItem[] = items.filter((item: OrderItem) => !deletedItems?.includes(item?.productId || ''));
+  const subtotal: number = activeItems.reduce(
+      (sum, item) => sum + ((item.unitPrice || 0) * (item.quantity || 0)),
+      0
+  );
   const invoiceTotal: number = subtotal || 0;
 
   return (

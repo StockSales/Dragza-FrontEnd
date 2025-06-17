@@ -31,5 +31,6 @@ export interface MainArea {
 export interface SubArea {
     id?: string;
     name: string;
-    regionId: string;
+    regionId?: string;
+    regionName?: string;
 }
