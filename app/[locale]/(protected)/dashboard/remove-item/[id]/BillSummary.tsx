@@ -14,8 +14,8 @@ const BillSummary: React.FC<BillSummaryProps> = ({ items, deletedItems, defaultI
           <thead>
           <tr>
             <th
-                colSpan={3}
-                className="bg-default-50 text-xs font-medium leading-4 uppercase text-default-600 text-left"
+              colSpan={3}
+              className="bg-default-50 text-xs font-medium leading-4 uppercase text-default-600 text-left"
             >
               <span className="block px-6 py-5 font-semibold">ITEM</span>
             </th>
@@ -46,7 +46,7 @@ const BillSummary: React.FC<BillSummaryProps> = ({ items, deletedItems, defaultI
                           isDeleted ? 'line-through' : ''
                       }`}
                   >
-                    {data.productId}
+                    {data.productName}
                     {isDeleted && (
                         <div className="absolute inset-0 flex items-center">
                           <div className="w-full h-0.5 bg-red-500 animate-pulse"></div>

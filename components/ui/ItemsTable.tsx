@@ -31,7 +31,7 @@ const ItemsTable: React.FC<ItemsTableProps> = ({ items, deletedItems, onDeleteIt
                     className="border-b border-default-100 border-solid border-0"
                 >
                     <td className="text-default-900 text-sm font-normal text-left px-6 py-4">
-                        {data.productId}
+                        {data.productName}
                     </td>
                     <td className="text-default-900 text-sm font-normal text-left px-6 py-4">
                         {data.quantity}
@@ -46,7 +46,7 @@ const ItemsTable: React.FC<ItemsTableProps> = ({ items, deletedItems, onDeleteIt
                         <Button
                             variant="ghost"
                             size="sm"
-                            onClick={() => onDeleteItem(data.productId)}
+                            onClick={() => onDeleteItem(data.productId, data.productName)}
                             className="text-red-500 hover:text-red-700 hover:bg-red-50"
                         >
                             <Trash2 className="h-4 w-4" />
