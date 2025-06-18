@@ -130,7 +130,7 @@ const AddArea = () => {
                           <SelectGroup>
                             <SelectLabel>Available Main Areas</SelectLabel>
                             {mainAreas.map((area) => (
-                                <SelectItem key={area.id} value={area.id}>
+                                <SelectItem key={area.id} value={area.id as string}>
                                     {area.regionName}
                                 </SelectItem>
                             ))}
