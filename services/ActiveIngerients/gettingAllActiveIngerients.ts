@@ -1,10 +1,11 @@
 import React, {useState} from 'react';
 import AxiosInstance from "@/lib/AxiosInstance";
+import {ActiveIngredient} from "@/types/activeIngredient";
 
 function useGettingAllActiveIngredient() {
     // states for active ingredient
     const [loading, setLoading] = useState(false);
-    const [activeIngredients, setActiveIngredients] = useState<any[]>([]);
+    const [activeIngredients, setActiveIngredients] = useState<ActiveIngredient[]>([]);
     const [error, setError] = useState<string | null>(null);
 
     // function to get all active ingredients

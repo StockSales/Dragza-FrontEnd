@@ -142,6 +142,7 @@
     "chat": "Chat",
     "email": "Email",
     "kanban": "Kanban",
+    "ActiveIngredients": "ActiveIngredients",
     "calendar": "Calendar",
     "todo": "Todo",
     "projects": "Projects",
