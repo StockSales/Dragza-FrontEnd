@@ -40,18 +40,13 @@ import useUpdateProductById from "@/services/products/UpdateProductById";
 import useActiveIngredientById from "@/services/ActiveIngerients/ActiveIngredientById";
 import {ActiveIngredient} from "@/types/activeIngredient";
 import useUpdateActiveIngredient from "@/services/ActiveIngerients/updateActiveIngredient";
+import useCreateActiveIngredients from "@/services/ActiveIngerients/createActiveIngredients";
 
-const EditActiveIngredient = () => {
+const AddActiveIngredient = () => {
   // router for navigation
   const router = useRouter();
 
-  // getting the id of Active Ingredient from URL
-  const params = useParams();
-  const activeIngredientId = params?.id as string;
-
-  const {gettingActiveIngredientById, activeIngredient, loading: activeIngredientLoading} = useActiveIngredientById()
-
-  const {updateActiveIngredient, loading: updatingActiveIngredientById} = useUpdateActiveIngredient()
+  const {loading: activeIngredientLoading, createActiveIngredient} = useCreateActiveIngredients()
 
   // state for data
     const [formData, setFormData] = useState({
@@ -59,22 +54,22 @@ const EditActiveIngredient = () => {
     });
 
   // function to handle the update of product
-  const handleUpdateActiveIngredient = async (activeIngredientId: string, formData: ActiveIngredient) => {
+  const handleUpdateProduct = async ( formData: ActiveIngredient) => {
     if (!formData.name) {
       toast.error("Please fill all the fields");
       return;
     }
 
     try {
-      const {success, error} = await updateActiveIngredient(activeIngredientId, formData)
+      const {success, error} = await createActiveIngredient({name: formData.name})
        if (success) {
-        toast.success("Active Ingredient updated successfully");
+        toast.success("Active Ingredient Created successfully");
         setTimeout(() => {
           router.push('/dashboard/ActiveIngredients');
         }, 2000);
       }
       if (error) {
-        toast.error("Update Failed",{
+        toast.error("Adding new active ingredient Failed",{
             description: error
         });
         setTimeout(() => {
@@ -84,21 +79,6 @@ const EditActiveIngredient = () => {
     } catch (error: any)  {
       toast.error( "Network Error",{ description: error.message});
     }
-  }
-
-
-  // dependent data
-  useEffect(() => {
-    if (activeIngredientId) gettingActiveIngredientById(activeIngredientId)
-  }, [activeIngredientId]);
-
-
-  if (activeIngredientLoading) {
-    return (
-      <div className="flex items-center justify-center h-screen">
-        <Loader2 className="animate-spin h-8 w-8 text-gray-500" />
-      </div>
-    );
   }
 
   return (
@@ -117,7 +97,7 @@ const EditActiveIngredient = () => {
                   id="h_Fullname"
                   type="text"
                   placeholder="Full name"
-                  value={activeIngredient?.name}
+                  value={formData?.name}
                   onChange={(e) => setFormData({...formData, name: e.target.value})}
               />
             </div>
@@ -126,10 +106,10 @@ const EditActiveIngredient = () => {
       </div>
 
       <div className="col-span-12 flex justify-end">
-        <Button onClick={() => handleUpdateActiveIngredient(activeIngredientId, formData)}>{updatingActiveIngredientById ? <Loader2 className="mr-2 h-4 w-4 animate-spin"/> : null}Update Active Ingredients</Button>
+        <Button onClick={() => handleUpdateProduct(formData)}>{activeIngredientLoading ? <Loader2 className="mr-2 h-4 w-4 animate-spin"/> : null}Add Active Ingredients</Button>
       </div>
     </div>
   );
 };
 
-export default EditActiveIngredient;
+export default AddActiveIngredient;
