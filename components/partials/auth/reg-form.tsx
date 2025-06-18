@@ -196,7 +196,7 @@ const RegForm = () => {
                                 </SelectTrigger>
                                 <SelectContent>
                                     {mainAreas.map((area) => (
-                                        <SelectItem key={area.id} value={area.id}>
+                                        <SelectItem key={area.id} value={area.id as string}>
                                             {area.regionName}
                                         </SelectItem>
                                     ))}
