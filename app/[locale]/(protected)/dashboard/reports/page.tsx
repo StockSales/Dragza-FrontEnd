@@ -29,6 +29,14 @@ function Reports() {
                     </Button>
                 </Link>
                 <Link
+                    href={"/dashboard/reports/balance"}
+                    className="w-full"
+                >
+                    <Button size={"lg"} variant={"outline"} className="w-full">
+                        Balance
+                    </Button>
+                </Link>
+                <Link
                     href={"/dashboard/reports/summary"}
                     className="w-full"
                 >
