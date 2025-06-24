@@ -35,6 +35,11 @@ function Sales() {
                 >
                     Status statistics
                 </TabsTrigger>
+
+                <TabsTrigger className={"cursor-pointer hover:text-white hover:bg-gray-300 rounded-md"} value="summary"
+                >
+                    Summary
+                </TabsTrigger>
             </TabsList>
 
             <TabsContent value="area-statistics">
@@ -69,6 +74,15 @@ function Sales() {
                     <CardHeader>Status statistics</CardHeader>
                     <CardContent>
                         <TransactionsTable type={"status"} />
+                    </CardContent>
+                </Card>
+            </TabsContent>
+
+            <TabsContent value="summary">
+                <Card>
+                    <CardHeader>Summary</CardHeader>
+                    <CardContent>
+                        <TransactionsTable type={"summary"} />
                     </CardContent>
                 </Card>
             </TabsContent>
