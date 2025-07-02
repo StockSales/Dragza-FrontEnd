@@ -6,13 +6,7 @@ function useUpdateProductById() {
     const [error, setError] = useState<string | null>(null);
     const [isUpdated, setIsUpdated] = useState<boolean>(false);
 
-    const updatingProductById = async (id: string | string[] | undefined, updatedData: {
-        name: string;
-        preef: string;
-        description: string;
-        categoryId: string;
-        activeIngredientId: string;
-    }) => {
+    const updatingProductById = async (id: string | string[] | undefined, updatedData: any) => {
         setLoading(true);
         setError(null);
 

@@ -57,6 +57,7 @@ const EditProduct = () => {
     pref: "",
     description: "",
     categoryId: "",
+    image: "",
     activeIngredientId: ""
   })
 
@@ -83,15 +84,15 @@ const EditProduct = () => {
       return;
     }
 
-    const updatedData = {
-      name: formData.name,
-      preef: formData.pref,
-      description: formData.description,
-      categoryId: formData.categoryId,
-      activeIngredientId: formData.activeIngredientId
-    }
+    const data = new FormData();
+    data.append("name", formData.name);
+    data.append("preef", formData.pref);
+    data.append("description", formData.description);
+    data.append("categoryId", formData.categoryId);
+    data.append("activeIngredientId", formData.activeIngredientId);
+    data.append("image", formData.image);
 
-    await updatingProductById(productId, updatedData).then(() => {
+    await updatingProductById(productId, data).then(() => {
       if (isUpdated) {
         toast.success("Product updated successfully");
         setTimeout(() => {
@@ -133,7 +134,8 @@ const EditProduct = () => {
             pref: product.preef || "",
             description: product.description || "",
             categoryId: String(product.category.id) || "" ,
-            activeIngredientId: product.activeIngredient || ""
+            activeIngredientId: product.activeIngredient.id || "",
+            image: product.image || ""
         })
     }
   }, [product]);
@@ -178,6 +180,19 @@ const EditProduct = () => {
                   placeholder="Pref"
                   value={product?.preef}
                     onChange={(e) => setFormData({...formData, pref: e.target.value})}
+              />
+            </div>
+
+            <div className="flex items-center flex-wrap">
+              <Label className="w-[150px] flex-none" htmlFor="pref">
+                Product Photo
+              </Label>
+              <Input
+                  id="pref"
+                  type="file"
+                  placeholder="photo"
+                  value={formData.image}
+                  onChange={(e) => setFormData({...formData, image: e?.target?.value})}
               />
             </div>
 

@@ -1,5 +1,6 @@
 import {Price} from "@/types/price";
 import {CategoryType} from "@/types/category";
+import {ActiveIngredient} from "@/types/activeIngredient";
 
 export type ProductType = {
     id?: string,
@@ -7,6 +8,7 @@ export type ProductType = {
     preef: string,
     description: string,
     category: CategoryType,
-    activeIngredient: string,
+    activeIngredient: ActiveIngredient,
+    image: any,
     prices?: Price[]
 }
