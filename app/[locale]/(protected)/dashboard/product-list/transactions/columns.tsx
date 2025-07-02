@@ -60,7 +60,7 @@ export const baseColumns = ({ refresh }: { refresh: () => void }): ColumnDef<Pro
     {
     accessorKey: "activeIngredient",
     header: "Active Ingredient",
-    cell: ({ row }) => <span>{row.original.activeIngredient || "acetaminophen"}</span>,
+    cell: ({ row }) => <span>{row.original.activeIngredient.name || "acetaminophen"}</span>,
   },
   // {
   //   accessorKey: "stock",
