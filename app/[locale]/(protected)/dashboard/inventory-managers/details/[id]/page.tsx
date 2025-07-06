@@ -11,7 +11,6 @@ import { useRouter } from "@/i18n/routing";
 import { useParams } from "next/navigation";
 import useGetCategoryById from "@/services/categories/getCategoryById";
 import Loader from "@/components/loader";
-import useUpdateCategoryById from "@/services/categories/UpdateCatergory";
 import {Select, SelectContent, SelectGroup, SelectItem, SelectLabel, SelectTrigger, SelectValue} from "@/components/ui/select";
 import {UserRole, UserRoleLabel} from "@/enum";
 import useGettingUserById from "@/services/users/gettingUserById";

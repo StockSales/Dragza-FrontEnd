@@ -86,7 +86,7 @@ const TransactionsTable = () => {
   if (loading === true) {
     return (
         <div className="flex mx-auto  justify-center items-center h-16 w-16">
-            <Loader2 size={32} />
+            <Loader2 size={32} className="animate-spin" />
         </div>
     )
   }
