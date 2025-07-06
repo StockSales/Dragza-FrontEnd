@@ -2,9 +2,9 @@ import React from 'react';
 import AxiosInstance from "@/lib/AxiosInstance";
 
 function useGettingAllSubAreasOfArea() {
-    const [loading, setLoading] = React.useState(true);
+    const [loading, setLoading] = React.useState(false);
     const [error, setError] = React.useState(null);
-    const [subAreas, setSubAreas] = React.useState([]);
+    const [subAreas, setSubAreas] = React.useState<any[]>([]);
 
     const getAllSubAreasOfArea = async (areaId: string | string[] | undefined) => {
         setLoading(true);

@@ -22,6 +22,7 @@ import {
   SelectValue
 } from "@/components/ui/select";
 import useGettingAllMainCategories from "@/services/MainCategories/gettingAllMainCategories";
+import {Loader2} from "lucide-react";
 
 const EditCategory = () => {
   // Router navigator
@@ -33,7 +34,7 @@ const EditCategory = () => {
 
   // API Call
   const { category, gettingCategoryById, loading: categoryLoading } = useGetCategoryById();
-  const { updatingCategoryById, loading: updatingCategoryLoading, error} = useUpdateCategoryById()
+  const { updatingCategoryById, loading: updatingCategoryLoading} = useUpdateCategoryById()
   const {mainCategories, loading: mainCategoriesLoading, getAllMainCategories, error: mainCategoriesError} = useGettingAllMainCategories()
 
   // Form states
@@ -70,7 +71,7 @@ const EditCategory = () => {
   }, [categoryLoading, category]);
 
   // Handle update (you'd normally call an update API here)
-  const updateCategory = () => {
+  const updateCategory = async () => {
     if (!name.trim()) {
       toast.error("Validation Error", { description: "Category Name is required." });
       return;
@@ -85,8 +86,8 @@ const EditCategory = () => {
     }
 
     // Simulate update success (replace with real update logic)
-    updatingCategoryById(id, { name, pref, mainCategoryId: module, description });
-    if ( error !== null ) {
+    const  {success, error} = await updatingCategoryById(id, { name, pref, mainCategoryId: module, description });
+    if ( success ) {
       toast.success("Category Updated", {
         description: "Category Updated Successfully"
       });
@@ -107,7 +108,13 @@ const EditCategory = () => {
     getAllMainCategories();
   }, []);
 
-  if (categoryLoading) return <Loader />;
+  if (categoryLoading || mainCategoriesLoading) {
+    return (
+      <div className=" h-[20%] flex items-center justify-center flex-col space-y-2">
+        <Loader2 className="h-6 w-6 animate-spin" />
+      </div>
+    );
+  }
 
   return (
       <div className="grid grid-cols-12 gap-4 rounded-lg">
@@ -119,21 +126,23 @@ const EditCategory = () => {
             <CardContent className="space-y-4">
               <div className="flex items-center flex-wrap">
                 <Label className="w-[150px] flex-none" htmlFor="category-id">Module Name</Label>
-                <Select onValueChange={(value) => setModule(value)}>
-                  <SelectTrigger className="flex-1 cursor-pointer">
-                    <SelectValue placeholder="Select Category" />
-                  </SelectTrigger>
-                  <SelectContent>
-                    <SelectGroup>
-                      <SelectLabel>Category</SelectLabel>
-                      {mainCategories.map((module) => (
-                          <SelectItem key={module.id} value={module.id}>
-                            {module.name}
-                          </SelectItem>
-                      ))}
-                    </SelectGroup>
-                  </SelectContent>
-                </Select>
+                {mainCategories.length > 0 && (
+                    <Select value={module} onValueChange={(value) => setModule(value)}>
+                      <SelectTrigger className="flex-1 cursor-pointer">
+                        <SelectValue placeholder="Select module" />
+                      </SelectTrigger>
+                      <SelectContent>
+                        <SelectGroup>
+                          <SelectLabel>Category</SelectLabel>
+                          {mainCategories.map((module) => (
+                              <SelectItem key={module.id} value={module.id}>
+                                {module.name}
+                              </SelectItem>
+                          ))}
+                        </SelectGroup>
+                      </SelectContent>
+                    </Select>
+                )}
               </div>
             </CardContent>
 
