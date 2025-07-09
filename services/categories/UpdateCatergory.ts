@@ -11,7 +11,7 @@ function useUpdateCategoryById() {
         try {
             const response = await AxiosInstance.put(`/api/Categories/${id}`, updatedData);
 
-            if (response.status === 204) {
+            if (response.status === 204 || response.status !== 500) {
                 return { success: true };
             } else {
                 throw new Error("Something went wrong");

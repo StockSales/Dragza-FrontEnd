@@ -21,6 +21,7 @@ const AddCategory = () => {
   const {loading: mainCategoriesLoading, mainCategories, getAllMainCategories, error: mainCategoriesError} = useGettingAllMainCategories()
 
   const [name, setName] = useState("");
+  const [arabicName, setArabicName] = useState("");
   const [pref, setPref] = useState("");
   const [description, setDescription] = useState("");
   const [module, setModule] = useState("");
@@ -28,6 +29,10 @@ const AddCategory = () => {
   const addCategory = async () => {
     if (!name.trim()) {
       toast.error("Validation Error", { description: "Category Name is required." });
+      return;
+    }
+    if (!arabicName.trim()) {
+      toast.error("Validation Error", { description: "Category Arabic Name is required." });
       return;
     }
     if (!pref.trim()) {
@@ -40,7 +45,7 @@ const AddCategory = () => {
     }
 
     try {
-      const success = await creatingCategory({ name,mainCategoryId: module , pref, description });
+      const success = await creatingCategory({ name,arabicName, mainCategoryId: module , pref, description });
       if (success) {
         toast.success("Category Added", {
           description: "Category added successfully!",
@@ -87,13 +92,29 @@ const AddCategory = () => {
                   <SelectContent>
                     {mainCategories.map((module) => (
                         <SelectItem key={module.id} value={module.id}>
-                          {module.name}
+                          {module.name || module.arabicName}
                         </SelectItem>
                     ))}
                   </SelectContent>
                 </Select>
               </div>
             </CardContent>
+
+            <CardContent className="space-y-4">
+              <div className="flex items-center flex-wrap">
+                <Label className="w-[150px] flex-none" htmlFor="categoryArabicName">
+                  Category Arabic Name
+                </Label>
+                <Input
+                    id="categoryArabicName"
+                    type="text"
+                    placeholder="Arabic Name"
+                    value={arabicName}
+                    onChange={(e) => setArabicName(e.target.value)}
+                />
+              </div>
+            </CardContent>
+
             <CardContent className="space-y-4">
               <div className="flex items-center flex-wrap">
                 <Label className="w-[150px] flex-none" htmlFor="categoryName">

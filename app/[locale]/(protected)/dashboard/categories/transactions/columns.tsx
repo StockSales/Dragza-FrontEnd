@@ -14,7 +14,12 @@ export const baseColumns = ({ refresh }: { refresh: () => void }): ColumnDef<Cat
   {
     accessorKey: "name",
     header: "Category Name",
-    cell: ({ row }) => <span>{row.getValue("name")}</span>,
+    cell: ({ row }) => <span>{row.getValue("name") || "Unknown" }</span>,
+  },
+    {
+    accessorKey: "arabicName",
+    header: "Category Arabic Name",
+    cell: ({ row }) => <span>{row.getValue("arabicName") || "Unknown"}</span>,
   },
   {
     accessorKey: "pref",
