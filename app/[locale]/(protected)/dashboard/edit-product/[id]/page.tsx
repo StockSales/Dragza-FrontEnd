@@ -54,6 +54,7 @@ const EditProduct = () => {
   // state to manage the loading state
   const [formData, setFormData] = useState({
     name: "",
+    arabicName: "",
     pref: "",
     description: "",
     categoryId: "",
@@ -86,6 +87,7 @@ const EditProduct = () => {
 
     const data = new FormData();
     data.append("name", formData.name);
+    data.append("arabicName", formData.name);
     data.append("preef", formData.pref);
     data.append("description", formData.description);
     data.append("categoryId", formData.categoryId);
@@ -131,6 +133,7 @@ const EditProduct = () => {
     if (product) {
         setFormData({
             name: product.name || "",
+            arabicName: product.arabicName || "",
             pref: product.preef || "",
             description: product.description || "",
             categoryId: String(product.category.id) || "" ,
@@ -165,8 +168,21 @@ const EditProduct = () => {
                   id="h_Fullname"
                   type="text"
                   placeholder="Full name"
-                  value={product?.name}
+                  value={formData?.name}
                   onChange={(e) => setFormData({...formData, name: e.target.value})}
+              />
+            </div>
+
+            <div className="flex items-center flex-wrap">
+              <Label className="w-[150px] flex-none" htmlFor="arabicName">
+                Product Arabic Name
+              </Label>
+              <Input
+                  id="arabicName"
+                  type="text"
+                  placeholder="Arabic name"
+                  value={formData?.arabicName}
+                  onChange={(e) => setFormData({...formData, arabicName: e.target.value})}
               />
             </div>
 
@@ -178,7 +194,7 @@ const EditProduct = () => {
                   id="pref"
                   type="text"
                   placeholder="Pref"
-                  value={product?.preef}
+                  value={formData?.preef}
                     onChange={(e) => setFormData({...formData, pref: e.target.value})}
               />
             </div>
@@ -218,36 +234,39 @@ const EditProduct = () => {
               </Select>
             </div>
 
-            <div className="flex items-center flex-wrap gap-4 md:gap-0">
-              <Label className="w-[150px] flex-none">Active Ingredient</Label>
-              <Select onValueChange={(value) => setFormData({...formData, activeIngredientId: value})}>
-                <SelectTrigger className="flex-1 cursor-pointer">
-                  <SelectValue placeholder="Select Active Ingredient" />
-                </SelectTrigger>
-                <SelectContent>
-                  <SelectGroup>
-                    <SelectLabel>Active Ingredient</SelectLabel>
-                    {activeIngredients.map((active: any) => (
-                        <SelectItem
-                            key={active.id}
-                            value={active.id}
-                        >
-                          {active.name}
-                        </SelectItem>
-                    ))}
-                  </SelectGroup>
-                </SelectContent>
-              </Select>
-            </div>
+              <div className="flex items-center flex-wrap gap-4 md:gap-0">
+                  <Label className="w-[150px] flex-none">Active Ingredient</Label>
+                  <Select
+                      value={formData.activeIngredientId}
+                      onValueChange={(value) => setFormData({ ...formData, activeIngredientId: value })}
+                  >
+                      <SelectTrigger className="flex-1 cursor-pointer">
+                          <SelectValue placeholder="Select Active Ingredient" />
+                      </SelectTrigger>
+                      <SelectContent>
+                          <SelectGroup>
+                              <SelectLabel>Active Ingredient</SelectLabel>
+                              {activeIngredients.map((active: any) => (
+                                  <SelectItem
+                                      key={active.id}
+                                      value={active.id}
+                                  >
+                                      {active.name}
+                                  </SelectItem>
+                              ))}
+                          </SelectGroup>
+                      </SelectContent>
+                  </Select>
+              </div>
 
-            <div className="flex items-center flex-wrap">
+              <div className="flex items-center flex-wrap">
               <Label className="w-[150px] flex-none" htmlFor="Description">
                 Description
               </Label>
               <Textarea
                   id="Description"
                   placeholder="Description"
-                  value={product?.description}
+                  value={formData?.description}
               />
             </div>
           </CardContent>

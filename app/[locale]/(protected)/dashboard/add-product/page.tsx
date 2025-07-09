@@ -28,6 +28,7 @@ const AddProduct = () => {
 
   // states for product
   const [name, setName] = useState<string>("")
+  const [arabicName, setArabicName] = useState<string>("")
   const [preef, setPref] = useState<string>("")
   const [description, setDescription] = useState<string>("")
   const [categoryId, setCategoryId] = useState<string>("")
@@ -47,6 +48,10 @@ const AddProduct = () => {
   const onSubmit = async () => {
     if (!name.trim()) {
       toast.error("Validation Error", { description: "Name is required." });
+      return;
+    }
+    if (!arabicName.trim()) {
+      toast.error("Validation Error", { description: "Arabic Name is required." });
       return;
     }
     if (!preef.trim()) {
@@ -72,6 +77,7 @@ const AddProduct = () => {
 
     const formData = new FormData();
     formData.append("name", name);
+    formData.append("arabicName", arabicName);
     formData.append("preef", preef);
     formData.append("description", description);
     formData.append("categoryId", categoryId);
@@ -130,6 +136,19 @@ const AddProduct = () => {
                 placeholder="Name"
                 value={name}
                 onChange={(e) => setName(e?.target?.value)}
+              />
+            </div>
+
+            <div className="flex items-center flex-wrap">
+              <Label className="w-[150px] flex-none" htmlFor="arabicName">
+                Product Arabic Name
+              </Label>
+              <Input
+                id="arabicName"
+                type="text"
+                placeholder="Arabic Name"
+                value={arabicName}
+                onChange={(e) => setArabicName(e?.target?.value)}
               />
             </div>
 
