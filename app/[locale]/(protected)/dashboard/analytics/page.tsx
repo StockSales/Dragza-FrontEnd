@@ -16,6 +16,7 @@ import { Loader2 } from "lucide-react";
 import {SummaryReport} from "@/types/reports";
 import AxiosInstance from "@/lib/AxiosInstance";
 import useOrderReports from "@/services/Reports/Orders/orderReports";
+import useGettingAllMainAreas from "@/services/area/gettingAllMainAreas";
 
 const DashboardPage = () => {
   const t = useTranslations("AnalyticsDashboard");
@@ -28,6 +29,10 @@ const DashboardPage = () => {
   } = useSummaryReports();
 
   const {loading: loadingOrderReports, fetchOrderReports, orderReports} = useOrderReports()
+  const [regionSummary, setRegionSummary] = useState<SummaryReport | null>(null);
+
+
+  const {loading: loadingMainAreas, getAllMainAreas, mainAreas, error: errorMainAreas} = useGettingAllMainAreas()
 
   const [monthlySummary, setMonthlySummary] = useState<any[]>([]);
   const [loadingMonthlySummary, setLoadingMonthlySummary] = useState(true);
@@ -135,17 +140,17 @@ const DashboardPage = () => {
                     <div className="grid md:grid-cols-3 gap-4">
                       <StatisticsBlock
                           title={"Total Orders"}
-                          total={summaryReports?.totalOrders ?? "--"}
+                          total={(regionSummary?.totalOrders ?? summaryReports?.totalOrders) ?? "--"}
                           className="bg-info/10 border-none shadow-none"
                       />
                       <StatisticsBlock
                           title={"Total Sales"}
-                          total={summaryReports?.totalSales ?? "--"}
+                          total={(regionSummary?.totalSales ?? summaryReports?.totalSales) ?? "--"}
                           className="bg-warning/10 border-none shadow-none"
                       />
                       <StatisticsBlock
                           title={"Total Invoices"}
-                          total={summaryReports?.totalInvoices ?? "--"}
+                          total={(regionSummary?.totalInvoices ?? summaryReports?.totalInvoices) ?? "--"}
                           className="bg-primary/10 border-none shadow-none"
                       />
                     </div>
@@ -195,14 +200,14 @@ const DashboardPage = () => {
                 ) : (
                     <>
                       {summaryReports &&(
-                        <OverviewChart
-                            series={[
-                              summaryReports.totalSales ?? 0,
-                              summaryReports.totalOrders ?? 0,
-                              summaryReports.totalInvoices ?? 0,
-                            ]}
-                            labels={["Sales", "Orders", "Invoices"]}
-                        />
+                          <OverviewChart
+                              series={[
+                                (regionSummary?.totalSales ?? summaryReports?.totalSales) ?? 0,
+                                (regionSummary?.totalOrders ?? summaryReports?.totalOrders) ?? 0,
+                                (regionSummary?.totalInvoices ?? summaryReports?.totalInvoices) ?? 0,
+                              ]}
+                              labels={["Sales", "Orders", "Invoices"]}
+                          />
                       )}
                     </>
                 )}
@@ -221,7 +226,17 @@ const DashboardPage = () => {
           {/*  </Card>*/}
           {/*</div>*/}
           <div className="lg:col-span-8 col-span-12">
-            <MostSales />
+            <Card>
+              <CardHeader className="flex flex-row items-center">
+                <CardTitle className="flex-1">Sales Review</CardTitle>
+                {startDate && endDate && (
+                  <div className="text-sm text-default-500 font-normal">
+                    {`${startDate.toLocaleDateString()} — ${endDate.toLocaleDateString()}`}
+                  </div>
+                )}
+              </CardHeader>
+              <MostSales onRegionSummaryFetched={(data) => setRegionSummary(data)} />
+            </Card>
           </div>
           <div className="lg:col-span-4 col-span-12">
             <Card>
