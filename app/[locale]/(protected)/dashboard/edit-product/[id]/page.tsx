@@ -194,7 +194,7 @@ const EditProduct = () => {
                   id="pref"
                   type="text"
                   placeholder="Pref"
-                  value={formData?.preef}
+                  value={formData?.pref}
                     onChange={(e) => setFormData({...formData, pref: e.target.value})}
               />
             </div>
