@@ -13,6 +13,9 @@ import OverviewRadialChart from "./components/overview-radial";
 import { useTranslations } from "next-intl";
 import useSummaryReports from "@/services/Reports/summary/summaryReports";
 import { Loader2 } from "lucide-react";
+import {SummaryReport} from "@/types/reports";
+import AxiosInstance from "@/lib/AxiosInstance";
+import useOrderReports from "@/services/Reports/Orders/orderReports";
 
 const DashboardPage = () => {
   const t = useTranslations("AnalyticsDashboard");
@@ -24,8 +27,19 @@ const DashboardPage = () => {
     error: errorSummaryReports,
   } = useSummaryReports();
 
+  const {loading: loadingOrderReports, fetchOrderReports, orderReports} = useOrderReports()
+
+  const [monthlySummary, setMonthlySummary] = useState<any[]>([]);
+  const [loadingMonthlySummary, setLoadingMonthlySummary] = useState(true);
+
   const [startDate, setStartDate] = useState<Date | null>(null);
   const [endDate, setEndDate] = useState<Date | null>(null);
+
+  interface MonthlyData {
+    month: string;
+    totalOrders: number;
+    totalSales: number;
+  }
 
   useEffect(() => {
     const end = new Date();
@@ -40,7 +54,62 @@ const DashboardPage = () => {
     params.set("EndDate", end.toISOString());
 
     fetchSummaryReports(params.toString());
+    fetchOrderReports(params.toString());
   }, []);
+
+
+
+  useEffect(() => {
+    const fetchMonthlyReports = async () => {
+      setLoadingMonthlySummary(true);
+      const now = new Date();
+      const results: MonthlyData[] = [];
+
+      for (let i = 5; i >= 0; i--) {
+        const start = new Date(now.getFullYear(), now.getMonth() - i, 1);
+        const end = new Date(now.getFullYear(), now.getMonth() - i + 1, 0);
+
+        const params = new URLSearchParams();
+        params.set("StartDate", start.toISOString());
+        params.set("EndDate", end.toISOString());
+
+        try {
+          const response = await AxiosInstance.get(`/api/reports/summary?${params.toString()}`);
+          const data = response.data;
+
+          results.push({
+            month: start.toLocaleString("default", { month: "short" }),
+            totalOrders: data?.totalOrders ?? 0,
+            totalSales: data?.totalSales ?? 0,
+          });
+        } catch (error) {
+          results.push({
+            month: start.toLocaleString("default", { month: "short" }),
+            totalOrders: 0,
+            totalSales: 0,
+          });
+        }
+      }
+
+      setMonthlySummary(results);
+      setLoadingMonthlySummary(false);
+    };
+
+    fetchMonthlyReports();
+  }, []);
+
+  const revenueSeries = [
+    {
+      name: "Total Orders",
+      data: monthlySummary.map((item) => item.totalOrders),
+    },
+    {
+      name: "Total Sales",
+      data: monthlySummary.map((item) => item.totalSales),
+    },
+  ];
+
+  const months = monthlySummary.map((item) => item.month);
 
   return (
       <div>
@@ -57,9 +126,9 @@ const DashboardPage = () => {
                       {"Weekly Overview"}
                     </CardTitle>
                     {startDate && endDate && (
-                        <div className="text-sm text-default-500 font-normal">
-                          {`${startDate.toLocaleDateString()} — ${endDate.toLocaleDateString()}`}
-                        </div>
+                      <div className="text-sm text-default-500 font-normal">
+                        {`${startDate.toLocaleDateString()} — ${endDate.toLocaleDateString()}`}
+                      </div>
                     )}
                   </CardHeader>
                   <CardContent className="p-4">
@@ -91,7 +160,20 @@ const DashboardPage = () => {
           <div className="lg:col-span-8 col-span-12">
             <Card>
               <CardContent className="p-4">
-                <RevinueBarChart />
+                {loadingMonthlySummary ? (
+                    <div className="w-full h-full flex justify-center items-center">
+                      <Loader2 className="text-blue-500 animate-spin" />
+                    </div>
+                ) : (
+                    <RevinueBarChart
+                        series={revenueSeries}
+                        chartColors={["#3B82F6", "#10B981"]}
+                        height={400}
+                        chartType="bar"
+                        // Optional: override default categories
+                        xCategories={months}
+                    />
+                )}
               </CardContent>
             </Card>
           </div>
@@ -99,65 +181,102 @@ const DashboardPage = () => {
             <Card>
               <CardHeader className="flex flex-row items-center">
                 <CardTitle className="flex-1">{t("overview_circle_chart_title")}</CardTitle>
-                <DashboardDropdown />
+                {startDate && endDate && (
+                  <div className="text-sm text-default-500 font-normal">
+                    {`${startDate.toLocaleDateString()} — ${endDate.toLocaleDateString()}`}
+                  </div>
+                )}
               </CardHeader>
               <CardContent>
-                <OverviewChart />
+                {loadingMonthlySummary ? (
+                   <div className="w-full h-full flex justify-center items-center">
+                     <Loader2 className="text-blue-500 animate-spin" />
+                   </div>
+                ) : (
+                    <>
+                      {summaryReports &&(
+                        <OverviewChart
+                            series={[
+                              summaryReports.totalSales ?? 0,
+                              summaryReports.totalOrders ?? 0,
+                              summaryReports.totalInvoices ?? 0,
+                            ]}
+                            labels={["Sales", "Orders", "Invoices"]}
+                        />
+                      )}
+                    </>
+                )}
               </CardContent>
             </Card>
           </div>
-          <div className="lg:col-span-8 col-span-12">
-            <Card>
-              <CardHeader className="flex flex-row items-center">
-                <CardTitle className="flex-1">{t("company_table_title")}</CardTitle>
-                <DashboardDropdown />
-              </CardHeader>
-              <CardContent className="p-0">
-                <CompanyTable />
-              </CardContent>
-            </Card>
-          </div>
-          <div className="lg:col-span-4 col-span-12">
-            <Card>
-              <CardHeader className="flex flex-row items-center">
-                <CardTitle className="flex-1">{t("recent_activity_table_title")}</CardTitle>
-                <DashboardDropdown />
-              </CardHeader>
-              <CardContent>
-                <RecentActivity />
-              </CardContent>
-            </Card>
-          </div>
+          {/*<div className="lg:col-span-8 col-span-12">*/}
+          {/*  <Card>*/}
+          {/*    <CardHeader className="flex flex-row items-center">*/}
+          {/*      <CardTitle className="flex-1">{t("company_table_title")}</CardTitle>*/}
+          {/*      <DashboardDropdown />*/}
+          {/*    </CardHeader>*/}
+          {/*    <CardContent className="p-0">*/}
+          {/*      <CompanyTable />*/}
+          {/*    </CardContent>*/}
+          {/*  </Card>*/}
+          {/*</div>*/}
           <div className="lg:col-span-8 col-span-12">
             <MostSales />
           </div>
           <div className="lg:col-span-4 col-span-12">
             <Card>
               <CardHeader className="flex flex-row items-center">
-                <CardTitle className="flex-1">{t("overview_circle_chart_title")}</CardTitle>
-                <DashboardDropdown />
+                <CardTitle className="flex-1">{t("recent_activity_table_title")}</CardTitle>
+                {startDate && endDate && (
+                  <div className="text-sm text-default-500 font-normal">
+                    {`${startDate.toLocaleDateString()} — ${endDate.toLocaleDateString()}`}
+                  </div>
+                )}
               </CardHeader>
               <CardContent>
-                <OverviewRadialChart />
-                <div className="bg-default-50 rounded p-4 mt-8 flex justify-between flex-wrap">
-                  {/* Sample static values */}
-                  <div className="space-y-1">
-                    <h4 className="text-default-600 text-xs font-normal">
-                      {t("invested_amount")}
-                    </h4>
-                    <div className="text-sm font-medium text-default-900">
-                      $8264.35
+                {loadingOrderReports ? (
+                    <div className="w-full h-full flex justify-center items-center">
+                      <Loader2 className="text-blue-500 animate-spin" />
                     </div>
-                    <div className="text-default-500 text-xs font-normal">
-                      +0.001.23 (0.2%)
-                    </div>
-                  </div>
-
-                  {/* Repeat as needed */}
-                </div>
+                ) : (
+                    <RecentActivity
+                        data={(orderReports?.items?.slice(0, 10) || []).map(item => ({
+                          id: item.id,
+                          pharmacyName: item.pharmacyName || 'Unknown Pharmacy',
+                          orderDate: item.date
+                        }))}
+                    />
+                )}
               </CardContent>
             </Card>
           </div>
+          {/*<div className="lg:col-span-4 col-span-12">*/}
+          {/*  <Card>*/}
+          {/*    <CardHeader className="flex flex-row items-center">*/}
+          {/*      <CardTitle className="flex-1">{t("overview_circle_chart_title")}</CardTitle>*/}
+          {/*      <DashboardDropdown />*/}
+          {/*    </CardHeader>*/}
+          {/*    <CardContent>*/}
+          {/*      <OverviewRadialChart />*/}
+          {/*      <div className="bg-default-50 rounded p-4 mt-8 flex justify-between flex-wrap">*/}
+          {/*        /!* Sample static values *!/*/}
+          {/*        <div className="space-y-1">*/}
+          {/*          <h4 className="text-default-600 text-xs font-normal">*/}
+          {/*            {t("invested_amount")}*/}
+          {/*          </h4>*/}
+          {/*          <div className="text-sm font-medium text-default-900">*/}
+          {/*            $8264.35*/}
+          {/*          </div>*/}
+          {/*          <div className="text-default-500 text-xs font-normal">*/}
+          {/*            +0.001.23 (0.2%)*/}
+          {/*          </div>*/}
+          {/*        </div>*/}
+
+          {/*        /!* Repeat as needed *!/*/}
+          {/*      </div>*/}
+          {/*    </CardContent>*/}
+          {/*  </Card>*/}
+          {/*</div>*/}
         </div>
       </div>
   );

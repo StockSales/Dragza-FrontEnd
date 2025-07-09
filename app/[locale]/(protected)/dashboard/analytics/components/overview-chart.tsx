@@ -47,9 +47,10 @@ const OverviewChart = ({
           total: {
             show: true,
             label: "Total",
-            color: mode === 'light' ? colors["default-600"] : colors["default-300"],
             formatter: function (w: any) {
-              return 249;
+              // Sum all values
+              const sum = w.globals.seriesTotals.reduce((a: number, b: number) => a + b, 0);
+              return sum.toLocaleString();
             }
           }
         }
