@@ -87,7 +87,7 @@ const EditProduct = () => {
 
     const data = new FormData();
     data.append("name", formData.name);
-    data.append("arabicName", formData.name);
+    data.append("arabicName", formData.arabicName);
     data.append("preef", formData.pref);
     data.append("description", formData.description);
     data.append("categoryId", formData.categoryId);

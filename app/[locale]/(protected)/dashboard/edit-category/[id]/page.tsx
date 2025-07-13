@@ -92,7 +92,7 @@ const EditCategory = () => {
     }
 
     // Simulate update success (replace with real update logic)
-    const  {success, error} = await updatingCategoryById(id, { name, pref, mainCategoryId: module, description });
+    const  {success, error} = await updatingCategoryById(id, { name, pref, mainCategoryId: module, description, arabicName });
     if ( success ) {
       toast.success("Category Updated", {
         description: "Category Updated Successfully"
@@ -167,7 +167,7 @@ const EditCategory = () => {
 
             <CardContent className="space-y-4">
               <div className="flex items-center flex-wrap">
-                <Label className="w-[150px] flex-none" htmlFor="category-arabic-name">Category Name</Label>
+                <Label className="w-[150px] flex-none" htmlFor="category-arabic-name">Category Arabic Name</Label>
                 <Input
                     id="category-arabic-name"
                     type="text"
