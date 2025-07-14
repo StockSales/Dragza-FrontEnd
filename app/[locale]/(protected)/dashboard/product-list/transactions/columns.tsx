@@ -24,6 +24,20 @@ export const baseColumns = ({ refresh }: { refresh: () => void }): ColumnDef<Pro
       );
     },
   },
+    {
+    accessorKey: "arabicName",
+    header: "Product",
+    cell: ({ row }) => {
+      const product = row.original.arabicName;
+      return (
+        <div className="font-medium text-card-foreground/80">
+            <span className="text-sm text-default-600">
+              {product ?? "Unknown"}
+            </span>
+        </div>
+      );
+    },
+  },
   {
     accessorKey: "preef",
     header: "Company",

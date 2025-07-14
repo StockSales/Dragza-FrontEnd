@@ -27,6 +27,7 @@ const EditModule = () => {
   const id = params?.id as string;
 
   const [name, setName] = useState("");
+  const [arabicName, setArabicName] = useState("");
   const [description, setDescription] = useState("");
 
 
@@ -35,13 +36,17 @@ const EditModule = () => {
       toast.error("Validation Error", { description: "Module Name is required." });
       return;
     }
+    if (!arabicName.trim()) {
+      toast.error("Validation Error", { description: "Module Arabic Name is required." });
+      return;
+    }
     if (!description.trim()) {
       toast.error("Validation Error", { description: "Description is required." });
       return;
     }
 
     try {
-      const {success, error} = await updateMainCategory(id,{name, description});
+      const {success, error} = await updateMainCategory(id,{name,arabicName, description});
 
       if (success) {
         toast.success("Module Updated", {
@@ -68,6 +73,7 @@ const EditModule = () => {
   useEffect(() => {
     if (mainCategory) {
       setName(mainCategory.name || "");
+      setArabicName(mainCategory.arabicName || "");
       setDescription(mainCategory.description || "");
     }
   }, [mainCategory]);
@@ -99,6 +105,21 @@ const EditModule = () => {
                     placeholder="Name"
                     value={name}
                     onChange={(e) => setName(e.target.value)}
+                />
+              </div>
+            </CardContent>
+
+            <CardContent className="space-y-4">
+              <div className="flex items-center flex-wrap">
+                <Label className="w-[150px] flex-none" htmlFor="arabicModuleName">
+                  Module Arabic Name
+                </Label>
+                <Input
+                    id="arabicModuleName"
+                    type="text"
+                    placeholder="Arabic Name"
+                    value={arabicName}
+                    onChange={(e) => setArabicName(e.target.value)}
                 />
               </div>
             </CardContent>

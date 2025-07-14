@@ -1,5 +1,7 @@
 "use client"
 
+
+
 import { useConfig } from "@/hooks/use-config";
 import { useTranslations } from "next-intl";
 import { useTheme } from "next-themes";
@@ -10,7 +12,8 @@ interface RevenueBarChartProps {
   height?: number;
   chartType?: "bar" | "area";
   series?: any[];
-  chartColors?: string[]
+  chartColors?: string[];
+  xCategories?: string[];
 }
 const defaultSeries = [{
   name: "Net Profit",
@@ -28,8 +31,8 @@ const RevenueBarChart = ({
   height = 400,
   chartType = "bar",
   series = defaultSeries,
-  chartColors = ["#4669FA", "#0CE7FA", "#FA916B"]
-
+  chartColors = ["#4669FA", "#0CE7FA", "#FA916B"],
+  xCategories = []
 }: RevenueBarChartProps) => {
   const [config] = useConfig();
   const { isRtl } = config;
@@ -100,16 +103,8 @@ const RevenueBarChart = ({
       },
     },
     xaxis: {
-      categories: [
-        "Feb",
-        "Mar",
-        "Apr",
-        "May",
-        "Jun",
-        "Jul",
-        "Aug",
-        "Sep",
-        "Oct",
+      categories: xCategories ?? [
+        "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct"
       ],
       labels: {
         style: {
@@ -131,7 +126,7 @@ const RevenueBarChart = ({
     tooltip: {
       y: {
         formatter: function (val: number) {
-          return "$ " + val + " thousands";
+          return  val ;
         },
       },
     },
@@ -162,11 +157,12 @@ const RevenueBarChart = ({
   };
   return (
     <Chart
-      options={options}
-      series={series}
-      type={chartType}
-      height={height}
-      width={"100%"}
+        key={JSON.stringify(series) + xCategories.join(",")}
+        options={options}
+        series={series}
+        type={chartType}
+        height={height}
+        width={"100%"}
     />
   );
 };

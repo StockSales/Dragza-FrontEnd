@@ -5,6 +5,7 @@ import {ActiveIngredient} from "@/types/activeIngredient";
 export type ProductType = {
     id?: string,
     name: string,
+    arabicName?: string,
     preef: string,
     description: string,
     category: CategoryType,

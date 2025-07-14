@@ -6,26 +6,26 @@ import { cn } from "@/lib/utils";
 import {Download, Eye, Trash2} from "lucide-react";
 import {Link} from "@/i18n/routing";
 
-export type DataProps = {
-  id: string | number;
-  order: number;
-  customer: {
-    name: string;
-    image: string;
-  };
-  inventory: {
-    name: string;
-    phone: string;
-  }
-  date: string;
-  quantity: number;
-  amount: string;
-  reason: string;
-  method: string;
-  status: "paid" | "due" | "canceled";
-  action: React.ReactNode;
-};
-export const columns: ColumnDef<DataProps>[] = [
+// export type DataProps = {
+//   id: string | number;
+//   order: number;
+//   customer: {
+//     name: string;
+//     image: string;
+//   };
+//   inventory: {
+//     name: string;
+//     phone: string;
+//   }
+//   date: string;
+//   quantity: number;
+//   amount: string;
+//   reason: string;
+//   method: string;
+//   status: "paid" | "due" | "canceled";
+//   action: React.ReactNode;
+// };
+export const columns: ColumnDef<any>[] = [
   {
     accessorKey:"name",
     header: "Inventory Name",
@@ -80,47 +80,47 @@ export const columns: ColumnDef<DataProps>[] = [
       );
     },
   },
-  {
-    accessorKey: "reason",
-    header: "Reason",
-    cell: ({ row }) => {
-      return <span>{row.getValue("reason")}</span>;
-    },
-  },
-  {
-    accessorKey: "status",
-    header: "Payment Status",
-    cell: ({ row }) => {
-      const statusColors: Record<string, string> = {
-        paid: "bg-success/20 text-success",
-        due: "bg-warning/20 text-warning",
-        canceled: "bg-destructive/20 text-destructive",
-      };
-      const status = row.getValue<string>("status");
-      const statusStyles = statusColors[status] || "default";
-      return (
-        <Badge className={cn("rounded-full px-5", statusStyles)}>
-          {status}{" "}
-        </Badge>
-      );
-    },
-  },
-  {
-    id: "actions",
-    accessorKey: "action",
-    header: "Actions",
-    enableHiding: false,
-    cell: ({ row }) => {
-      return (
-        <div className="flex items-center gap-1">
-          <Link
-            href={`/dashboard/return-details/${row.original.id}`}
-            className="flex items-center p-2 border-b text-warning hover:text-warning-foreground bg-warning/20 hover:bg-warning duration-200 transition-all rounded-full"
-          >
-            <Eye className="w-4 h-4" />
-          </Link>
-        </div>
-      );
-    },
-  },
+  // {
+  //   accessorKey: "reason",
+  //   header: "Reason",
+  //   cell: ({ row }) => {
+  //     return <span>{row.getValue("reason")}</span>;
+  //   },
+  // },
+  // {
+  //   accessorKey: "status",
+  //   header: "Payment Status",
+  //   cell: ({ row }) => {
+  //     const statusColors: Record<string, string> = {
+  //       paid: "bg-success/20 text-success",
+  //       due: "bg-warning/20 text-warning",
+  //       canceled: "bg-destructive/20 text-destructive",
+  //     };
+  //     const status = row.getValue<string>("status");
+  //     const statusStyles = statusColors[status] || "default";
+  //     return (
+  //       <Badge className={cn("rounded-full px-5", statusStyles)}>
+  //         {status}{" "}
+  //       </Badge>
+  //     );
+  //   },
+  // },
+  // {
+  //   id: "actions",
+  //   accessorKey: "action",
+  //   header: "Actions",
+  //   enableHiding: false,
+  //   cell: ({ row }) => {
+  //     return (
+  //       <div className="flex items-center gap-1">
+  //         <Link
+  //           href={`/dashboard/return-details/${row.original.id}`}
+  //           className="flex items-center p-2 border-b text-warning hover:text-warning-foreground bg-warning/20 hover:bg-warning duration-200 transition-all rounded-full"
+  //         >
+  //           <Eye className="w-4 h-4" />
+  //         </Link>
+  //       </div>
+  //     );
+  //   },
+  // },
 ];

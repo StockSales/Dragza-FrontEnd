@@ -13,7 +13,7 @@ function useGettingAllProducts() {
         setLoading(true);
         setError(null);
         setIncludeDeletedState(includeDeleted);
-        await AxiosInstance.get(`/api/Products?includeDeleted=${includeDeleted}`).then((res) => {
+        await AxiosInstance.get(`/api/Products?includeDeleted=${includeDeleted}&lang=3`).then((res) => {
             if (res.status === 200 || res.status === 201 || !res.data.errors) {
                 setProducts(res.data);
             } else {

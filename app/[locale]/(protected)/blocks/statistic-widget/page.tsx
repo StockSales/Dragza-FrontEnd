@@ -50,13 +50,11 @@ const StatisticPage = () => {
             title="Products sold"
             total="564"
             className="bg-warning/10"
-            chartColor="#FB8F65"
           />
           <StatisticsBlock
             title="Growth"
             total="+5.0%"
             className="bg-primary/10"
-            chartColor="#2563eb"
           />
         </div>
         <div>

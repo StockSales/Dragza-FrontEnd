@@ -9,7 +9,7 @@ function useGettingAllMainCategories() {
     const getAllMainCategories = async () => {
         setLoading(true);
         setError(null);
-        await AxiosInstance.get('/api/MainCategories').then((response) => {
+        await AxiosInstance.get('/api/MainCategories?lang=3').then((response) => {
             if (response.status !== 200) {
                 throw new Error('Failed to fetch main categories');
             }

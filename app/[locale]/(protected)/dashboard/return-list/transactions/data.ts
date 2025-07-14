@@ -1,5 +1,5 @@
-import { DataProps } from "./columns";
-export const data: DataProps[] = [
+// import { DataProps } from "./columns";
+export const data: any[] = [
   {
     id: 1,
     order: 951,

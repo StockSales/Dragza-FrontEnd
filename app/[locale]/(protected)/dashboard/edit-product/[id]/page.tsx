@@ -43,7 +43,7 @@ const EditProduct = () => {
   const router = useRouter();
 
   // update product
-  const { loading: updateProductLoading, updatingProductById, isUpdated, error: updateProductError} = useUpdateProductById()
+  const { loading: updateProductLoading, updatingProductById, error: updateProductError} = useUpdateProductById()
 
   // states for getting all categories
   const {data: categories, gettingAllCategories, loading: gettingAllCategoriesLoading} = GetCategories()
@@ -54,10 +54,11 @@ const EditProduct = () => {
   // state to manage the loading state
   const [formData, setFormData] = useState({
     name: "",
+    arabicName: "",
     pref: "",
     description: "",
     categoryId: "",
-    image: "",
+    image: null as File | null,
     activeIngredientId: ""
   })
 
@@ -86,22 +87,26 @@ const EditProduct = () => {
 
     const data = new FormData();
     data.append("name", formData.name);
+    data.append("arabicName", formData.arabicName);
     data.append("preef", formData.pref);
     data.append("description", formData.description);
     data.append("categoryId", formData.categoryId);
     data.append("activeIngredientId", formData.activeIngredientId);
     data.append("image", formData.image);
 
-    await updatingProductById(productId, data).then(() => {
+    try {
+     const { success: isUpdated, error} = await updatingProductById(productId, data)
       if (isUpdated) {
         toast.success("Product updated successfully");
         setTimeout(() => {
           router.push('/dashboard/product-list');
         }, 2000);
+      } else {
+        throw new Error(error);
       }
-    }).catch((error) => {
+    } catch (error: any) {
       toast.error(error.message);
-    })
+    }
   }
 
   // mounted data
@@ -131,6 +136,7 @@ const EditProduct = () => {
     if (product) {
         setFormData({
             name: product.name || "",
+            arabicName: product.arabicName || "",
             pref: product.preef || "",
             description: product.description || "",
             categoryId: String(product.category.id) || "" ,
@@ -165,8 +171,21 @@ const EditProduct = () => {
                   id="h_Fullname"
                   type="text"
                   placeholder="Full name"
-                  value={product?.name}
+                  value={formData?.name}
                   onChange={(e) => setFormData({...formData, name: e.target.value})}
+              />
+            </div>
+
+            <div className="flex items-center flex-wrap">
+              <Label className="w-[150px] flex-none" htmlFor="arabicName">
+                Product Arabic Name
+              </Label>
+              <Input
+                  id="arabicName"
+                  type="text"
+                  placeholder="Arabic name"
+                  value={formData?.arabicName}
+                  onChange={(e) => setFormData({...formData, arabicName: e.target.value})}
               />
             </div>
 
@@ -178,7 +197,7 @@ const EditProduct = () => {
                   id="pref"
                   type="text"
                   placeholder="Pref"
-                  value={product?.preef}
+                  value={formData?.pref}
                     onChange={(e) => setFormData({...formData, pref: e.target.value})}
               />
             </div>
@@ -190,9 +209,13 @@ const EditProduct = () => {
               <Input
                   id="pref"
                   type="file"
-                  placeholder="photo"
-                  value={formData.image}
-                  onChange={(e) => setFormData({...formData, image: e?.target?.value})}
+                  accept="image/*"
+                  onChange={(e) => {
+                    const file = e.target.files?.[0];
+                    if (file) {
+                      setFormData({ ...formData, image: file });
+                    }
+                  }}
               />
             </div>
 
@@ -218,36 +241,39 @@ const EditProduct = () => {
               </Select>
             </div>
 
-            <div className="flex items-center flex-wrap gap-4 md:gap-0">
-              <Label className="w-[150px] flex-none">Active Ingredient</Label>
-              <Select onValueChange={(value) => setFormData({...formData, activeIngredientId: value})}>
-                <SelectTrigger className="flex-1 cursor-pointer">
-                  <SelectValue placeholder="Select Active Ingredient" />
-                </SelectTrigger>
-                <SelectContent>
-                  <SelectGroup>
-                    <SelectLabel>Active Ingredient</SelectLabel>
-                    {activeIngredients.map((active: any) => (
-                        <SelectItem
-                            key={active.id}
-                            value={active.id}
-                        >
-                          {active.name}
-                        </SelectItem>
-                    ))}
-                  </SelectGroup>
-                </SelectContent>
-              </Select>
-            </div>
+              <div className="flex items-center flex-wrap gap-4 md:gap-0">
+                  <Label className="w-[150px] flex-none">Active Ingredient</Label>
+                  <Select
+                      value={formData.activeIngredientId}
+                      onValueChange={(value) => setFormData({ ...formData, activeIngredientId: value })}
+                  >
+                      <SelectTrigger className="flex-1 cursor-pointer">
+                          <SelectValue placeholder="Select Active Ingredient" />
+                      </SelectTrigger>
+                      <SelectContent>
+                          <SelectGroup>
+                              <SelectLabel>Active Ingredient</SelectLabel>
+                              {activeIngredients.map((active: any) => (
+                                  <SelectItem
+                                      key={active.id}
+                                      value={active.id}
+                                  >
+                                      {active.name}
+                                  </SelectItem>
+                              ))}
+                          </SelectGroup>
+                      </SelectContent>
+                  </Select>
+              </div>
 
-            <div className="flex items-center flex-wrap">
+              <div className="flex items-center flex-wrap">
               <Label className="w-[150px] flex-none" htmlFor="Description">
                 Description
               </Label>
               <Textarea
                   id="Description"
                   placeholder="Description"
-                  value={product?.description}
+                  value={formData?.description}
               />
             </div>
           </CardContent>

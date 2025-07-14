@@ -39,6 +39,7 @@ const EditCategory = () => {
 
   // Form states
   const [name, setName] = useState("");
+  const [arabicName, setArabicName] = useState("");
   const [pref, setPref] = useState("");
   const [description, setDescription] = useState("");
   const [module, setModule] = useState("");
@@ -52,6 +53,7 @@ const EditCategory = () => {
   useEffect(() => {
     if (category) {
       setName(category.name || "");
+      setArabicName(category.arabicName || "");
       setPref(category.pref || "");
       setDescription(category.description || "");
       setModule(category.mainCategoryId || "");
@@ -76,6 +78,10 @@ const EditCategory = () => {
       toast.error("Validation Error", { description: "Category Name is required." });
       return;
     }
+    if (!arabicName.trim()) {
+      toast.error("Validation Error", { description: "Category Arabic Name is required." });
+      return;
+    }
     if (!pref.trim()) {
       toast.error("Validation Error", { description: "Pref is required." });
       return;
@@ -86,7 +92,7 @@ const EditCategory = () => {
     }
 
     // Simulate update success (replace with real update logic)
-    const  {success, error} = await updatingCategoryById(id, { name, pref, mainCategoryId: module, description });
+    const  {success, error} = await updatingCategoryById(id, { name, pref, mainCategoryId: module, description, arabicName });
     if ( success ) {
       toast.success("Category Updated", {
         description: "Category Updated Successfully"
@@ -155,6 +161,19 @@ const EditCategory = () => {
                     placeholder="Full name"
                     value={name}
                     onChange={(e) => setName(e.target.value)}
+                />
+              </div>
+            </CardContent>
+
+            <CardContent className="space-y-4">
+              <div className="flex items-center flex-wrap">
+                <Label className="w-[150px] flex-none" htmlFor="category-arabic-name">Category Arabic Name</Label>
+                <Input
+                    id="category-arabic-name"
+                    type="text"
+                    placeholder="Full arabic name"
+                    value={arabicName}
+                    onChange={(e) => setArabicName(e.target.value)}
                 />
               </div>
             </CardContent>

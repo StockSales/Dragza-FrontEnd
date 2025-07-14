@@ -17,11 +17,16 @@ const AddModule = () => {
   const router = useRouter();
 
   const [name, setName] = useState("");
+  const [arabicName, setArabicName] = useState("");
   const [description, setDescription] = useState("");
 
   const addModule = async () => {
     if (!name.trim()) {
       toast.error("Validation Error", { description: "Module Name is required." });
+      return;
+    }
+    if (!arabicName.trim()) {
+      toast.error("Validation Error", { description: "Module Arabic Name is required." });
       return;
     }
     if (!description.trim()) {
@@ -30,7 +35,7 @@ const AddModule = () => {
     }
 
     try {
-      const {success, error} = await createMainCategory({name, description});
+      const {success, error} = await createMainCategory({name,arabicName, description});
       if (success) {
         toast.success("Module Added", {
           description: "Module added successfully!",
@@ -67,6 +72,21 @@ const AddModule = () => {
                     placeholder="Name"
                     value={name}
                     onChange={(e) => setName(e.target.value)}
+                />
+              </div>
+            </CardContent>
+
+            <CardContent className="space-y-4">
+              <div className="flex items-center flex-wrap">
+                <Label className="w-[150px] flex-none" htmlFor="moduleArabicName">
+                  Module Arabic Name
+                </Label>
+                <Input
+                    id="moduleArabicName"
+                    type="text"
+                    placeholder="Module Arabic Name"
+                    value={arabicName}
+                    onChange={(e) => setArabicName(e.target.value)}
                 />
               </div>
             </CardContent>

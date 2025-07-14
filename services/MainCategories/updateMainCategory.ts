@@ -23,7 +23,7 @@ function useUpdateMainCategory() {
 
             const response = await AxiosInstance.put<ModuleType>(`/api/MainCategories/${categoryId}`, categoryData);
 
-            if (response.status !== 200) {
+            if (response.status !== 204) {
                 throw new Error('Failed to update main category');
             }
 

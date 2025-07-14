@@ -15,7 +15,12 @@ export const baseColumns = (): ColumnDef<ModuleType>[] => [
   {
     accessorKey: "name",
     header: "Module Name",
-    cell: ({ row }) => <span>{row.getValue("name")}</span>,
+    cell: ({ row }) => <span>{row.getValue("name") || "Unknown"}</span>,
+  },
+    {
+    accessorKey: "arabicName",
+    header: "Arabic Name",
+    cell: ({ row }) => <span>{row.getValue("arabicName") || "Unknown"}</span>,
   },
   {
     accessorKey: "description",
