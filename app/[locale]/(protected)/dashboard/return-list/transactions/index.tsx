@@ -24,7 +24,6 @@ import {
   TableRow,
 } from "@/components/ui/table";
 
-import { data } from "./data";
 import TablePagination from "./table-pagination";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
@@ -37,6 +36,8 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
+import useGettingAllReturns from "@/services/returns/gettingAllReturns";
+import {useEffect} from "react";
 
 const TransactionsTable = () => {
   const [sorting, setSorting] = React.useState<SortingState>([]);
@@ -47,17 +48,19 @@ const TransactionsTable = () => {
     React.useState<VisibilityState>({});
   const [rowSelection, setRowSelection] = React.useState({});
 
-  const [filteredData, setFilteredData] = React.useState(data)
+  const {loading: loading, error: error, returns, getAllReturns} = useGettingAllReturns()
+
+  const [filteredData, setFilteredData] = React.useState(returns)
 
   // filtering order data for table
-  const filteringOrders = (filter: string) => {
-    if (filter === "all") {
-      setFilteredData(data);
-    } else {
-      const newData = data.filter((item) => item.status === filter);
-      setFilteredData(newData);
-    }
-  };
+  // const filteringOrders = (filter: string) => {
+  //   if (filter === "all") {
+  //     setFilteredData(data);
+  //   } else {
+  //     const newData = data.filter((item) => item.status === filter);
+  //     setFilteredData(newData);
+  //   }
+  // };
 
   const table = useReactTable({
     data: filteredData,
@@ -78,51 +81,55 @@ const TransactionsTable = () => {
     },
   });
 
+  useEffect(() => {
+    getAllReturns()
+  }, []);
+
   return (
     <Card className="w-full">
       <div className="flex flex-wrap gap-4 items-center py-4 px-5">
         <div className="flex-1 text-xl justify-end flex flex-wrap gap-4 font-medium text-default-900">
-          <div className="inline-flex flex-wrap items-center border border-solid divide-x divide-default-200 divide-solid rounded-md overflow-hidden">
-            <Button
-                size="md"
-                variant="ghost"
-                color="default"
-                className="ring-0 outline-0 hover:ring-0 hover:ring-offset-0 font-normal border-default-200 rounded-none cursor-pointer"
-                onClick={() => filteringOrders("all")}
-            >
-              All
-            </Button>
+          {/*<div className="inline-flex flex-wrap items-center border border-solid divide-x divide-default-200 divide-solid rounded-md overflow-hidden">*/}
+          {/*  <Button*/}
+          {/*      size="md"*/}
+          {/*      variant="ghost"*/}
+          {/*      color="default"*/}
+          {/*      className="ring-0 outline-0 hover:ring-0 hover:ring-offset-0 font-normal border-default-200 rounded-none cursor-pointer"*/}
+          {/*      onClick={() => filteringOrders("all")}*/}
+          {/*  >*/}
+          {/*    All*/}
+          {/*  </Button>*/}
 
-            <Button
-                size="md"
-                variant="ghost"
-                color="default"
-                className="ring-0 outline-0 hover:ring-0 hover:ring-offset-0 font-normal border-default-200 rounded-none cursor-pointer"
-                onClick={() => filteringOrders("canceled")}
-            >
-              Canceled
-            </Button>
+          {/*  <Button*/}
+          {/*      size="md"*/}
+          {/*      variant="ghost"*/}
+          {/*      color="default"*/}
+          {/*      className="ring-0 outline-0 hover:ring-0 hover:ring-offset-0 font-normal border-default-200 rounded-none cursor-pointer"*/}
+          {/*      onClick={() => filteringOrders("canceled")}*/}
+          {/*  >*/}
+          {/*    Canceled*/}
+          {/*  </Button>*/}
 
-            <Button
-                size="md"
-                variant="ghost"
-                color="default"
-                className="ring-0 outline-0 hover:ring-0 hover:ring-offset-0 font-normal border-default-200 rounded-none cursor-pointer"
-                onClick={() => filteringOrders("due")}
-            >
-              Due
-            </Button>
+          {/*  <Button*/}
+          {/*      size="md"*/}
+          {/*      variant="ghost"*/}
+          {/*      color="default"*/}
+          {/*      className="ring-0 outline-0 hover:ring-0 hover:ring-offset-0 font-normal border-default-200 rounded-none cursor-pointer"*/}
+          {/*      onClick={() => filteringOrders("due")}*/}
+          {/*  >*/}
+          {/*    Due*/}
+          {/*  </Button>*/}
 
-            <Button
-                size="md"
-                variant="ghost"
-                color="default"
-                className="ring-0 outline-0 hover:ring-0 hover:ring-offset-0 font-normal border-default-200 rounded-none cursor-pointer"
-                onClick={() => filteringOrders("paid")}
-            >
-              Paid
-            </Button>
-          </div>
+          {/*  <Button*/}
+          {/*      size="md"*/}
+          {/*      variant="ghost"*/}
+          {/*      color="default"*/}
+          {/*      className="ring-0 outline-0 hover:ring-0 hover:ring-offset-0 font-normal border-default-200 rounded-none cursor-pointer"*/}
+          {/*      onClick={() => filteringOrders("paid")}*/}
+          {/*  >*/}
+          {/*    Paid*/}
+          {/*  </Button>*/}
+          {/*</div>*/}
         </div>
       </div>
 

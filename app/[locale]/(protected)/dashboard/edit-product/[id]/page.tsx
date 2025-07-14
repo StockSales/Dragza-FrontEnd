@@ -43,7 +43,7 @@ const EditProduct = () => {
   const router = useRouter();
 
   // update product
-  const { loading: updateProductLoading, updatingProductById, isUpdated, error: updateProductError} = useUpdateProductById()
+  const { loading: updateProductLoading, updatingProductById, error: updateProductError} = useUpdateProductById()
 
   // states for getting all categories
   const {data: categories, gettingAllCategories, loading: gettingAllCategoriesLoading} = GetCategories()
@@ -94,16 +94,19 @@ const EditProduct = () => {
     data.append("activeIngredientId", formData.activeIngredientId);
     data.append("image", formData.image);
 
-    await updatingProductById(productId, data).then(() => {
+    try {
+     const { success: isUpdated, error} = await updatingProductById(productId, data)
       if (isUpdated) {
         toast.success("Product updated successfully");
         setTimeout(() => {
           router.push('/dashboard/product-list');
         }, 2000);
+      } else {
+        throw new Error(error);
       }
-    }).catch((error) => {
+    } catch (error: any) {
       toast.error(error.message);
-    })
+    }
   }
 
   // mounted data
