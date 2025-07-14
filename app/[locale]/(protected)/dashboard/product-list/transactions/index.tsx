@@ -185,20 +185,14 @@ const TransactionsTable = () => {
                 </Button>
               </Link>
             )}
-            {userRole !== "Admin" && (
-                <div className={"flex flex-row gap-6 justify-end"}>
-                  <ExportCSVButton
-                      data={transformedProducts.filter((item): item is { id: string; name: string; salesPrice: number; purchasePrice: number; creationDate: string; categoryName: string; categoryId: string } => item !== null)}
-                      config={{
-                        filename: "user-specific-inventory.csv",
-                        headers: ["id", "name", "salesPrice", "purchasePrice", "creationDate", "categoryName", "categoryId"],
-                      }}
-                  />
-                  <CSVUploadModal
-                      onUpload={handleCSVUpload}
-                  />
-                </div>
-            )}
+            {/*{userRole !== "Admin" && (*/}
+            {/*    <div className={"flex flex-row gap-6 justify-end"}>*/}
+            {/*      <ExportCSVButton/>*/}
+            {/*      <CSVUploadModal*/}
+            {/*          onUpload={handleCSVUpload}*/}
+            {/*      />*/}
+            {/*    </div>*/}
+            {/*)}*/}
           </div>
         </div>
       </div>

@@ -47,11 +47,14 @@ import Cookies from "js-cookie";
 import { Loader2 } from "lucide-react";
 import {ExportCSVButton} from "@/components/partials/export-csv/ExportCSVButton";
 import {CSVUploadModal} from "@/components/partials/ImportCsv/ImportCsv";
+import useUploadCsv from "@/services/products/csv/uploadCSV";
 
 const TransactionsTable = () => {
   const userRole = Cookies.get("userRole");
 
   const [selectedUserId, setSelectedUserId] = useState<string | null>(null);
+
+  const {loading: uploadLoading, error: uploadError, uploadCSV} = useUploadCsv();
 
   // Non-admin prices
   const {
@@ -104,17 +107,6 @@ const TransactionsTable = () => {
     },
   });
 
-  const handleCSVUpload = async (file: File) => {
-    const formData = new FormData();
-    formData.append("file", file);
-
-    const res = await fetch("/api/upload-csv", {
-      method: "POST",
-      body: formData,
-    });
-
-    if (!res.ok) throw new Error("Upload failed");
-  };
 
   useEffect(() => {
     if (isAdmin) {
@@ -163,14 +155,12 @@ const TransactionsTable = () => {
           )}
           {!isAdmin && (
               <div className="flex flex-row justify-between w-full">
-                <ExportCSVButton config={{
-                    filename: "inventory-data.csv",
-                    headers: ["id", "productName", "salesPrice", "purchasePrice", "creationDate" ],
-                  }}
-                  data={tableData ?? []}
-                />
+                <ExportCSVButton/>
                 <CSVUploadModal
-                  onUpload={handleCSVUpload}
+                  onUpload={async (file: File) => {
+                    await uploadCSV(file)
+                    gettingPricesForInventoryManager();
+                  }}
                 />
               </div>
           )}

@@ -32,7 +32,7 @@ const AddProduct = () => {
   const [preef, setPref] = useState<string>("")
   const [description, setDescription] = useState<string>("")
   const [categoryId, setCategoryId] = useState<string>("")
-  const [photo, setPhoto] = useState<string>("")
+  const [photo, setPhoto] = useState<File | null>(null);
   const [activeIngredientId, setActiveIngredient] = useState<string>("")
 
   // getting all categories
@@ -82,7 +82,7 @@ const AddProduct = () => {
     formData.append("description", description);
     formData.append("categoryId", categoryId);
     formData.append("activeIngredientId", activeIngredientId);
-    formData.append("image", photo);
+    formData.append("image", photo as File);
 
     try {
       const success = await createProduct(formData)
@@ -169,11 +169,15 @@ const AddProduct = () => {
                 Product Photo
               </Label>
               <Input
-                  id="pref"
+                  id="photo"
                   type="file"
-                  placeholder="photo"
-                  value={photo}
-                  onChange={(e) => setPhoto(e?.target?.value)}
+                  accept="image/*"
+                  onChange={(e) => {
+                    const file = e.target.files?.[0];
+                    if (file) {
+                      setPhoto(file);
+                    }
+                  }}
               />
             </div>
 

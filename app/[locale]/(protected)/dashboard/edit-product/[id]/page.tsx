@@ -58,7 +58,7 @@ const EditProduct = () => {
     pref: "",
     description: "",
     categoryId: "",
-    image: "",
+    image: null as File | null,
     activeIngredientId: ""
   })
 
@@ -206,9 +206,13 @@ const EditProduct = () => {
               <Input
                   id="pref"
                   type="file"
-                  placeholder="photo"
-                  value={formData.image}
-                  onChange={(e) => setFormData({...formData, image: e?.target?.value})}
+                  accept="image/*"
+                  onChange={(e) => {
+                    const file = e.target.files?.[0];
+                    if (file) {
+                      setFormData({ ...formData, image: file });
+                    }
+                  }}
               />
             </div>
 
