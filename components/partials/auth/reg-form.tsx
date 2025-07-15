@@ -96,6 +96,7 @@ const RegForm = () => {
                 setValue("DesName", "");
                 setValue("GovId", "");
                 setValue("City", "");
+                setValue("MinOrder", 0);
                 setValue("IsPharmacy", false);
                 setValue("IsActive", true);
                 setValue("EmailConfirmed", true);
@@ -207,7 +208,14 @@ const RegForm = () => {
                     render={({ field }) => (
                         <>
                             <Label htmlFor="regionName">Region</Label>
-                            <Select onValueChange={field.onChange} value={field.value}>
+                            <Select
+                                onValueChange={(selectedId) => {
+                                    field.onChange(selectedId); // Set GovId
+                                    const selectedRegion = mainAreas.find((area) => area.id === selectedId);
+                                    setValue("RegionName", selectedRegion?.regionName || ""); // Set RegionName separately
+                                }}
+                                value={field.value}
+                            >
                                 <SelectTrigger>
                                     <SelectValue placeholder="Select a region" />
                                 </SelectTrigger>
@@ -276,13 +284,13 @@ const RegForm = () => {
                 <Input type={"checkbox"} className="w-4 h-4"  id="isPharmacy" {...register("IsPharmacy")} />
             </div>
 
-            {/* Confirm Terms */}
-            <div className="flex gap-2 items-center">
-                <Checkbox id="terms" defaultChecked />
-                <Label htmlFor="terms">
-                    You Accept Our Terms And Conditions And Privacy Policy
-                </Label>
-            </div>
+            {/*/!* Confirm Terms *!/*/}
+            {/*<div className="flex gap-2 items-center">*/}
+            {/*    <Checkbox id="terms" defaultChecked />*/}
+            {/*    <Label htmlFor="terms">*/}
+            {/*        You Accept Our Terms And Conditions And Privacy Policy*/}
+            {/*    </Label>*/}
+            {/*</div>*/}
 
             <Button type="submit" fullWidth>
                 Create An Account

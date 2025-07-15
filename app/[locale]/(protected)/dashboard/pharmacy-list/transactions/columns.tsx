@@ -14,6 +14,7 @@ export type DataProps = {
   rating: number;
   action: React.ReactNode;
   isPharmacy: boolean;
+  regionName: string;
   pharmacyDetails: {
     arabicName: string;
     englishName: string;
@@ -72,7 +73,7 @@ export const columns: ColumnDef<DataProps>[] = [
     accessorKey: "area",
     header: "Area",
     cell: ({ row }) => {
-      return <span>{"Location"}</span>;
+      return <span>{row.original?.regionName || "N/A"}</span>;
     },
   },
   {

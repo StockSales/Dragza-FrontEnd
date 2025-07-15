@@ -18,6 +18,7 @@ import useDeactivateUser from "@/services/users/DeactivateUsers";
 import {Loader2} from "lucide-react";
 import useGettingPricesByInventoryId from "@/services/productPrice/gettingPricesByInventoryId";
 import {Table, TableBody, TableCell, TableHead, TableHeader, TableRow} from "@/components/ui/table";
+import useUpdateUser from "@/services/users/updateUser";
 
 const InventoryPrices = () => {
   // Params
@@ -33,6 +34,8 @@ const InventoryPrices = () => {
   // Deactivate user
   const { deactivateUser, loading: deactivateUserLoading, error: deactivateUserError } = useDeactivateUser()
 
+  const {loading: updateUserLoading, updateUser} = useUpdateUser()
+
   // Router navigator
   const router = useRouter();
 
@@ -47,7 +50,7 @@ const InventoryPrices = () => {
   const [region, setRegion] = useState("");
 
   // Handle update (you'd normally call an update API here)
-  const updateUser = async () => {
+  const activateUserToggle = async () => {
 
     try {
       const {success, error} =  await deactivateUser(id);
@@ -56,6 +59,22 @@ const InventoryPrices = () => {
         setTimeout(() => {
           router.push("/dashboard/inventory-managers");
         }, 1000)
+      } else if (error) {
+        throw new Error(error)
+      }
+    } catch (err) {
+      toast.error("Update Failed", {
+        description: err instanceof Error ? err.message : "Something went wrong.",
+      });
+    }
+  };
+
+  // Handle update (you'd normally call an update API here)
+  const handleUpdate = async () => {
+    try {
+      const {success, error} =  await updateUser({userName, email, phoneNumber, businessName, minOrder, region}, id);
+      if (success) {
+        toast.success("User Updated", { description: "User updated successfully." });
       } else if (error) {
         throw new Error(error)
       }
@@ -93,7 +112,7 @@ const InventoryPrices = () => {
             </div>
         ) : (
           <>
-            <div className="col-span-12">
+            <div className="col-span-12 space-y-6">
               <Card>
                 <CardHeader className="border-b border-solid border-default-200 mb-6">
                   <CardTitle>User Information</CardTitle>
@@ -161,6 +180,28 @@ const InventoryPrices = () => {
                     />
                   </div>
 
+                  <div className="col-span-12 flex justify-end mt-4">
+                    <Button onClick={handleUpdate}>
+                      {updateUserLoading ? (
+                          <div className="flex flex-row gap-3 items-center">
+                            <Loader />
+                            <div className="flex justify-center items-center">
+                              <Loader2 className="text-white animate-spin"/>
+                            </div>
+                          </div>
+                      ) : (
+                          "Update user"
+                      )}
+                    </Button>
+                  </div>
+                </CardContent>
+              </Card>
+
+              <Card>
+                <CardHeader className="border-b border-solid border-default-200 mb-6">
+                  <CardTitle>Profile Activation</CardTitle>
+                </CardHeader>
+                <CardContent>
                   <div className="flex items-center flex-wrap">
                     <Label className="w-[150px] flex-none" htmlFor="active">Active Status</Label>
                     <Select value={activate ? "true" : "false"} onValueChange={(value) => setActivate(value === "true")}>
@@ -173,24 +214,24 @@ const InventoryPrices = () => {
                       </SelectContent>
                     </Select>
                   </div>
+                  <div className="col-span-12 flex justify-end mt-4">
+                    <Button onClick={activateUserToggle}>
+                      {deactivateUserLoading ? (
+                          <div className="flex flex-row gap-3 items-center">
+                            <Loader />
+                            <div className="flex justify-center items-center">
+                              <Loader2 className="text-white animate-spin"/>
+                            </div>
+                          </div>
+                      ) : (
+                          "Change user Activation"
+                      )}
+                    </Button>
+                  </div>
                 </CardContent>
               </Card>
             </div>
 
-            <div className="col-span-12 flex justify-center mt-4">
-              <Button onClick={updateUser}>
-                {deactivateUserLoading ? (
-                    <div className="flex flex-row gap-3 items-center">
-                      <Loader />
-                      <div className="flex justify-center items-center">
-                        <Loader2 className="text-white animate-spin"/>
-                      </div>
-                    </div>
-                ) : (
-                    "Update user"
-                )}
-              </Button>
-            </div>
           </>
         )}
 
