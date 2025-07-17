@@ -9,6 +9,7 @@ export type UserType = {
     roleId: string;
     isPharmacy: boolean;
     region: string;
+    regionId?: string;
     accountid?: string;
     action: React.ReactNode;
 };

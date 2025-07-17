@@ -19,6 +19,8 @@ import {Loader2} from "lucide-react";
 import useGettingPricesByInventoryId from "@/services/productPrice/gettingPricesByInventoryId";
 import {Table, TableBody, TableCell, TableHead, TableHeader, TableRow} from "@/components/ui/table";
 import useUpdateUser from "@/services/users/updateUser";
+import useGettingAllMainAreas from "@/services/area/gettingAllMainAreas";
+import gettingAllMainAreas from "@/services/area/gettingAllMainAreas";
 
 const InventoryPrices = () => {
   // Params
@@ -27,6 +29,9 @@ const InventoryPrices = () => {
 
   // getting product prices by inventory id
   const {gettingPricesByInventoryId, prices, loading: pricesLoading} = useGettingPricesByInventoryId()
+
+  // getting all regions
+  const {loading: regionsLoading, error: regionsError, getAllMainAreas, mainAreas} = useGettingAllMainAreas()
 
   // getting user Data by id
   const {error, loading, user, getUserById} = useGettingUserById()
@@ -71,8 +76,20 @@ const InventoryPrices = () => {
 
   // Handle update (you'd normally call an update API here)
   const handleUpdate = async () => {
+    const formData = new FormData();
+    formData.append("UserName", userName);
+    formData.append("Email", email);
+    formData.append("PhoneNumber", phoneNumber);
+    formData.append("BussinesName", businessName);
+    formData.append("MinOrder", minOrder.toString());
+    formData.append("RegionId", region);
+    formData.append("RegionName", mainAreas?.find((area) => area.id === region)?.regionName || "");
+    formData.append("IsActive", activate.toString());
+    formData.append("PharmacyDetails", 'null');
+    formData.append("DesName", 'null');
+
     try {
-      const {success, error} =  await updateUser({userName, email, phoneNumber, businessName, minOrder, region}, id);
+      const {success, error} =  await updateUser(formData, id);
       if (success) {
         toast.success("User Updated", { description: "User updated successfully." });
       } else if (error) {
@@ -86,7 +103,7 @@ const InventoryPrices = () => {
   };
 
   useEffect(() => {
-    if (user) {
+    if (user && mainAreas) {
       setUserRole(user?.roleId as UserRole);
       setActivate(user?.isActive);
       setUserName(user?.userName);
@@ -94,19 +111,20 @@ const InventoryPrices = () => {
       setPhoneNumber(user?.phoneNumber);
       setBusinessName(user?.businessName);
       setMinOrder(user?.minOrder);
-      setRegion(user?.region || "N/A");
+      setRegion(user?.regionId || "");
     }
-  }, [user]);
+  }, [user, mainAreas]);
 
   useEffect(() => {
     getUserById(id);
     gettingPricesByInventoryId(id);
+    getAllMainAreas()
   }, []);
 
 
   return (
       <div className="gap-4 rounded-lg">
-        {loading ? (
+        {loading || regionsLoading ? (
             <div className="flex mx-auto justify-center items-center">
               <Loader2 className="animate-spin" />
             </div>
@@ -159,14 +177,21 @@ const InventoryPrices = () => {
                     />
                   </div>
 
-                  <div className="flex items-center flex-wrap">
+                  <div className="space-y-2 flex items-center flex-wrap">
                     <Label className="w-[150px] flex-none" htmlFor="region">Region</Label>
-                    <Input
-                        id="region"
-                        className="flex-1"
-                        value={region}
-                        onChange={(e) => setRegion(e.target.value)}
-                    />
+                    <Select value={region} onValueChange={(value) => setRegion(value)}>
+                      <SelectTrigger className="flex-1 cursor-pointer">
+                        <SelectValue placeholder="Select region" />
+                      </SelectTrigger>
+                      <SelectContent>
+                        {mainAreas?.map((region) => (
+                            <SelectItem key={region.id} value={region.id as string
+                            }>
+                              {region.regionName}
+                            </SelectItem>
+                        ))}
+                      </SelectContent>
+                    </Select>
                   </div>
 
                   <div className="flex items-center flex-wrap">

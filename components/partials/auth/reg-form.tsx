@@ -21,6 +21,7 @@ import {useEffect} from "react";
 import gettingAllMainAreas from "@/services/area/gettingAllMainAreas";
 import useGettingAllSubArea from "@/services/subArea/gettingAllSubArea";
 import useGettingAllSubAreasOfArea from "@/services/area/gettingAllSubAreasOfArea";
+import useGettingActiveAreas from "@/services/area/gettingActiveAreas";
 
 type Inputs = {
     BussinesName: string;
@@ -40,13 +41,14 @@ type Inputs = {
     MinOrder: number;
     RoleId: string;
     PharmacyDetails: null;
+    RegionId: string;
 };
 
 const RegForm = () => {
     const {registerUser} = useRegister()
     const {loading: loadingSubAreas, error: errorSubAreas, getAllSubAreasOfArea, subAreas} = useGettingAllSubAreasOfArea()
 
-    const {loading, mainAreas, getAllMainAreas, error} = useGettingAllMainAreas()
+    const {loading, activeAreas, getActiveAreas, error} = useGettingActiveAreas()
 
     const userRole = Cookies.get("userRole");
     
@@ -64,12 +66,17 @@ const RegForm = () => {
             PharmacyDetails: null,
             RegionName: "",
             DesName: "",
+            GovId: "",
+            City: "",
         },
     });
 
     const onSubmit: SubmitHandler<Inputs> = async (data) => {
         try {
             const formData = new FormData();
+
+
+            data.City = "";
 
             // Append all fields manually
             Object.entries(data).forEach(([key, value]) => {
@@ -110,14 +117,14 @@ const RegForm = () => {
     };
 
     useEffect(() => {
-        getAllMainAreas()
+        getActiveAreas()
     }, []);
 
     // dependent data
     useEffect(() => {
         const subscription = watch((value, { name }) => {
-            if (name === "GovId" && value.GovId) {
-                getAllSubAreasOfArea(value.GovId);
+            if (name === "City" && value.City) {
+                getAllSubAreasOfArea(value.City);
             }
         });
 
@@ -203,16 +210,18 @@ const RegForm = () => {
             {/* Region Name */}
             <div className="space-y-2">
                 <Controller
-                    name="GovId"
+                    name="City"
                     control={control}
                     render={({ field }) => (
                         <>
                             <Label htmlFor="regionName">Region</Label>
                             <Select
-                                onValueChange={(selectedId) => {
-                                    field.onChange(selectedId); // Set GovId
-                                    const selectedRegion = mainAreas.find((area) => area.id === selectedId);
-                                    setValue("RegionName", selectedRegion?.regionName || ""); // Set RegionName separately
+                                onValueChange={(selectedRegionId) => {
+                                    field.onChange(selectedRegionId);
+                                    const selectedRegion = activeAreas.find((area) => area.id === selectedRegionId);
+                                    setValue("RegionId", selectedRegion?.id || ""); // optional: for display
+                                    setValue("RegionName", selectedRegion?.regionName || ""); // optional: for display
+                                    getAllSubAreasOfArea(selectedRegionId); // fetch cities of this region
                                 }}
                                 value={field.value}
                             >
@@ -220,7 +229,7 @@ const RegForm = () => {
                                     <SelectValue placeholder="Select a region" />
                                 </SelectTrigger>
                                 <SelectContent>
-                                    {mainAreas.map((area) => (
+                                    {activeAreas.map((area) => (
                                         <SelectItem key={area.id} value={area.id as string}>
                                             {area.regionName}
                                         </SelectItem>
@@ -232,17 +241,17 @@ const RegForm = () => {
                 />
             </div>
 
-            {subAreas.length > 0 && loadingSubAreas == false ? (
+            {subAreas.length > 0 && !loadingSubAreas ? (
                 <div className="space-y-2">
                     <Controller
-                        name="City"
+                        name="GovId" // now stores city id
                         control={control}
                         render={({ field }) => (
                             <>
-                                <Label htmlFor="regionName">City</Label>
+                                <Label htmlFor="city">City</Label>
                                 <Select onValueChange={field.onChange} value={field.value}>
                                     <SelectTrigger>
-                                        <SelectValue placeholder="Select a region" />
+                                        <SelectValue placeholder="Select a city" />
                                     </SelectTrigger>
                                     <SelectContent>
                                         {subAreas.map((area) => (
@@ -257,13 +266,11 @@ const RegForm = () => {
                     />
                 </div>
             ) : (
-                <>
-                    {loadingSubAreas == true && (
-                        <div className="flex items-center justify-center h-[15px]">
-                            <Loader2 className="w-6 h-6 animate-spin" />
-                        </div>
-                    )}
-                </>
+                loadingSubAreas && (
+                    <div className="flex items-center justify-center h-[15px]">
+                        <Loader2 className="w-6 h-6 animate-spin" />
+                    </div>
+                )
             )}
 
             {/* Min Order */}
