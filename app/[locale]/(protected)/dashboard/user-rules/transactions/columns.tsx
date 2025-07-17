@@ -16,7 +16,7 @@ export type DataProps = {
   phoneNumber: string;
   businessName: string;
   isPharmacy: boolean;
-  region: string;
+  regionName: string;
   action: React.ReactNode;
 };
 export const baseColumns = ({ refresh }: { refresh: () => void }): ColumnDef<DataProps>[] => [
@@ -70,7 +70,7 @@ export const baseColumns = ({ refresh }: { refresh: () => void }): ColumnDef<Dat
     accessorKey: "region",
     header: "Region",
     cell: ({ row }) => {
-      const region = row.original.region;
+      const region = row.original.regionName;
       return <div className="text-sm text-default-600">{region || "N/A"}</div>;
     },
   },

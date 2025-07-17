@@ -21,7 +21,7 @@ export const getColumns = ({ areaType, onRefresh }: GetColumnsProps): ColumnDef<
       return (
           <div className="capitalize">
             <Link
-                href={`/dashboard/${areaType === "main" ? "areas" : "sub-areas"}/${row.original.id}`}
+                href={`/dashboard/area/${areaType === "main" ? "main" : "secondary"}/${row.original.id}`}
                 className="hover:underline"
             >
               {isSecondary ? row.getValue("name") : row.getValue("regionName")}

@@ -18,6 +18,9 @@ import useDeactivateUser from "@/services/users/DeactivateUsers";
 import {Loader2} from "lucide-react";
 import useGettingPricesByInventoryId from "@/services/productPrice/gettingPricesByInventoryId";
 import {Table, TableBody, TableCell, TableHead, TableHeader, TableRow} from "@/components/ui/table";
+import useUpdateUser from "@/services/users/updateUser";
+import useGettingAllMainAreas from "@/services/area/gettingAllMainAreas";
+import gettingAllMainAreas from "@/services/area/gettingAllMainAreas";
 
 const InventoryPrices = () => {
   // Params
@@ -27,11 +30,16 @@ const InventoryPrices = () => {
   // getting product prices by inventory id
   const {gettingPricesByInventoryId, prices, loading: pricesLoading} = useGettingPricesByInventoryId()
 
+  // getting all regions
+  const {loading: regionsLoading, error: regionsError, getAllMainAreas, mainAreas} = useGettingAllMainAreas()
+
   // getting user Data by id
   const {error, loading, user, getUserById} = useGettingUserById()
 
   // Deactivate user
   const { deactivateUser, loading: deactivateUserLoading, error: deactivateUserError } = useDeactivateUser()
+
+  const {loading: updateUserLoading, updateUser} = useUpdateUser()
 
   // Router navigator
   const router = useRouter();
@@ -47,7 +55,7 @@ const InventoryPrices = () => {
   const [region, setRegion] = useState("");
 
   // Handle update (you'd normally call an update API here)
-  const updateUser = async () => {
+  const activateUserToggle = async () => {
 
     try {
       const {success, error} =  await deactivateUser(id);
@@ -66,8 +74,36 @@ const InventoryPrices = () => {
     }
   };
 
+  // Handle update (you'd normally call an update API here)
+  const handleUpdate = async () => {
+    const formData = new FormData();
+    formData.append("UserName", userName);
+    formData.append("Email", email);
+    formData.append("PhoneNumber", phoneNumber);
+    formData.append("BussinesName", businessName);
+    formData.append("MinOrder", minOrder.toString());
+    formData.append("RegionId", region);
+    formData.append("RegionName", mainAreas?.find((area) => area.id === region)?.regionName || "");
+    formData.append("IsActive", activate.toString());
+    formData.append("PharmacyDetails", 'null');
+    formData.append("DesName", 'null');
+
+    try {
+      const {success, error} =  await updateUser(formData, id);
+      if (success) {
+        toast.success("User Updated", { description: "User updated successfully." });
+      } else if (error) {
+        throw new Error(error)
+      }
+    } catch (err) {
+      toast.error("Update Failed", {
+        description: err instanceof Error ? err.message : "Something went wrong.",
+      });
+    }
+  };
+
   useEffect(() => {
-    if (user) {
+    if (user && mainAreas) {
       setUserRole(user?.roleId as UserRole);
       setActivate(user?.isActive);
       setUserName(user?.userName);
@@ -75,25 +111,26 @@ const InventoryPrices = () => {
       setPhoneNumber(user?.phoneNumber);
       setBusinessName(user?.businessName);
       setMinOrder(user?.minOrder);
-      setRegion(user?.region || "N/A");
+      setRegion(user?.regionId || "");
     }
-  }, [user]);
+  }, [user, mainAreas]);
 
   useEffect(() => {
     getUserById(id);
     gettingPricesByInventoryId(id);
+    getAllMainAreas()
   }, []);
 
 
   return (
       <div className="gap-4 rounded-lg">
-        {loading ? (
+        {loading || regionsLoading ? (
             <div className="flex mx-auto justify-center items-center">
               <Loader2 className="animate-spin" />
             </div>
         ) : (
           <>
-            <div className="col-span-12">
+            <div className="col-span-12 space-y-6">
               <Card>
                 <CardHeader className="border-b border-solid border-default-200 mb-6">
                   <CardTitle>User Information</CardTitle>
@@ -140,14 +177,21 @@ const InventoryPrices = () => {
                     />
                   </div>
 
-                  <div className="flex items-center flex-wrap">
+                  <div className="space-y-2 flex items-center flex-wrap">
                     <Label className="w-[150px] flex-none" htmlFor="region">Region</Label>
-                    <Input
-                        id="region"
-                        className="flex-1"
-                        value={region}
-                        onChange={(e) => setRegion(e.target.value)}
-                    />
+                    <Select value={region} onValueChange={(value) => setRegion(value)}>
+                      <SelectTrigger className="flex-1 cursor-pointer">
+                        <SelectValue placeholder="Select region" />
+                      </SelectTrigger>
+                      <SelectContent>
+                        {mainAreas?.map((region) => (
+                            <SelectItem key={region.id} value={region.id as string
+                            }>
+                              {region.regionName}
+                            </SelectItem>
+                        ))}
+                      </SelectContent>
+                    </Select>
                   </div>
 
                   <div className="flex items-center flex-wrap">
@@ -161,6 +205,28 @@ const InventoryPrices = () => {
                     />
                   </div>
 
+                  <div className="col-span-12 flex justify-end mt-4">
+                    <Button onClick={handleUpdate}>
+                      {updateUserLoading ? (
+                          <div className="flex flex-row gap-3 items-center">
+                            <Loader />
+                            <div className="flex justify-center items-center">
+                              <Loader2 className="text-white animate-spin"/>
+                            </div>
+                          </div>
+                      ) : (
+                          "Update user"
+                      )}
+                    </Button>
+                  </div>
+                </CardContent>
+              </Card>
+
+              <Card>
+                <CardHeader className="border-b border-solid border-default-200 mb-6">
+                  <CardTitle>Profile Activation</CardTitle>
+                </CardHeader>
+                <CardContent>
                   <div className="flex items-center flex-wrap">
                     <Label className="w-[150px] flex-none" htmlFor="active">Active Status</Label>
                     <Select value={activate ? "true" : "false"} onValueChange={(value) => setActivate(value === "true")}>
@@ -173,24 +239,24 @@ const InventoryPrices = () => {
                       </SelectContent>
                     </Select>
                   </div>
+                  <div className="col-span-12 flex justify-end mt-4">
+                    <Button onClick={activateUserToggle}>
+                      {deactivateUserLoading ? (
+                          <div className="flex flex-row gap-3 items-center">
+                            <Loader />
+                            <div className="flex justify-center items-center">
+                              <Loader2 className="text-white animate-spin"/>
+                            </div>
+                          </div>
+                      ) : (
+                          "Change user Activation"
+                      )}
+                    </Button>
+                  </div>
                 </CardContent>
               </Card>
             </div>
 
-            <div className="col-span-12 flex justify-center mt-4">
-              <Button onClick={updateUser}>
-                {deactivateUserLoading ? (
-                    <div className="flex flex-row gap-3 items-center">
-                      <Loader />
-                      <div className="flex justify-center items-center">
-                        <Loader2 className="text-white animate-spin"/>
-                      </div>
-                    </div>
-                ) : (
-                    "Update user"
-                )}
-              </Button>
-            </div>
           </>
         )}
 

@@ -17,6 +17,9 @@ import useDeactivateUser from "@/services/users/DeactivateUsers";
 import {Loader2} from "lucide-react";
 import useGettingBalanceForUser from "@/services/balance/gettingBalanceForUser";
 import useDepositCash from "@/services/balance/deposit-cash";
+import useGettingAllMainAreas from "@/services/area/gettingAllMainAreas";
+import {Controller} from "react-hook-form";
+import useUpdateUser from "@/services/users/updateUser";
 
 const EditUser = () => {
   // Params
@@ -26,6 +29,9 @@ const EditUser = () => {
   // getting user Data by id
   const {error, loading, user, getUserById} = useGettingUserById()
 
+    // getting all regions
+    const {loading: regionsLoading, error: regionsError, getAllMainAreas, mainAreas} = useGettingAllMainAreas()
+
   // getting balance for users
   const {loading: balanceLoading, error: balanceError, balances, getBalanceForUser} = useGettingBalanceForUser()
 
@@ -34,6 +40,8 @@ const EditUser = () => {
 
   // handling deposit cash
   const {depositCash, loading: depositCashLoading} = useDepositCash()
+
+    const {loading: updateUserLoading, updateUser} = useUpdateUser()
 
   // Router navigator
   const router = useRouter();
@@ -52,40 +60,51 @@ const EditUser = () => {
     const [amount, setAmount] = useState("");
     const [description, setDescription] = useState("");
 
-  // Handle update (you'd normally call an update API here)
-  const updateUser = async () => {
-    // if (!user || !id || !userRole) {
-    //   toast.error("Validation Error", { description: "All fields are required." });
-    //   return;
-    // }
+    // Handle update (you'd normally call an update API here)
+    const handleUpdate = async () => {
+        const formData = new FormData();
+        formData.append("UserName", userName);
+        formData.append("Email", email);
+        formData.append("PhoneNumber", phoneNumber);
+        formData.append("BussinesName", businessName);
+        formData.append("MinOrder", minOrder.toString());
+        formData.append("RegionId", region);
+        formData.append("RegionName", mainAreas?.find((area) => area.id === region)?.regionName || "");
+        formData.append("IsActive", activate.toString());
+        formData.append("PharmacyDetails", 'null');
+        formData.append("DesName", 'null');
 
-    // const payload = {
-    //   userName,
-    //   email,
-    //   phoneNumber,
-    //   businessName,
-    //   minOrder,
-    //   region,
-    //   isActive: activate,
-    //   roleId: userRole
-    // };
+        try {
+            const {success, error} =  await updateUser(formData, id);
+            if (success) {
+                toast.success("User Updated", { description: "User updated successfully." });
+                await getUserById(id)
+            } else if (error) {
+                throw new Error(error)
+            }
+        } catch (err) {
+            toast.error("Update Failed", {
+                description: err instanceof Error ? err.message : "Something went wrong.",
+            });
+        }
+    };
 
-    try {
-      const {success, error} =  await deactivateUser(id);
-      if (success) {
-        toast.success("User Updated", { description: "User updated successfully." });
-        setTimeout(() => {
-          router.push("/dashboard/user-rules");
-        }, 1000)
-      } else if (error) {
-        throw new Error(error)
-      }
-    } catch (err) {
-      toast.error("Update Failed", {
-        description: err instanceof Error ? err.message : "Something went wrong.",
-      });
-    }
-  };
+    const activateUserToggle = async () => {
+
+        try {
+            const {success, error} =  await deactivateUser(id);
+            if (success) {
+                toast.success("User Updated", { description: "User updated successfully." });
+                await getUserById(id)
+            } else if (error) {
+                throw new Error(error)
+            }
+        } catch (err) {
+            toast.error("Update Failed", {
+                description: err instanceof Error ? err.message : "Something went wrong.",
+            });
+        }
+    };
 
   // Handle deposit cash
     const handleDepositCash = async () => {
@@ -107,7 +126,7 @@ const EditUser = () => {
     };
 
   useEffect(() => {
-    if (user) {
+    if (user && mainAreas) {
       setUserRole(user?.roleId as UserRole);
       setActivate(user?.isActive);
       setUserName(user?.userName);
@@ -115,121 +134,151 @@ const EditUser = () => {
       setPhoneNumber(user?.phoneNumber);
       setBusinessName(user?.businessName);
       setMinOrder(user?.minOrder);
-      setRegion(user?.region || "N/A");
+      setRegion(user?.regionId || "");
     }
-  }, [user]);
+  }, [user, mainAreas]);
 
   useEffect(() => {
     getUserById(id);
     getBalanceForUser(id);
+      getAllMainAreas();
   }, []);
 
 
   return (
       <div className="gap-4 rounded-lg">
-        {loading ? (
+        {loading || regionsLoading ? (
             <div className="flex mx-auto justify-center items-center">
               <Loader2 className="animate-spin" />
             </div>
         ) : (
           <>
-            <div className="col-span-12">
-              <Card>
-                <CardHeader className="border-b border-solid border-default-200 mb-6">
-                  <CardTitle>User Information</CardTitle>
-                </CardHeader>
+              <div className="col-span-12 space-y-6">
+                  <Card>
+                      <CardHeader className="border-b border-solid border-default-200 mb-6">
+                          <CardTitle>User Information</CardTitle>
+                      </CardHeader>
 
-                <CardContent className="space-y-4">
-                  <div className="flex items-center flex-wrap">
-                    <Label className="w-[150px] flex-none" htmlFor="userName">Username</Label>
-                    <Input
-                        id="userName"
-                        className="flex-1"
-                        value={userName}
-                        onChange={(e) => setUserName(e.target.value)}
-                    />
-                  </div>
-
-                  <div className="flex items-center flex-wrap">
-                    <Label className="w-[150px] flex-none" htmlFor="email">Email</Label>
-                    <Input
-                        id="email"
-                        className="flex-1"
-                        value={email}
-                        onChange={(e) => setEmail(e.target.value)}
-                    />
-                  </div>
-
-                  <div className="flex items-center flex-wrap">
-                    <Label className="w-[150px] flex-none" htmlFor="phone">Phone</Label>
-                    <Input
-                        id="phone"
-                        className="flex-1"
-                        value={phoneNumber}
-                        onChange={(e) => setPhoneNumber(e.target.value)}
-                    />
-                  </div>
-
-                  <div className="flex items-center flex-wrap">
-                    <Label className="w-[150px] flex-none" htmlFor="business">Business Name</Label>
-                    <Input
-                        id="business"
-                        className="flex-1"
-                        value={businessName}
-                        onChange={(e) => setBusinessName(e.target.value)}
-                    />
-                  </div>
-
-                  <div className="flex items-center flex-wrap">
-                    <Label className="w-[150px] flex-none" htmlFor="region">Region</Label>
-                    <Input
-                        id="region"
-                        className="flex-1"
-                        value={region}
-                        onChange={(e) => setRegion(e.target.value)}
-                    />
-                  </div>
-
-                  <div className="flex items-center flex-wrap">
-                    <Label className="w-[150px] flex-none" htmlFor="minOrder">Min Order</Label>
-                    <Input
-                        id="minOrder"
-                        type="number"
-                        className="flex-1"
-                        value={minOrder}
-                        onChange={(e) => setMinOrder(Number(e.target.value))}
-                    />
-                  </div>
-
-                  <div className="flex items-center flex-wrap">
-                    <Label className="w-[150px] flex-none" htmlFor="active">Active Status</Label>
-                    <Select value={activate ? "true" : "false"} onValueChange={(value) => setActivate(value === "true")}>
-                      <SelectTrigger className="flex-1 cursor-pointer">
-                        <SelectValue placeholder="Select status" />
-                      </SelectTrigger>
-                      <SelectContent>
-                        <SelectItem value="true">Active</SelectItem>
-                        <SelectItem value="false">Inactive</SelectItem>
-                      </SelectContent>
-                    </Select>
-                  </div>
-                  <div className="col-span-12 flex justify-center mt-4">
-                    <Button onClick={updateUser}>
-                      {deactivateUserLoading ? (
-                          <div className="flex flex-row gap-3 items-center">
-                            <Loader />
-                            <div className="flex justify-center items-center">
-                              <Loader2 className="text-white animate-spin"/>
-                            </div>
+                      <CardContent className="space-y-4">
+                          <div className="flex items-center flex-wrap">
+                              <Label className="w-[150px] flex-none" htmlFor="userName">Username</Label>
+                              <Input
+                                  id="userName"
+                                  className="flex-1"
+                                  value={userName}
+                                  onChange={(e) => setUserName(e.target.value)}
+                              />
                           </div>
-                      ) : (
-                          "Update user"
-                      )}
-                    </Button>
-                  </div>
-                </CardContent>
-              </Card>
-            </div>
+
+                          <div className="flex items-center flex-wrap">
+                              <Label className="w-[150px] flex-none" htmlFor="email">Email</Label>
+                              <Input
+                                  id="email"
+                                  className="flex-1"
+                                  value={email}
+                                  onChange={(e) => setEmail(e.target.value)}
+                              />
+                          </div>
+
+                          <div className="flex items-center flex-wrap">
+                              <Label className="w-[150px] flex-none" htmlFor="phone">Phone</Label>
+                              <Input
+                                  id="phone"
+                                  className="flex-1"
+                                  value={phoneNumber}
+                                  onChange={(e) => setPhoneNumber(e.target.value)}
+                              />
+                          </div>
+
+                          <div className="flex items-center flex-wrap">
+                              <Label className="w-[150px] flex-none" htmlFor="business">Business Name</Label>
+                              <Input
+                                  id="business"
+                                  className="flex-1"
+                                  value={businessName}
+                                  onChange={(e) => setBusinessName(e.target.value)}
+                              />
+                          </div>
+
+                          <div className="space-y-2 flex items-center flex-wrap">
+                              <Label className="w-[150px] flex-none" htmlFor="region">Region</Label>
+                              <Select value={region} onValueChange={(value) => setRegion(value)}>
+                                  <SelectTrigger className="flex-1 cursor-pointer">
+                                      <SelectValue placeholder="Select region" />
+                                  </SelectTrigger>
+                                  <SelectContent>
+                                      {mainAreas?.map((region) => (
+                                          <SelectItem key={region.id} value={region.id as string
+                                          }>
+                                              {region.regionName}
+                                          </SelectItem>
+                                      ))}
+                                  </SelectContent>
+                              </Select>
+                          </div>
+
+                          <div className="flex items-center flex-wrap">
+                              <Label className="w-[150px] flex-none" htmlFor="minOrder">Min Order</Label>
+                              <Input
+                                  id="minOrder"
+                                  type="number"
+                                  className="flex-1"
+                                  value={minOrder}
+                                  onChange={(e) => setMinOrder(Number(e.target.value))}
+                              />
+                          </div>
+
+                          <div className="col-span-12 flex justify-end mt-4">
+                              <Button onClick={handleUpdate}>
+                                  {updateUserLoading ? (
+                                      <div className="flex flex-row gap-3 items-center">
+                                          <Loader />
+                                          <div className="flex justify-center items-center">
+                                              <Loader2 className="text-white animate-spin"/>
+                                          </div>
+                                      </div>
+                                  ) : (
+                                      "Update user"
+                                  )}
+                              </Button>
+                          </div>
+                      </CardContent>
+                  </Card>
+
+                  <Card>
+                      <CardHeader className="border-b border-solid border-default-200 mb-6">
+                          <CardTitle>Profile Activation</CardTitle>
+                      </CardHeader>
+                      <CardContent>
+                          <div className="flex items-center flex-wrap">
+                              <Label className="w-[150px] flex-none" htmlFor="active">Active Status</Label>
+                              <Select value={activate ? "true" : "false"} onValueChange={(value) => setActivate(value === "true")}>
+                                  <SelectTrigger className="flex-1 cursor-pointer">
+                                      <SelectValue placeholder="Select status" />
+                                  </SelectTrigger>
+                                  <SelectContent>
+                                      <SelectItem value="true">Active</SelectItem>
+                                      <SelectItem value="false">Inactive</SelectItem>
+                                  </SelectContent>
+                              </Select>
+                          </div>
+                          <div className="col-span-12 flex justify-end mt-4">
+                              <Button onClick={activateUserToggle}>
+                                  {deactivateUserLoading ? (
+                                      <div className="flex flex-row gap-3 items-center">
+                                          <Loader />
+                                          <div className="flex justify-center items-center">
+                                              <Loader2 className="text-white animate-spin"/>
+                                          </div>
+                                      </div>
+                                  ) : (
+                                      "Change user Activation"
+                                  )}
+                              </Button>
+                          </div>
+                      </CardContent>
+                  </Card>
+              </div>
           </>
         )}
 
@@ -308,7 +357,7 @@ const EditUser = () => {
                     />
                 </div>
 
-                <div  className={"flex items-center justify-center"}>
+                <div  className={"flex items-center justify-end"}>
                     <Button onClick={() => {
                         handleDepositCash();
                     }}>
