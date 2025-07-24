@@ -59,7 +59,7 @@ export function CSVUploadModal({ onUpload }: CSVUploadModalProps) {
     return (
         <Dialog open={open} onOpenChange={setOpen}>
             <DialogTrigger asChild>
-                <Button variant="outline">Upload All</Button>
+                <Button variant="outline">Upload File</Button>
             </DialogTrigger>
             <DialogContent>
                 <DialogHeader>
