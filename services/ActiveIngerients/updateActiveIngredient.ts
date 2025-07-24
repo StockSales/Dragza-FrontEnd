@@ -8,7 +8,7 @@ function useUpdateActiveIngredient() {
         setLoading(true);
         try {
             const response = await AxiosInstance.put(`/api/ActiveIngerients/${activeIngredientId}`, updatedData);
-            if (response.status !== 200) {
+            if (response.status !== 201) {
                 throw new Error('Failed to update active ingredient');
             }
             return { success: true }

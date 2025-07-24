@@ -61,7 +61,7 @@ const BillSummary: React.FC<BillSummaryProps> = ({ items, deletedItems, defaultI
                   <td className={`text-default-900 text-sm font-normal text-left px-6 py-4 ${
                       isDeleted ? 'line-through' : ''
                   }`}>
-                    ${parseInt(String(data.unitPrice)).toFixed(2)}
+                    {parseInt(String(data.unitPrice)).toFixed(2)} EGP
                   </td>
                   <td className={`text-default-900 text-sm font-normal text-left last:text-right px-6 py-4 ${
                       isDeleted ? 'line-through' : ''
@@ -79,13 +79,13 @@ const BillSummary: React.FC<BillSummaryProps> = ({ items, deletedItems, defaultI
             <span className="font-medium text-default-600 text-xs uppercase">
               Subtotal:
             </span>
-              <span className="text-default-900">${subtotal.toFixed(2)}</span>
+              <span className="text-default-900">{subtotal.toFixed(2)} EGP</span>
             </div>
             <div className="flex justify-between border-solid border-t border-default-200 pt-3">
             <span className="font-medium text-default-600 text-xs uppercase">
               Invoice total:
             </span>
-              <span className="text-default-900 font-bold">${invoiceTotal.toFixed(2)}</span>
+              <span className="text-default-900 font-bold">{invoiceTotal.toFixed(2)} EGP</span>
             </div>
           </div>
         </div>

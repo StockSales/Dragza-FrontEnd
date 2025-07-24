@@ -37,29 +37,22 @@ import Cookies from "js-cookie";
 import useGettingMyOrders from "@/services/Orders/gettingMyOrders";
 import {Button} from "@/components/ui/button";
 import {OrderStatus, OrderStatusLabel} from "@/enum";
+import useVendorOrder from "@/services/Orders/vendor-order";
 
 // @ts-ignore
 export default function TransactionsTable (){
   const userRole = Cookies.get("userRole");
   const isAdmin = userRole == "Admin";
+  const userId = Cookies.get("userId");
 
-  const {loading: myOrdersLoading, orders: myOrders, gettingMyOrders, error: myOrdersError} = useGettingMyOrders()
-
-  const {
-    gettingAllOrders,
-    orders,
-    loading,
-    error
-  } = useGettingAllOrders();
-
-  const {
-    loading: usersLoading,
-    users: inventoryManagers,
-    getUsersByRoleId
-  } = useGetUsersByRoleId();
+  // Hooks for different data sources
+  const {loading: myOrdersLoading, orders: myOrders, gettingVendorOrders, error: myOrdersError} = useVendorOrder()
+  const {gettingAllOrders, orders, loading, error} = useGettingAllOrders();
+  const {loading: usersLoading, users: inventoryManagers, getUsersByRoleId} = useGetUsersByRoleId();
 
   const router = useRouter();
 
+  // Table state
   const [sorting, setSorting] = React.useState<SortingState>([]);
   const [columnFilters, setColumnFilters] = React.useState<ColumnFiltersState>([]);
   const [columnVisibility, setColumnVisibility] = React.useState<VisibilityState>({});
@@ -67,7 +60,19 @@ export default function TransactionsTable (){
   const [filteredOrders, setFilteredOrders] = useState<Orders[]>([]);
   const [selectedStatus, setSelectedStatus] = useState<OrderStatus | "all">("all");
 
-  const columns = baseColumns({ refresh: () => gettingAllOrders() });
+  // Create a unified data source
+  const allOrdersData = isAdmin ? orders : myOrders;
+  const isLoadingData = isAdmin ? loading : myOrdersLoading;
+
+  const columns = baseColumns({
+    refresh: () => {
+      if (isAdmin) {
+        gettingAllOrders();
+      } else {
+        gettingVendorOrders(userId);
+      }
+    }
+  });
 
   const table = useReactTable({
     data: filteredOrders ?? [],
@@ -91,34 +96,39 @@ export default function TransactionsTable (){
   // Filter orders based on selected status
   const filterOrdersByStatus = (status: OrderStatus | "all") => {
     setSelectedStatus(status);
+    if (!allOrdersData) return;
+
     if (status === "all") {
-      setFilteredOrders(orders || myOrders || []);
+      setFilteredOrders(allOrdersData);
     } else {
-      const filtered = (orders || myOrders || []).filter(order => order.status === status);
+      const filtered = allOrdersData.filter(order => order.status === status);
       setFilteredOrders(filtered);
     }
   };
 
-  // Load inventory managers once on mount
+  // Load data based on user role
   useEffect(() => {
-    if (isAdmin){
-      // getUsersByRoleId("1A5A84FB-23C3-4F9B-A122-4C5BC6C5CB2D");
+    if (isAdmin) {
       gettingAllOrders();
     } else {
-      gettingMyOrders();
+      if (userId) {
+        gettingVendorOrders(userId);
+      }
     }
-  }, []);
+  }, [isAdmin, userId]);
 
-  // Sync filteredOrders when orders are updated
+  // Update filtered orders when data changes
   useEffect(() => {
-    filterOrdersByStatus(selectedStatus);
-  }, [orders, myOrders]);
+    if (allOrdersData) {
+      filterOrdersByStatus(selectedStatus);
+    }
+  }, [allOrdersData, selectedStatus]);
 
   return (
       <Card className="w-full">
         <div className="px-5 py-4 flex flex-col xl:flex-row items-center gap-4">
           <SearchInput
-              data={orders ?? []}
+              data={allOrdersData ?? []}
               setFilteredData={setFilteredOrders}
               filterKey="id"
           />
@@ -206,7 +216,7 @@ export default function TransactionsTable (){
           </div>
         </div>
 
-        {(loading || usersLoading || myOrdersLoading) ? (
+        {(isLoadingData || usersLoading) ? (
             <div className="flex items-center justify-center h-full py-8">
               <Loader2 className="w-6 h-6 animate-spin" />
             </div>

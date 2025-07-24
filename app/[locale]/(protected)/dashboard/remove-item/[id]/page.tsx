@@ -59,7 +59,7 @@ const RemoveItems: React.FC = () => {
                     Remove Item
                   </h3>
                   <p className="text-sm text-gray-500 mt-1">
-                    `Are you sure you want to remove ${productName} from this order?`
+                    Are you sure you want to remove {productName} from this order?
                   </p>
                 </div>
               </div>
@@ -177,10 +177,33 @@ const RemoveItems: React.FC = () => {
               <div>
                 <span className="block text-default-900 font-medium text-xl">Bill to:</span>
                 <div className="text-default-500 font-normal mt-4 text-sm">
-                  Pharmacy ID: {order.pharmacyUserId || 'N/A'}
+                  Pharmacy ID: {order.pharmacyName || 'N/A'}
                   <div className="flex space-x-2 mt-2">
                     <p>Inventory Manager:</p>
-                    <span>{order.inventoryUserId || 'N/A'}</span>
+                    <span>
+                      {items?.length > 0 ? (() => {
+                        const names = items
+                            .map((item: any) => item?.inventoryName)
+                            .filter(Boolean);
+
+                        const firstTwo = names.slice(0, 2).join(', ');
+                        const remaining = names.length > 2 ? (
+                            <span
+                                className="text-blue-600 cursor-pointer"
+                                title={names.join(', ')}
+                            >
+                            {' '}+{names.length - 2} more
+                            </span>
+                        ) : null;
+
+                        return (
+                            <>
+                              {firstTwo}
+                              {remaining}
+                            </>
+                        );
+                      })() : 'N/A'}
+                    </span>
                   </div>
                 </div>
               </div>
@@ -198,11 +221,6 @@ const RemoveItems: React.FC = () => {
                 items={items}
                 deletedItems={deletedItems}
             />
-            <div className="col-span-12 flex justify-end mt-10">
-              <Button variant="soft" size="md" className="cursor-pointer">
-                Print
-              </Button>
-            </div>
           </CardContent>
         </Card>
       </div>

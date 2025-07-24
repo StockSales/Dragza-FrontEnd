@@ -3,13 +3,13 @@
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Label } from "@/components/ui/label";
 import {
-  Select,
-  SelectContent,
-  SelectGroup,
-  SelectItem,
-  SelectLabel,
-  SelectTrigger,
-  SelectValue,
+    Select,
+    SelectContent,
+    SelectGroup,
+    SelectItem,
+    SelectLabel,
+    SelectTrigger,
+    SelectValue,
 } from "@/components/ui/select";
 import TotalTable from "./totaltable";
 import { Icon } from "@/components/ui/icon";
@@ -27,146 +27,169 @@ import BillSummary from "@/app/[locale]/(protected)/dashboard/remove-item/[id]/B
 import loading from "@/app/[locale]/(protected)/app/projects/loading";
 import {Loader2} from "lucide-react";
 import useUpdateOrderStatus from "@/services/Orders/updateOrderStatus";
+import Cookies from "js-cookie";
 
 const OrderDetails = () => {
-  // state for the order data
-  const params = useParams();
-  const router = useRouter();
+    // state for the order data
+    const params = useParams();
+    const router = useRouter();
 
-  const id: string | string[] | undefined = params?.id;
-  const [order, setOrder] = useState<Orders | null>(null);
+    const userType = Cookies.get("userType");
 
-  // getting order details
-  const {order: orderData, getOrderById, error, loading: orderLoading} = useGettingOrderById()
+    const id: string | string[] | undefined = params?.id;
+    const [order, setOrder] = useState<Orders | null>(null);
 
-  // getting Order Invoice By id
-  const {loading: invoiceLoading, error: invoiceError, invoice, getInvoiceByOrderId} = useGettingInvoiceByOrderId()
+    // getting order details
+    const {order: orderData, getOrderById, error, loading: orderLoading} = useGettingOrderById()
 
-  // updating order status
-  const {loading: updateLoading, updateOrderStatus} = useUpdateOrderStatus()
+    // getting Order Invoice By id
+    const {loading: invoiceLoading, error: invoiceError, invoice, getInvoiceByOrderId} = useGettingInvoiceByOrderId()
 
+    // updating order status
+    const {loading: updateLoading, updateOrderStatus} = useUpdateOrderStatus()
 
+    useEffect(() => {
+        if (id) {
+            getOrderById(id as string);
+            getInvoiceByOrderId(id as string);
+        }
+    }, [id]);
 
-  useEffect(() => {
-    if (id) {
-      getOrderById(id as string);
-      getInvoiceByOrderId(id as string);
+    useEffect(() => {
+        if (orderData) {
+            setOrder(orderData);
+        }
+    }, [orderData]);
+
+    if (orderLoading || invoiceLoading) {
+        return (
+            <div className="flex items-center justify-center h-full">
+                <Loader2 className="h-6 w-6 animate-spin text-muted-foreground" />
+            </div>
+        );
     }
-  }, []);
 
-  useEffect(() => {
-    if (orderData) {
-      setOrder(orderData);
+    // Use order state if available, fallback to orderData
+    const currentOrder = order || orderData;
+
+    if (!currentOrder) {
+        return (
+            <div className="flex items-center justify-center h-full">
+                <p>No order data found</p>
+            </div>
+        );
     }
-  }, [orderData]);
 
-  if (orderLoading || invoiceLoading) {
     return (
-        <div className="flex items-center justify-center h-full">
-          <Loader2 className="h-6 w-6 animate-spin text-muted-foreground" />
-        </div>
+        <>
+            {/* Order Status Update Card - Only for Inventory users */}
+            {userType === "Inventory" && (
+                <Card>
+                    <CardHeader>
+                        <CardTitle>Order Status</CardTitle>
+                    </CardHeader>
+                    <CardContent>
+                        <div className="space-y-4">
+                            <div className="flex items-center flex-wrap gap-4">
+                                <Label className="w-[150px] flex-none">Order Status: </Label>
+                                <Select
+                                    value={currentOrder?.status?.toString()}
+                                    onValueChange={(value: string) => {
+                                        const numericValue = Number(value) as OrderStatus;
+                                        setOrder({ ...currentOrder, status: numericValue });
+                                    }}
+                                >
+                                    <SelectTrigger className="flex-1 cursor-pointer">
+                                        <SelectValue placeholder="Select Status" />
+                                    </SelectTrigger>
+                                    <SelectContent>
+                                        <SelectGroup>
+                                            <SelectLabel>Status</SelectLabel>
+                                            {Object.values(OrderStatus)
+                                                .filter((value) => typeof value === "number")
+                                                .map((status) => (
+                                                    <SelectItem
+                                                        key={status}
+                                                        value={status.toString()}
+                                                        disabled={status === OrderStatus.Pending}
+                                                    >
+                                                        {OrderStatusLabel[status as OrderStatus]}
+                                                    </SelectItem>
+                                                ))}
+                                        </SelectGroup>
+                                    </SelectContent>
+                                </Select>
+                            </div>
+                            <div className="flex items-center justify-center flex-wrap gap-4">
+                                <Button
+                                    size="md"
+                                    variant="outline"
+                                    className="w-[150px] flex-none"
+                                    type="button"
+                                    disabled={updateLoading || currentOrder?.status === OrderStatus.Pending}
+                                    onClick={async () => {
+                                        if (!id || !currentOrder?.status || currentOrder.status === OrderStatus.Pending) {
+                                            toast.warning("Invalid status selected.");
+                                            return;
+                                        }
+
+                                        const result = await updateOrderStatus(id as string, currentOrder.status);
+
+                                        if (result.success) {
+                                            toast.success("Order status updated successfully!");
+                                            getOrderById(id as string); // Refresh data
+                                        } else {
+                                            toast.error(`Update failed: ${result.error}`);
+                                        }
+                                    }}
+                                >
+                                    {updateLoading ? <Loader2 className="h-4 w-4 animate-spin" /> : "Update"}
+                                </Button>
+                            </div>
+                        </div>
+                    </CardContent>
+                </Card>
+            )}
+
+            {/* Order Details Card */}
+            <Card>
+                <CardHeader className="border-0">
+                    <div className="flex justify-between flex-wrap gap-4 items-center">
+                        <div>
+                            <span className="block text-default-900 font-medium text-xl">Order Details</span>
+                            <div className="text-default-500 font-normal mt-4 text-sm">
+                                Pharmacy ID: {currentOrder.pharmacyName || 'N/A'}
+                                <div className="flex space-x-2 mt-2">
+                                    <p>Inventory Manager:</p>
+                                    <span>
+                      {currentOrder.items?.length > 0
+                          ? currentOrder.items
+                              .map((item: any) => item?.inventoryName)
+                              .filter(Boolean)
+                              .join(', ')
+                          : 'N/A'}
+                    </span>
+                                </div>
+                            </div>
+                        </div>
+                        <div className="space-y-1 text-xs text-default-600 uppercase">
+                            <h4>Order Id: {currentOrder.id || 'N/A'}</h4>
+                            <h4>Order Date: {currentOrder.orderDate ? new Date(currentOrder.orderDate).toLocaleString() : 'N/A'}</h4>
+                            <h4>Status: {currentOrder.status !== undefined ? OrderStatusLabel[currentOrder.status as OrderStatus] : 'N/A'}</h4>
+                        </div>
+                    </div>
+                </CardHeader>
+
+                <CardContent>
+                    <BillSummary
+                        defaultItems={currentOrder.items || []}
+                        items={currentOrder.items || []}
+                        deletedItems={[]}
+                    />
+                </CardContent>
+            </Card>
+        </>
     );
-  }
-  return (
-      <Card>
-        <CardHeader>
-          <CardTitle>Order Update</CardTitle>
-        </CardHeader>
-        <CardContent>
-          <div className="space-y-4">
-            <div className="flex items-center flex-wrap gap-4">
-              <Label className="w-[150px] flex-none">Order Status: </Label>
-              <Select
-                  value={order?.status?.toString()}
-                  onValueChange={(value: string) => {
-                    const numericValue = Number(value) as OrderStatus;
-                    setOrder({ ...orderData, status: numericValue });
-                  }}
-              >
-                <SelectTrigger className="flex-1 cursor-pointer">
-                  <SelectValue placeholder="Select Status" />
-                </SelectTrigger>
-                <SelectContent>
-                  <SelectGroup>
-                    <SelectLabel>Status</SelectLabel>
-                    {Object.values(OrderStatus)
-                        .filter((value) => typeof value === "number")
-                        .map((status) => (
-                            <SelectItem key={status} value={status.toString()}
-                                        disabled={status === OrderStatus.Pending}
-                            >
-
-                              {OrderStatusLabel[status as OrderStatus]}
-                            </SelectItem>
-                        ))}
-                  </SelectGroup>
-                </SelectContent>
-              </Select>
-            </div>
-            <div className="flex items-center justify-center flex-wrap gap-4">
-              <Button
-                  size="md"
-                  variant="outline"
-                  className="w-[150px] flex-none"
-                  type="button"
-                  disabled={updateLoading || order?.status === OrderStatus.Pending}
-                  onClick={async () => {
-                    if (!id || !order?.status || order.status === OrderStatus.Pending) {
-                      toast.warning("Invalid status selected.");
-                      return;
-                    }
-
-                    const result = await updateOrderStatus(id, order.status);
-
-                    if (result.success) {
-                      toast.success("Order status updated successfully!");
-                      getOrderById(id as string); // Refresh data
-                    } else {
-                      toast.error(`Update failed: ${result.error}`);
-                    }
-                  }}
-              >
-                {updateLoading ? <Loader2 className="h-4 w-4 animate-spin" /> : "Update"}
-              </Button>
-            </div>
-          </div>
-        </CardContent>
-        <Card>
-          <CardHeader className="border-0">
-            <div className="flex justify-between flex-wrap gap-4 items-center">
-              <div>
-                <span className="block text-default-900 font-medium text-xl">Bill to:</span>
-                <div className="text-default-500 font-normal mt-4 text-sm">
-                  Pharmacy ID: {orderData.pharmacyUserId || 'N/A'}
-                  <div className="flex space-x-2 mt-2">
-                    <p>Inventory Manager:</p>
-                    <span>{orderData.inventoryUserId || 'N/A'}</span>
-                  </div>
-                </div>
-              </div>
-              <div className="space-y-1 text-xs text-default-600 uppercase">
-                <h4>Order Id: {orderData.id || 'N/A'}</h4>
-                <h4>Order Date: {orderData.orderDate ? new Date(orderData.orderDate).toLocaleString() : 'N/A'}</h4>
-                <h4>Status: {orderData.status !== undefined ? OrderStatus[orderData.status] : 'N/A'}</h4>
-              </div>
-            </div>
-          </CardHeader>
-
-          <CardContent>
-            <BillSummary
-                defaultItems={orderData.items}
-                items={orderData.items}
-                deletedItems={[]}
-            />
-            <div className="col-span-12 flex justify-end mt-10">
-              <Button variant="soft" size="md" className="cursor-pointer">
-                Print
-              </Button>
-            </div>
-          </CardContent>
-        </Card>
-      </Card>
-  );
 };
 
 export default OrderDetails;

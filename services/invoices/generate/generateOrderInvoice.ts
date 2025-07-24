@@ -15,7 +15,7 @@ function useGenerateOrderInvoice() {
         try {
             const response = await AxiosInstance.post(`/api/Invoices/generate/${orderId}`);
             if (response.status !== 201) {
-                throw new Error('Failed to generate invoice for order');
+                throw new Error('Failed to generate invoice for order or already has an invoice');
             }
             return {success: true};
         } catch (error) {

@@ -4,7 +4,7 @@ import {Button} from "@/components/ui/button";
 import {Dialog, DialogContent, DialogFooter, DialogHeader, DialogTitle, DialogTrigger} from "@/components/ui/dialog";
 import useGetUsersByRoleId from "@/services/users/GetUsersByRoleId";
 import {Edit2, Trash2} from "lucide-react";
-import {useState} from "react";
+import {useEffect, useState} from "react";
 import {toast} from "sonner";
 import {Select, SelectContent, SelectItem, SelectTrigger, SelectValue} from "@/components/ui/select";
 import {UserType} from "@/types/users";
@@ -12,7 +12,7 @@ import UseResignOrderInventoryUser from "@/services/Orders/ResignOrderInventoryU
 
 interface Props {
     orderId: string;
-    inventoryUserId: string;
+    inventoryUserId: string | undefined;
     onSuccess: () => void;
 }
 
@@ -40,7 +40,7 @@ const ChangeInventoryUserDialog = ({
 
     const handleSubmit = async () => {
         try {
-            await resignOrder(orderId, selectedUserId);
+            await resignOrder(orderId, selectedUserId as string);
             toast.success("Inventory user updated successfully");
             setOpen(false);
             onSuccess(); // refetch the table
@@ -48,6 +48,11 @@ const ChangeInventoryUserDialog = ({
             toast.error("Failed to update inventory user");
         }
     };
+
+    useEffect(() => {
+        console.log("selectedUserId", selectedUserId);
+        console.log("inventoryUserId", inventoryUserId);
+    }, [inventoryUserId]);
 
     return (
         <Dialog open={open} onOpenChange={handleOpenChange}>
