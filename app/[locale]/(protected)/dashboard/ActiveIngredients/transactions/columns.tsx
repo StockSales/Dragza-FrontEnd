@@ -7,6 +7,8 @@ import {Button} from "@/components/ui/button";
 import Cookies from "js-cookie";
 import {ActiveIngredient} from "@/types/activeIngredient";
 import useDeleteActiveIngredientById from "@/services/ActiveIngerients/deleteActiveIngredientById";
+import useToggleStatusSubArea from "@/services/subArea/toggleStatusSubArea";
+import useToggleAreaStatus from "@/services/area/toggleAreaStatus";
 
 export const baseColumns = ({ refresh }: { refresh: () => void }): ColumnDef<ActiveIngredient>[] =>
 [
@@ -24,6 +26,76 @@ export const baseColumns = ({ refresh }: { refresh: () => void }): ColumnDef<Act
       );
     },
   },
+    {
+        accessorKey: "isDeleted",
+        header: "Is Active",
+        cell: ({ row }) => {
+            const isDeleted = row.getValue("isDeleted");
+            const isActive = !isDeleted;
+            const label = isActive ? "Active" : "Inactive";
+            const badgeColor = isActive
+                ? "bg-green-100 text-green-800"
+                : "bg-red-100 text-red-800";
+
+            return (
+                <span className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium ${badgeColor}`}>
+          {label}
+        </span>
+            );
+        },
+    },
+    {
+        accessorKey: "id",
+        header: "Toggle Area Status",
+        cell: ({ row }) => {
+            const id: string = row.getValue("id");
+
+            const { loading, deleteActiveIngredientById} = useDeleteActiveIngredientById()
+
+            const isDeleted = row.getValue("isDeleted");
+            const isActive = !isDeleted;
+
+            const handleToggleStatus = async () => {
+                try {
+                    let result;
+
+                    result = await deleteActiveIngredientById(id as string);
+
+
+                    if (result.success && refresh) {
+                        refresh();
+                        // Success toast
+                        toast.success(
+                            `Active ingredient status ${isActive ? "deactivated" : "activated"} successfully!`
+                        );
+                    } else {
+                        // Error toast
+                        toast.error(
+                            result.error || `Failed to ${isActive ? "deactivate" : "activate"} Active ingredient"}`
+                        );
+                    }
+                } catch (error) {
+                    // Catch any unexpected errors
+                    toast.error("An unexpected error occurred. Please try again.");
+                    console.error("Toggle status error:", error);
+                }
+            };
+
+            return (
+                <button
+                    onClick={handleToggleStatus}
+                    disabled={loading}
+                    className={`px-3 py-1 rounded text-sm font-medium transition-colors cursor-pointer ${
+                        isActive == true || isActive == null
+                            ? "bg-red-100 text-red-700 hover:bg-red-200 disabled:bg-red-50"
+                            : "bg-green-100 text-green-700 hover:bg-green-200 disabled:bg-green-50"
+                    } disabled:opacity-50 disabled:cursor-not-allowed`}
+                >
+                    {loading ? "Loading..." : isActive == true || isActive == null ? "Click to deactivate" : "Click to activate"}
+                </button>
+            );
+        },
+    },
   // {
   //   accessorKey: "stock",
   //   header: "Stock",
@@ -144,14 +216,14 @@ export const baseColumns = ({ refresh }: { refresh: () => void }): ColumnDef<Act
           >
             <SquarePen className="w-4 h-4" />
           </Link>
-            {userRole == "Admin" && (
-              <div
-                onClick={() => handleDeleteActiveIngredient(row.original.id as string)}
-                className="flex items-center p-2 text-destructive bg-destructive/40 duration-200 transition-all hover:bg-destructive/80 hover:text-destructive-foreground rounded-full"
-              >
-                <Trash2 className="w-4 h-4" />
-              </div>
-            )}
+            {/*{userRole == "Admin" && (*/}
+            {/*  <div*/}
+            {/*    onClick={() => handleDeleteActiveIngredient(row.original.id as string)}*/}
+            {/*    className="flex items-center p-2 text-destructive bg-destructive/40 duration-200 transition-all hover:bg-destructive/80 hover:text-destructive-foreground rounded-full"*/}
+            {/*  >*/}
+            {/*    <Trash2 className="w-4 h-4" />*/}
+            {/*  </div>*/}
+            {/*)}*/}
         </div>
       );
     },
