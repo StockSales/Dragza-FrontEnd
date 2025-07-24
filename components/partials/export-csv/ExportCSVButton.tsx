@@ -12,18 +12,18 @@ export function ExportCSVButton() {
         try {
             await downloadCSV();
             if (!error) {
-                toast.success("CSV downloaded successfully");
+                toast.success("File downloaded successfully");
             } else {
                 throw new Error(error);
             }
         } catch (e) {
-            toast.error("Failed to download CSV");
+            toast.error("Failed to download file");
         }
     };
 
     return (
         <Button onClick={handleClick} disabled={loading}>
-            {loading ? "Exporting..." : "Export CSV"}
+            {loading ? "Exporting..." : "Export File"}
         </Button>
     );
 }

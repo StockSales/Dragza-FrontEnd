@@ -26,19 +26,19 @@ export function CSVUploadModal({ onUpload }: CSVUploadModalProps) {
     const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
         const file = e.target.files?.[0];
         if (file) {
-            if (file.type === "text/csv" || file.name.endsWith(".csv")) {
+            if (file.type === "text/xlsx" || file.name.endsWith(".xlsx")) {
                 setSelectedFile(file);
                 setError("");
             } else {
                 setSelectedFile(null);
-                setError("Only CSV files are allowed.");
+                setError("Only files are allowed.");
             }
         }
     };
 
     const handleUpload = async () => {
         if (!selectedFile) {
-            setError("Please select a CSV file.");
+            setError("Please select a file.");
             return;
         }
 
@@ -59,14 +59,14 @@ export function CSVUploadModal({ onUpload }: CSVUploadModalProps) {
     return (
         <Dialog open={open} onOpenChange={setOpen}>
             <DialogTrigger asChild>
-                <Button variant="outline">Update All</Button>
+                <Button variant="outline">Upload All</Button>
             </DialogTrigger>
             <DialogContent>
                 <DialogHeader>
-                    <DialogTitle>Upload CSV File</DialogTitle>
+                    <DialogTitle>Upload File</DialogTitle>
                 </DialogHeader>
 
-                <Input type="file" accept=".csv,text/csv" onChange={handleFileChange} />
+                <Input type="file" accept=".xlsx,text/xlsx" onChange={handleFileChange} />
                 {error && <p className="text-sm text-red-500 mt-1">{error}</p>}
 
                 <DialogFooter className="pt-4">
