@@ -37,10 +37,10 @@ const ItemsTable: React.FC<ItemsTableProps> = ({ items, deletedItems, onDeleteIt
                         {data.quantity}
                     </td>
                     <td className="text-default-900 text-sm font-normal text-left px-6 py-4">
-                        ${parseFloat(String(data.unitPrice)).toFixed(2)}
+                        {parseFloat(String(data.unitPrice)).toFixed(2)} EGP
                     </td>
                     <td className={`text-default-900 text-sm font-normal text-left last:text-right px-6 py-4 `}>
-                        {((data.unitPrice || 0)* (data.quantity || 0)).toFixed(2)}
+                        {((data.unitPrice || 0)* (data.quantity || 0)).toFixed(2)} EGP
                     </td>
                     <td className="text-center px-6 py-4">
                         <Button

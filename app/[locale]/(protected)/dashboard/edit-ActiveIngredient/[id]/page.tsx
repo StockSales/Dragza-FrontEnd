@@ -92,6 +92,14 @@ const EditActiveIngredient = () => {
     if (activeIngredientId) gettingActiveIngredientById(activeIngredientId)
   }, [activeIngredientId]);
 
+  useEffect(() => {
+    if (activeIngredient) {
+      setFormData({
+        name: activeIngredient.name,
+      });
+    }
+  }, [activeIngredient]);
+
 
   if (activeIngredientLoading) {
     return (
@@ -117,7 +125,7 @@ const EditActiveIngredient = () => {
                   id="h_Fullname"
                   type="text"
                   placeholder="Full name"
-                  value={activeIngredient?.name}
+                  value={formData?.name}
                   onChange={(e) => setFormData({...formData, name: e.target.value})}
               />
             </div>

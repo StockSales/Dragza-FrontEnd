@@ -1,126 +1,73 @@
 import { ColumnDef } from "@tanstack/react-table";
-import { Checkbox } from "@/components/ui/checkbox";
-import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
-import { Badge } from "@/components/ui/badge";
-import { cn } from "@/lib/utils";
-import {Download, Eye, Trash2} from "lucide-react";
-import {Link} from "@/i18n/routing";
+import {formatDateToDMY} from "@/utils";
 
-// export type DataProps = {
-//   id: string | number;
-//   order: number;
-//   customer: {
-//     name: string;
-//     image: string;
-//   };
-//   inventory: {
-//     name: string;
-//     phone: string;
-//   }
-//   date: string;
-//   quantity: number;
-//   amount: string;
-//   reason: string;
-//   method: string;
-//   status: "paid" | "due" | "canceled";
-//   action: React.ReactNode;
-// };
+
 export const columns: ColumnDef<any>[] = [
   {
-    accessorKey:"name",
-    header: "Inventory Name",
-    cell: ({ row }) => {
-      const inventory = row.original.inventory;
-      return (
-          <span className="text-sm text-default-600 whitespace-nowrap">
-            {inventory?.name ?? "Unknown Inventory"}
-          </span>
-      );
-    }
-  },
-
-  {
-    accessorKey:"phone",
-    header: "Inventory phone",
-    cell: ({ row }) => {
-      const inventory = row.original.inventory;
-      return (
-          <span className="text-sm text-default-600 whitespace-nowrap">
-            {inventory?.phone ?? "Unknown Inventory"}
-          </span>
-      );
-    }
-  },
-
-  {
-    accessorKey: "order",
-    header: "Order Number",
-    cell: ({ row }) => <span>{row.getValue("order")}</span>,
-  },
-  {
-    accessorKey: "customer",
+    accessorKey: "pharmacyName",
     header: "Pharmacy Name",
     cell: ({ row }) => {
-      const user = row.original.customer;
+      const name = row.original.pharmacyName;
       return (
-        <div className="font-medium text-card-foreground/80">
-          <div className="flex gap-3 items-center">
-            <Avatar className="rounded-full w-8 h-8">
-              {user?.image ? (
-                <AvatarImage src={user.image} />
-              ) : (
-                <AvatarFallback>AB</AvatarFallback>
-              )}
-            </Avatar>
-            <span className="text-sm text-default-600 whitespace-nowrap">
-              {user?.name ?? "Unknown User"}
-            </span>
+          <div className="font-medium text-card-foreground/80">
+          <span className="text-sm text-default-600 whitespace-nowrap">
+            {name ?? "Unknown User"}
+          </span>
           </div>
-        </div>
       );
     },
   },
-  // {
-  //   accessorKey: "reason",
-  //   header: "Reason",
-  //   cell: ({ row }) => {
-  //     return <span>{row.getValue("reason")}</span>;
-  //   },
-  // },
-  // {
-  //   accessorKey: "status",
-  //   header: "Payment Status",
-  //   cell: ({ row }) => {
-  //     const statusColors: Record<string, string> = {
-  //       paid: "bg-success/20 text-success",
-  //       due: "bg-warning/20 text-warning",
-  //       canceled: "bg-destructive/20 text-destructive",
-  //     };
-  //     const status = row.getValue<string>("status");
-  //     const statusStyles = statusColors[status] || "default";
-  //     return (
-  //       <Badge className={cn("rounded-full px-5", statusStyles)}>
-  //         {status}{" "}
-  //       </Badge>
-  //     );
-  //   },
-  // },
-  // {
-  //   id: "actions",
-  //   accessorKey: "action",
-  //   header: "Actions",
-  //   enableHiding: false,
-  //   cell: ({ row }) => {
-  //     return (
-  //       <div className="flex items-center gap-1">
-  //         <Link
-  //           href={`/dashboard/return-details/${row.original.id}`}
-  //           className="flex items-center p-2 border-b text-warning hover:text-warning-foreground bg-warning/20 hover:bg-warning duration-200 transition-all rounded-full"
-  //         >
-  //           <Eye className="w-4 h-4" />
-  //         </Link>
-  //       </div>
-  //     );
-  //   },
-  // },
+  {
+    accessorKey: "inventoryName",
+    header: "Inventory Username",
+    cell: ({ row }) => {
+      const items = row.original.items || [];
+
+      // Get only unique inventory names
+      const names = Array.from(
+          new Set(
+              items
+                  .map((item: any) => item.inventoryName)
+                  .filter(Boolean)
+          )
+      );
+
+      if (names.length === 0) {
+        return <span>John Doe</span>;
+      }
+
+      const firstTwo = names.slice(0, 2);
+      const remaining = names.slice(2);
+
+      return (
+          <div className="flex flex-col gap-1">
+            {firstTwo.map((name: any, idx: any) => (
+                <span key={idx}>{name}</span>
+            ))}
+            {remaining.length > 0 && (
+                <span
+                    className="text-blue-600 cursor-pointer"
+                    title={remaining.join(", ")}
+                >
+            +{remaining.length} more
+          </span>
+            )}
+          </div>
+      );
+    },
+  },
+  {
+    accessorKey: "requestDate",
+    header: "Return Date",
+    cell: ({ row }) => {
+      return <span>{formatDateToDMY(row.original.requestDate)}</span>;
+    },
+  },
+  {
+    accessorKey: "totalReturnValue",
+    header: "Return Cost",
+    cell: ({ row }) => {
+      return <span>{row.getValue("totalReturnValue")}</span>;
+    },
+  }
 ];

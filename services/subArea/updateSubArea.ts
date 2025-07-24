@@ -16,7 +16,7 @@ function useUpdateSubArea() {
         try {
             setLoading(true);
             const response = await AxiosInstance.put<SubArea>(`/api/SubAreas/${subAreaId}`, subAreaData);
-            if (response.status !== 200) {
+            if (response.status !== 204) {
                 throw new Error('Failed to update sub-area');
             }
             return {

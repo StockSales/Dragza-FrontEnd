@@ -17,10 +17,10 @@ function useUploadCsv() {
                 },
             });
             if (response.status !== 200) {
-                throw new Error('Failed to upload CSV file');
+                throw new Error('Failed to upload file');
             }
         } catch (error) {
-            setError(error instanceof Error ? error.message : 'Failed to upload CSV file');
+            setError(error instanceof Error ? error.message : 'Failed to upload file');
         } finally {
             setLoading(false);
         }

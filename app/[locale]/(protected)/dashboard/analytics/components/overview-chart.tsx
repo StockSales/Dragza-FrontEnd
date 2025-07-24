@@ -34,7 +34,6 @@ const OverviewChart = ({
     },
     plotOptions: {
       radialBar: {
-
         dataLabels: {
           name: {
             fontSize: "22px",
@@ -43,28 +42,35 @@ const OverviewChart = ({
             fontSize: "16px",
             fontWeight: 700,
             color: mode === 'light' ? colors["default-600"] : colors["default-300"],
+            formatter: function (val: number) {
+              return val.toLocaleString(); // ✅ show value instead of %
+            },
           },
           total: {
             show: true,
             label: "Total",
             formatter: function (w: any) {
-              // Sum all values
               const sum = w.globals.seriesTotals.reduce((a: number, b: number) => a + b, 0);
               return sum.toLocaleString();
-            }
-          }
-        }
-      }
+            },
+          },
+        },
+      },
     },
     colors: [
       colors.primary,
       colors.info,
       colors.success,
-      colors.warning
+      colors.warning,
     ],
     labels: labels,
     tooltip: {
       theme: mode === "dark" ? "dark" : "light",
+      y: {
+        formatter: function (value: number) {
+          return value.toLocaleString(); // ✅ display raw value, not percent
+        },
+      },
     },
     padding: {
       top: 0,
@@ -73,6 +79,7 @@ const OverviewChart = ({
       left: 0,
     },
   };
+
   return (
     <Chart
       options={options}
