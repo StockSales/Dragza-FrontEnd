@@ -10,6 +10,7 @@ function useCreateProductPrice() {
         categoryId: string;
         purchasePrice: number;
         salesPrice: number;
+        stockQuantity: number;
     }): Promise<boolean> => {
         setLoading(true);
         setError(null);

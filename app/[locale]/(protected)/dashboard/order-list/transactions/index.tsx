@@ -130,7 +130,7 @@ export default function TransactionsTable (){
           <SearchInput
               data={allOrdersData ?? []}
               setFilteredData={setFilteredOrders}
-              filterKey="id"
+              filterKey="pharmacyName"
           />
 
           <div className="inline-flex flex-wrap items-center border border-solid divide-x divide-default-200 divide-solid rounded-md overflow-hidden">

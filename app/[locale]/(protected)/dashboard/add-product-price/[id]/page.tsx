@@ -56,6 +56,7 @@ function AddProductPrice() {
                 productId,
                 purchasePrice,
                 salesPrice,
+                stockQuantity: stock,
             });
 
             if (success) {
