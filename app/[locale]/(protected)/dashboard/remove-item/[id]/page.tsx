@@ -208,7 +208,7 @@ const RemoveItems: React.FC = () => {
                 </div>
               </div>
               <div className="space-y-1 text-xs text-default-600 uppercase">
-                <h4>Order Id: {order.id || 'N/A'}</h4>
+                {/*<h4>Order Id: {order.id || 'N/A'}</h4>*/}
                 <h4>Order Date: {order.orderDate ? new Date(order.orderDate).toLocaleString() : 'N/A'}</h4>
                 <h4>Status: {order.status !== undefined ? OrderStatus[order.status] : 'N/A'}</h4>
               </div>

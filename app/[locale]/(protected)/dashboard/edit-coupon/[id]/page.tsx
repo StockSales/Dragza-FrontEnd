@@ -145,6 +145,7 @@ const EditCoupon = () => {
                       <Label className="w-[150px] flex-none">Coupon Code</Label>
                       <Input
                           type="text"
+                          disabled
                           placeholder="e.g. SAVE10"
                           value={code}
                           onChange={(e) => setCode(e.target.value)}
@@ -153,7 +154,7 @@ const EditCoupon = () => {
 
                     <div className="flex items-center flex-wrap gap-4 md:gap-0">
                       <Label className="w-[150px] flex-none">Coupon Type</Label>
-                      <Select value={discountType} onValueChange={(e) => setDiscountType(e)}>
+                      <Select disabled={true} value={discountType} onValueChange={(e) => setDiscountType(e)}>
                         <SelectTrigger className="flex-1 cursor-pointer">
                           <SelectValue placeholder="Select Type" />
                         </SelectTrigger>

@@ -53,13 +53,13 @@ export const columns: ColumnDef<Price>[] = [
       return <span>{formatDateToDMY(row.original.creationDate)}</span>;
     },
   },
-  {
-    accessorKey: "inventoryUserName",
-    header: "InventoryUserName",
-    cell: ({ row }) => {
-      return <span>{row.getValue("inventoryUserName") || "N/A"}</span>;
-    },
-  },
+  // {
+  //   accessorKey: "inventoryUserName",
+  //   header: "InventoryUserName",
+  //   cell: ({ row }) => {
+  //     return <span>{row.getValue("inventoryUserName") || "N/A"}</span>;
+  //   },
+  // },
   // {
   //   accessorKey: "store",
   //   header: "Store",

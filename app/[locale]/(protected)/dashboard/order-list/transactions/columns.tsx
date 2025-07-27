@@ -14,11 +14,11 @@ import gettingAllOrders from "@/services/Orders/gettingAllOrders";
 import GenerateInvoiceButton from "@/components/partials/GenerateInvoiceButton/GenerateInvoiceButton";
 
 export const baseColumns = ({refresh} : {refresh: () => void}) : ColumnDef<Orders>[] => [
-  {
-    accessorKey: "id",
-    header: "Order",
-    cell: ({ row }) => <span>{row.getValue("id")}</span>,
-  },
+  // {
+  //   accessorKey: "id",
+  //   header: "Order",
+  //   cell: ({ row }) => <span>{row.getValue("id")}</span>,
+  // },
   {
     accessorKey: "pharmacyName",
     header: "Pharmacy Name",

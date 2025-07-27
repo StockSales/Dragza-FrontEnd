@@ -173,7 +173,7 @@ const OrderDetails = () => {
                             </div>
                         </div>
                         <div className="space-y-1 text-xs text-default-600 uppercase">
-                            <h4>Order Id: {currentOrder.id || 'N/A'}</h4>
+                            {/*<h4>Order Id: {currentOrder.id || 'N/A'}</h4>*/}
                             <h4>Order Date: {currentOrder.orderDate ? new Date(currentOrder.orderDate).toLocaleString() : 'N/A'}</h4>
                             <h4>Status: {currentOrder.status !== undefined ? OrderStatusLabel[currentOrder.status as OrderStatus] : 'N/A'}</h4>
                         </div>

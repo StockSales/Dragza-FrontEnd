@@ -63,11 +63,11 @@ export const columns: ColumnDef<any>[] = [
       return <span>{formatDateToDMY(row.original.requestDate)}</span>;
     },
   },
-  {
-    accessorKey: "totalReturnValue",
-    header: "Return Cost",
-    cell: ({ row }) => {
-      return <span>{row.getValue("totalReturnValue")}</span>;
-    },
-  }
+  // {
+  //   accessorKey: "totalReturnValue",
+  //   header: "Return Cost",
+  //   cell: ({ row }) => {
+  //     return <span>{row.getValue("totalReturnValue")}</span>;
+  //   },
+  // }
 ];
