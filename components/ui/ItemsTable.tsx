@@ -46,7 +46,7 @@ const ItemsTable: React.FC<ItemsTableProps> = ({ items, deletedItems, onDeleteIt
                         <Button
                             variant="ghost"
                             size="sm"
-                            onClick={() => onDeleteItem(data.productId, data.productName)}
+                            onClick={() => onDeleteItem(data?.id || '', data.productName)}
                             className="text-red-500 hover:text-red-700 hover:bg-red-50"
                         >
                             <Trash2 className="h-4 w-4" />
