@@ -9,4 +9,5 @@ export type Price = {
     creationDate: string;
     inventoryUserId: string;
     inventoryUserName: string;
+    stockQuantity?: string| number;
 }

@@ -34,16 +34,24 @@ const AddProduct = () => {
   const [categoryId, setCategoryId] = useState<string>("")
   const [photo, setPhoto] = useState<File | null>(null);
   const [activeIngredientId, setActiveIngredient] = useState<string>("")
+  const [activeIngredientSearch, setActiveIngredientSearch] = useState<string>("");
 
+  
+  
+  
   // getting all categories
   const {loading: gettingAllCatLoading, data, gettingAllCategories} = GetCategories()
-
+  
   // getting all active ingredients
   const {activeIngredients, loading: gettingAllActiveIngredientsLoading, error: gettingAllActiveIngredientsError, gettingAllActiveIngredients} = useGettingAllActiveIngredient()
-
+  
   // Create new Product
   const {createProduct, isCreated, loading: creatingProductLoading, error} = useCreateProduct()
-
+  
+  const filteredActiveIngredients = activeIngredients.filter((item: any) =>
+    item.name.toLowerCase().includes(activeIngredientSearch.toLowerCase())
+  );
+  
   // on submit
   const onSubmit = async () => {
     if (!name.trim()) {
@@ -210,20 +218,32 @@ const AddProduct = () => {
                   <SelectValue placeholder="Select Active Ingredient" />
                 </SelectTrigger>
                 <SelectContent>
+                  <div className="px-2 py-1">
+                    <Input
+                      placeholder="Search by name"
+                      value={activeIngredientSearch}
+                      onChange={(e) => setActiveIngredientSearch(e.target.value)}
+                      className="w-full"
+                    />
+                  </div>
                   <SelectGroup>
                     <SelectLabel>Active Ingredient</SelectLabel>
-                    {activeIngredients.map((item: any) => (
-                        <SelectItem
-                            key={item.id}
-                            value={item.id}
-                        >
+                    {filteredActiveIngredients.length > 0 ? (
+                      filteredActiveIngredients.map((item: any) => (
+                        <SelectItem key={item.id} value={item.id}>
                           {item.name}
                         </SelectItem>
-                    ))}
+                      ))
+                    ) : (
+                      <div className="px-2 py-1 text-sm text-muted-foreground">
+                        No results found.
+                      </div>
+                    )}
                   </SelectGroup>
                 </SelectContent>
               </Select>
             </div>
+
 
             <div className="flex items-center flex-wrap">
               <Label className="w-[150px] flex-none" htmlFor="desc">

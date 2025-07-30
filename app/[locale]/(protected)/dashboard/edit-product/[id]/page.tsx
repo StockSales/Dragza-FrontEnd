@@ -69,6 +69,13 @@ const EditProduct = () => {
   // function to get product by id
   const {getProductById, product, loading, error} = useGettingProductById()
 
+
+  const [activeIngredientSearch, setActiveIngredientSearch] = useState<string>("");
+
+  const filteredActiveIngredients = activeIngredients.filter((active: any) =>
+    active.name.toLowerCase().includes(activeIngredientSearch.toLowerCase())
+  );
+
   const table = useReactTable({
     data: product?.prices ?? [],
     columns: productColumns,
@@ -241,30 +248,40 @@ const EditProduct = () => {
               </Select>
             </div>
 
-              <div className="flex items-center flex-wrap gap-4 md:gap-0">
-                  <Label className="w-[150px] flex-none">Active Ingredient</Label>
-                  <Select
-                      value={formData.activeIngredientId}
-                      onValueChange={(value) => setFormData({ ...formData, activeIngredientId: value })}
-                  >
-                      <SelectTrigger className="flex-1 cursor-pointer">
-                          <SelectValue placeholder="Select Active Ingredient" />
-                      </SelectTrigger>
-                      <SelectContent>
-                          <SelectGroup>
-                              <SelectLabel>Active Ingredient</SelectLabel>
-                              {activeIngredients.map((active: any) => (
-                                  <SelectItem
-                                      key={active.id}
-                                      value={active.id}
-                                  >
-                                      {active.name}
-                                  </SelectItem>
-                              ))}
-                          </SelectGroup>
-                      </SelectContent>
-                  </Select>
-              </div>
+            <div className="flex items-center flex-wrap gap-4 md:gap-0">
+              <Label className="w-[150px] flex-none">Active Ingredient</Label>
+              <Select
+                value={formData.activeIngredientId}
+                onValueChange={(value) => setFormData({ ...formData, activeIngredientId: value })}
+              >
+                <SelectTrigger className="flex-1 cursor-pointer">
+                  <SelectValue placeholder="Select Active Ingredient" />
+                </SelectTrigger>
+                <SelectContent>
+                  <div className="px-2 py-1">
+                    <Input
+                      placeholder="Search Active Ingredient"
+                      value={activeIngredientSearch}
+                      onChange={(e) => setActiveIngredientSearch(e.target.value)}
+                      className="w-full"
+                    />
+                  </div>
+                  <SelectGroup>
+                    <SelectLabel>Active Ingredient</SelectLabel>
+                    {filteredActiveIngredients.length > 0 ? (
+                      filteredActiveIngredients.map((active: any) => (
+                        <SelectItem key={active.id} value={active.id}>
+                          {active.name}
+                        </SelectItem>
+                      ))
+                    ) : (
+                      <div className="px-2 py-1 text-sm text-muted-foreground">No results found</div>
+                    )}
+                  </SelectGroup>
+                </SelectContent>
+              </Select>
+            </div>
+
 
               <div className="flex items-center flex-wrap">
               <Label className="w-[150px] flex-none" htmlFor="Description">
@@ -280,79 +297,41 @@ const EditProduct = () => {
         </Card>
 
         {product?.prices && product?.prices.length > 0 && (
-          <Card>
-              <CardHeader className="border-b border-solid border-default-200 mb-6">
-                  <CardTitle>Product Price</CardTitle>
-              </CardHeader>
-              <CardContent className="space-y-4">
-                {product?.prices && product.prices.map((item: Price, index: number) => (
-                  <Accordion key={index} type="single" collapsible className="w-full">
-                    {
-                        product?.prices && product?.prices.map((item: Price, index) => (
-                          <AccordionItem
-                              value={`value-${index + 1}`}
-                              key={`changelog-${index}`}
-                              className="border-default-100 "
-                          >
-                            <AccordionTrigger className="cursor-pointer">
-                              <div>
-                                {item.productName}
-                                <span className="font-semibold text-xs text-default-400">
-                                - Published on {formatDateToDMY(item.creationDate)}
-                              </span>
-                              </div>
-                            </AccordionTrigger>
-                            <AccordionContent>
-                              {/*need to create Table for the price data*/}
-                              <div className="border border-solid border-default-200 rounded-lg overflow-hidden border-t-0">
-                                <Table>
-                                  <TableHeader className="bg-default-200">
-                                    {table.getHeaderGroups().map((headerGroup) => (
-                                        <TableRow key={headerGroup.id}>
-                                          {headerGroup.headers.map((header) => (
-                                              <TableHead className="text-left" key={header.id}>
-                                                {header.isPlaceholder
-                                                    ? null
-                                                    : flexRender(
-                                                        header.column.columnDef.header,
-                                                        header.getContext()
-                                                    )}
-                                              </TableHead>
-                                          ))}
-                                        </TableRow>
-                                    ))}
-                                  </TableHeader>
+  <Card>
+    <CardHeader className="border-b border-solid border-default-200 mb-6">
+      <CardTitle>Product Price</CardTitle>
+    </CardHeader>
+    <CardContent className="space-y-4">
+      <Accordion type="single" collapsible className="w-full">
+        {product.prices.map((item: Price, index: number) => (
+          <AccordionItem
+            value={`value-${index + 1}`}
+            key={`changelog-${index}`}
+            className="border-default-100"
+          >
+            <AccordionTrigger className="cursor-pointer">
+              <div>
+                {item.inventoryUserName}
+                <span className="font-semibold text-xs text-default-400">
+                  {" "}– Published on {formatDateToDMY(item.creationDate)}
+                </span>
+              </div>
+            </AccordionTrigger>
+            <AccordionContent>
+              {/* You can show details of this specific price item here */}
+              <div className="border border-solid border-default-200 rounded-lg overflow-hidden border-t-0 p-4 space-y-2">
+                <p><strong>Purchase Price:</strong> {item.purchasePrice}</p>
+                <p><strong>Sales Price:</strong> {item.salesPrice}</p>
+                <p><strong>Stock Quantity:</strong> {item.stockQuantity}</p>
+              </div>
+            </AccordionContent>
+          </AccordionItem>
+        ))}
+      </Accordion>
+    </CardContent>
+  </Card>
+)}
 
-                                  <TableBody>
-                                    {table.getRowModel().rows.length ? (
-                                        table.getRowModel().rows.map((row) => (
-                                            <TableRow key={row.id}>
-                                              {row.getVisibleCells().map((cell) => (
-                                                  <TableCell key={cell.id}>
-                                                    {flexRender(cell.column.columnDef.cell, cell.getContext())}
-                                                  </TableCell>
-                                              ))}
-                                            </TableRow>
-                                        ))
-                                    ) : (
-                                        <TableRow>
-                                          <TableCell colSpan={productColumns.length} className="text-center">
-                                            No results.
-                                          </TableCell>
-                                        </TableRow>
-                                    )}
-                                  </TableBody>
-                                </Table>
-                              </div>
-                            </AccordionContent>
-                          </AccordionItem>
-                      ))
-                    }
-                  </Accordion>
-                ))}
-              </CardContent>
-          </Card>
-        )}
       </div>
 
       <div className="col-span-12 flex justify-end">
