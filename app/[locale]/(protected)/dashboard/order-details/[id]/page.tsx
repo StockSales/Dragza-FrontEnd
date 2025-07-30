@@ -163,10 +163,13 @@ const OrderDetails = () => {
                                     <p>Inventory Manager:</p>
                                     <span>
                       {currentOrder.items?.length > 0
-                          ? currentOrder.items
-                              .map((item: any) => item?.inventoryName)
-                              .filter(Boolean)
-                              .join(', ')
+                          ? Array.from(
+                              new Set(
+                                  currentOrder.items
+                                      .map((item: any) => item?.inventoryName)
+                                      .filter(Boolean)
+                              )
+                          ).join(', ')
                           : 'N/A'}
                     </span>
                                 </div>

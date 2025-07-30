@@ -9,7 +9,7 @@ import {Link} from '@/i18n/routing';
 import {Orders} from "@/types/orders";
 import {formatDateToDMY} from "@/utils";
 import Cookies from "js-cookie";
-import ChangeInventoryUserDialog from "@/components/partials/ChangeInventoryUserDialog/ChangeInventoryUserDialog";
+// import ChangeInventoryUserDialog from "@/components/partials/ChangeInventoryUserDialog/ChangeInventoryUserDialog";
 import gettingAllOrders from "@/services/Orders/gettingAllOrders";
 import GenerateInvoiceButton from "@/components/partials/GenerateInvoiceButton/GenerateInvoiceButton";
 
@@ -99,6 +99,7 @@ export const baseColumns = ({refresh} : {refresh: () => void}) : ColumnDef<Order
         4: "bg-indigo-200 text-indigo-700", // Shipped
         5: "bg-green-200 text-green-700",   // Delivered
         6: "bg-emerald-200 text-emerald-700", // Completed
+        7: "bg-gray-200 text-gray-700",     // Reassign
       };
 
       // Map status numbers to display names
@@ -110,6 +111,7 @@ export const baseColumns = ({refresh} : {refresh: () => void}) : ColumnDef<Order
         4: "Shipped",
         5: "Delivered",
         6: "Completed",
+        7: "Reassigned",
       };
 
       const status = row.getValue<number>("status");
@@ -147,11 +149,11 @@ export const baseColumns = ({refresh} : {refresh: () => void}) : ColumnDef<Order
                 >
                   <Trash2 className="w-4 h-4" />
                 </Link>
-                <ChangeInventoryUserDialog
-                  orderId={row.original.id}
-                  inventoryUserId={row.original.items[0]?.inventoryUserId}
-                  onSuccess={() => refresh()}
-                />
+                {/*<ChangeInventoryUserDialog*/}
+                {/*  orderId={row.original.id}*/}
+                {/*  inventoryUserId={row.original.items[0]?.inventoryUserId}*/}
+                {/*  onSuccess={() => refresh()}*/}
+                {/*/>*/}
 
                 <GenerateInvoiceButton orderId={row.original.id}/>
 
