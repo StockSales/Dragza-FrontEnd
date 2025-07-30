@@ -51,7 +51,7 @@ const AddProduct = () => {
   const filteredActiveIngredients = activeIngredients.filter((item: any) =>
     item.name.toLowerCase().includes(activeIngredientSearch.toLowerCase())
   );
-  
+
   // on submit
   const onSubmit = async () => {
     if (!name.trim()) {
@@ -217,8 +217,8 @@ const AddProduct = () => {
                 <SelectTrigger className="flex-1 cursor-pointer">
                   <SelectValue placeholder="Select Active Ingredient" />
                 </SelectTrigger>
-                <SelectContent>
-                  <div className="px-2 py-1">
+                <SelectContent onCloseAutoFocus={(e) => e.preventDefault()}>
+                  <div className="px-2 py-1" tabIndex={-1}>
                     <Input
                       placeholder="Search by name"
                       value={activeIngredientSearch}
@@ -235,9 +235,9 @@ const AddProduct = () => {
                         </SelectItem>
                       ))
                     ) : (
-                      <div className="px-2 py-1 text-sm text-muted-foreground">
+                      <SelectItem value="null" className="px-2 py-1 text-sm text-muted-foreground">
                         No results found.
-                      </div>
+                      </SelectItem>
                     )}
                   </SelectGroup>
                 </SelectContent>

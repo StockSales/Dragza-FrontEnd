@@ -257,8 +257,8 @@ const EditProduct = () => {
                 <SelectTrigger className="flex-1 cursor-pointer">
                   <SelectValue placeholder="Select Active Ingredient" />
                 </SelectTrigger>
-                <SelectContent>
-                  <div className="px-2 py-1">
+                <SelectContent onCloseAutoFocus={(e) => e.preventDefault()}>
+                  <div className="px-2 py-1" tabIndex={-1}>
                     <Input
                       placeholder="Search Active Ingredient"
                       value={activeIngredientSearch}
@@ -275,12 +275,13 @@ const EditProduct = () => {
                         </SelectItem>
                       ))
                     ) : (
-                      <div className="px-2 py-1 text-sm text-muted-foreground">No results found</div>
+                      <SelectItem value="no-results" disabled>No results found</SelectItem>
                     )}
                   </SelectGroup>
                 </SelectContent>
               </Select>
             </div>
+
 
 
               <div className="flex items-center flex-wrap">
