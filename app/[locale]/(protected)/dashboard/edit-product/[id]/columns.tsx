@@ -30,9 +30,9 @@ export const productColumns: ColumnDef<Price>[] = [
             <span>{formatDateToDMY(row.getValue("creationDate"))}</span>
         ),
     },
-    {
-        accessorKey: "inventoryUserName",
-        header: "Inventory Username",
-        cell: ({ row }) => <span>{row.getValue("inventoryUserName") || "N/A"}</span>,
-    },
+    // {
+    //     accessorKey: "inventoryUserName",
+    //     header: "Inventory Username",
+    //     cell: ({ row }) => <span>{row.getValue("inventoryUserName") || "N/A"}</span>,
+    // },
 ];

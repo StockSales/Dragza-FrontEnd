@@ -14,6 +14,7 @@ import { OrderStatus } from "@/enum";
 import useRemoveItemsFromOrder from "@/services/Orders/removeItemsFromOrder";
 import {useRouter} from "@/i18n/routing";
 import {toast} from "sonner";
+import ChangeInventoryUserDialogBulk from "@/components/partials/ChangeInventoryUserDialog/ChangeInventoryUserDialog";
 
 const RemoveItems: React.FC = () => {
   const { loading: removeLoading, error: removeError, removeItemsFromOrder } = useRemoveItemsFromOrder()
@@ -22,6 +23,7 @@ const RemoveItems: React.FC = () => {
   const params = useParams();
   const id = params?.id as string;
   const { order, loading, error, getOrderById } = useGettingOrderById();
+  const [selectedItemIds, setSelectedItemIds] = useState<string[]>([]);
 
   const [items, setItems] = useState<OrderItem[]>([]);
   const [originalItems, setOriginalItems] = useState<OrderItem[]>([]);
@@ -160,11 +162,23 @@ const RemoveItems: React.FC = () => {
           </CardHeader>
           <CardContent>
             <div className="space-y-4">
+              <div className="flex justify-end mb-4">
+                <ChangeInventoryUserDialogBulk
+                    orderId={id}
+                    itemIds={selectedItemIds}
+                    onSuccess={() => {
+                      getOrderById(id); // re-fetch data
+                      setSelectedItemIds([]); // reset selection
+                    }}
+                />
+              </div>
+
               <div className="border border-solid border-default-400 rounded-md overflow-hidden">
                 <ItemsTable
                     items={items}
                     deletedItems={deletedItems}
                     onDeleteItem={handleDeleteItem}
+                    onSelectionChange={setSelectedItemIds}
                 />
               </div>
             </div>
@@ -181,28 +195,15 @@ const RemoveItems: React.FC = () => {
                   <div className="flex space-x-2 mt-2">
                     <p>Inventory Manager:</p>
                     <span>
-                      {items?.length > 0 ? (() => {
-                        const names = items
-                            .map((item: any) => item?.inventoryName)
-                            .filter(Boolean);
-
-                        const firstTwo = names.slice(0, 2).join(', ');
-                        const remaining = names.length > 2 ? (
-                            <span
-                                className="text-blue-600 cursor-pointer"
-                                title={names.join(', ')}
-                            >
-                            {' '}+{names.length - 2} more
-                            </span>
-                        ) : null;
-
-                        return (
-                            <>
-                              {firstTwo}
-                              {remaining}
-                            </>
-                        );
-                      })() : 'N/A'}
+                      {order.items?.length > 0
+                          ? Array.from(
+                              new Set(
+                                  order.items
+                                      .map((item: any) => item?.inventoryName)
+                                      .filter(Boolean)
+                              )
+                          ).join(', ')
+                          : 'N/A'}
                     </span>
                   </div>
                 </div>

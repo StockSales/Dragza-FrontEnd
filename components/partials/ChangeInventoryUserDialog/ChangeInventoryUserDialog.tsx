@@ -1,85 +1,69 @@
 "use client";
 
-import {Button} from "@/components/ui/button";
-import {Dialog, DialogContent, DialogFooter, DialogHeader, DialogTitle, DialogTrigger} from "@/components/ui/dialog";
+import { useEffect, useState } from "react";
+import { Button } from "@/components/ui/button";
+import {
+    Dialog, DialogContent, DialogFooter, DialogHeader, DialogTitle, DialogTrigger
+} from "@/components/ui/dialog";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+import { UserType } from "@/types/users";
+import { toast } from "sonner";
 import useGetUsersByRoleId from "@/services/users/GetUsersByRoleId";
-import {Edit2, Trash2} from "lucide-react";
-import {useEffect, useState} from "react";
-import {toast} from "sonner";
-import {Select, SelectContent, SelectItem, SelectTrigger, SelectValue} from "@/components/ui/select";
-import {UserType} from "@/types/users";
 import UseResignOrderInventoryUser from "@/services/Orders/ResignOrderInventoryUser";
 
 interface Props {
     orderId: string;
-    inventoryUserId: string | undefined;
+    itemIds: string[];
     onSuccess: () => void;
 }
 
-const ChangeInventoryUserDialog = ({
-                                       orderId,
-                                       inventoryUserId,
-                                       onSuccess,
-                                   }: Props) => {
-    // resigning Order to another inventory manager
-    const {loading, resignOrder, error} = UseResignOrderInventoryUser()
+const ChangeInventoryUserDialogBulk = ({ orderId, itemIds, onSuccess }: Props) => {
+    const { loading, resignOrder } = UseResignOrderInventoryUser();
+    const { users: inventoryManagers, getUsersByRoleId } = useGetUsersByRoleId();
 
     const [open, setOpen] = useState(false);
-    const [selectedUserId, setSelectedUserId] = useState(inventoryUserId);
+    const [selectedUserId, setSelectedUserId] = useState<string | undefined>();
 
-    const {
-        users: inventoryManagers,
-        getUsersByRoleId,
-    } = useGetUsersByRoleId();
-
-    // fetch on dialog open
-    const handleOpenChange = (isOpen: boolean) => {
-        setOpen(isOpen);
-        if (isOpen) getUsersByRoleId("1A5A84FB-23C3-4F9B-A122-4C5BC6C5CB2D");
-    };
+    useEffect(() => {
+        if (open) getUsersByRoleId("1A5A84FB-23C3-4F9B-A122-4C5BC6C5CB2D"); // Inventory Manager Role
+    }, [open]);
 
     const handleSubmit = async () => {
+        if (!selectedUserId) return toast.error("Select a manager first");
         try {
-            await resignOrder(orderId, selectedUserId as string);
-            toast.success("Inventory user updated successfully");
+
+            const { success, error } = await resignOrder(orderId, selectedUserId, itemIds);
+
+            if (!success) {
+                toast.error(error);
+                return;
+            }
+
+            toast.success("Inventory manager reassigned successfully");
             setOpen(false);
-            onSuccess(); // refetch the table
-        } catch (err) {
-            toast.error("Failed to update inventory user");
+            onSuccess();
+        } catch {
+            toast.error("Failed to reassign manager");
         }
     };
 
-    useEffect(() => {
-        console.log("selectedUserId", selectedUserId);
-        console.log("inventoryUserId", inventoryUserId);
-    }, [inventoryUserId]);
-
     return (
-        <Dialog open={open} onOpenChange={handleOpenChange}>
+        <Dialog open={open} onOpenChange={setOpen}>
             <DialogTrigger asChild>
-                <Button
-                    size="icon"
-                    variant="ghost"
-                    className="flex items-center p-2 border-b text-warning hover:text-white bg-blue-100 hover:bg-blue-300 duration-200 transition-all rounded-full cursor-pointer w-[32px] h-[32px]"
-                >
-                    <Edit2 className="w-4 h-4 text-blue-400 hover:text-white"/>
-                </Button>
+                <Button disabled={itemIds.length === 0}>Reassign Inventory Manager</Button>
             </DialogTrigger>
             <DialogContent>
                 <DialogHeader>
-                    <DialogTitle>Change Inventory Manager</DialogTitle>
+                    <DialogTitle>Reassign Inventory Manager</DialogTitle>
                 </DialogHeader>
                 <div className="my-4">
-                    <Select
-                        value={selectedUserId}
-                        onValueChange={(value) => setSelectedUserId(value)}
-                    >
+                    <Select onValueChange={(val) => setSelectedUserId(val)}>
                         <SelectTrigger>
-                            <SelectValue placeholder="Select a manager"/>
+                            <SelectValue placeholder="Select manager" />
                         </SelectTrigger>
                         <SelectContent>
                             {inventoryManagers.map((user: UserType) => (
-                                <SelectItem key={user.id} value={user.id.toString()}>
+                                <SelectItem key={user.id} value={user.id}>
                                     {user.userName}
                                 </SelectItem>
                             ))}
@@ -96,4 +80,4 @@ const ChangeInventoryUserDialog = ({
     );
 };
 
-export default ChangeInventoryUserDialog;
+export default ChangeInventoryUserDialogBulk;

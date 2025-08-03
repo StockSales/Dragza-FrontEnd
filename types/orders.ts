@@ -14,6 +14,7 @@ export type Orders = {
 }
 
 export interface OrderItem {
+    id?: string;
     productId: string;
     productName: string;
     productPriceId: string;

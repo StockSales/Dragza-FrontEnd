@@ -18,6 +18,7 @@ export enum OrderStatus {
     Shipped = 4,
     Delivered = 5,
     Completed = 6,
+    ReAssignTo= 7,
 }
 
 export const OrderStatusLabel: Record<OrderStatus, string> = {
@@ -28,6 +29,7 @@ export const OrderStatusLabel: Record<OrderStatus, string> = {
     [OrderStatus.Shipped]: "Shipped",
     [OrderStatus.Delivered]: "Delivered",
     [OrderStatus.Completed]: "Completed",
+    [OrderStatus.ReAssignTo]: "Reassigned",
 };
 
 export const StatusPathMap: Record<OrderStatus, string> = {
@@ -38,6 +40,7 @@ export const StatusPathMap: Record<OrderStatus, string> = {
     [OrderStatus.Shipped]: "ship",
     [OrderStatus.Delivered]: "deliver",
     [OrderStatus.Completed]: "complete",
+    [OrderStatus.ReAssignTo]: "reassign",
 };
 
 export enum ReturnStatus {
