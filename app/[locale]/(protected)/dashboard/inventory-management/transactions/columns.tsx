@@ -47,6 +47,13 @@ export const columns: ColumnDef<Price>[] = [
     }
   },
   {
+    accessorKey: "stockQuantity",
+    header: "Stock",
+    cell: ({ row }) => {
+      return <span>{row.original?.stockQuantity}</span>;
+    },
+  },
+  {
     accessorKey: "creationDate",
     header: "Creation Date",
     cell: ({ row }) => {

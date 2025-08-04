@@ -291,5 +291,42 @@
     "version": "النسخة",
     "changelog": "سجل التغيير",
     "versionHistory": "تاريخ النسخة"
+  },
+  "OrderList": {
+    "orderList": "قائمة الطلبات",
+    "orderDetails": "تفاصيل الطلب",
+    "orderNumber": "رقم الطلب",
+    "pharmacyName": "اسم الصيدلية",
+    "status": "الحالة",
+    "totalAmount": "المبلغ الإجمالي",
+    "deliverDate": "تاريخ التسليم",
+    "actions": "الإجراءات",
+    "viewDetails": "عرض التفاصيل",
+    "noOrdersFound": "لا توجد طلبات"
+  },
+  "OrderDetails": {
+    "orderDetails": "تفاصيل الطلب",
+    "orderNumber": "رقم الطلب",
+    "pharmacyName": "اسم الصيدلية",
+    "status": "الحالة",
+    "totalAmount": "المبلغ الإجمالي",
+    "deliverDate": "تاريخ التسليم",
+    "items": "العناصر",
+    "itemName": "اسم العنصر",
+    "quantity": "الكمية",
+    "price": "السعر",
+    "total": "المجموع",
+    "actions": "الإجراءات",
+    "removeItem": "إزالة العنصر",
+    "confirmRemoveItem": "هل أنت متأكد أنك تريد إزالة هذا العنصر؟",
+    "remove": "إزالة",
+    "cancel": "إلغاء",
+    "noItemsFound": "لا توجد عناصر في هذا الطلب",
+    "itemRemoved": "تمت إزالة العنصر بنجاح",
+    "errorRemovingItem": "حدث خطأ أثناء إزالة العنصر. يرجى المحاولة مرة أخرى.",
+    "orderNotFound": "الطلب غير موجود",
+    "loadingOrderDetails": "جارٍ تحميل تفاصيل الطلب...",
+    "orderDetailsLoaded": "تم تحميل تفاصيل الطلب بنجاح",
+    "orderNumberLabel": "رقم الطلب"
   }
 }

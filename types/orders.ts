@@ -11,6 +11,7 @@ export type Orders = {
     totalAmount: number
     deliverDate: string
     items: OrderItem[]
+    orderNumber?: string;
 }
 
 export interface OrderItem {

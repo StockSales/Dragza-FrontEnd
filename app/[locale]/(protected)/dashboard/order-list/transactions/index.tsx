@@ -38,6 +38,7 @@ import useGettingMyOrders from "@/services/Orders/gettingMyOrders";
 import {Button} from "@/components/ui/button";
 import {OrderStatus, OrderStatusLabel} from "@/enum";
 import useVendorOrder from "@/services/Orders/vendor-order";
+import { cn } from "@/lib/utils";
 
 // @ts-ignore
 export default function TransactionsTable (){
@@ -126,11 +127,11 @@ export default function TransactionsTable (){
 
   return (
       <Card className="w-full">
-        <div className="px-5 py-4 flex flex-col xl:flex-row items-center gap-4">
+        <div className="px-5 py-4 flex flex-col 2xl:flex-row items-center gap-4">
           <SearchInput
               data={allOrdersData ?? []}
               setFilteredData={setFilteredOrders}
-              filterKey="pharmacyName"
+              filterKey="orderNumber"
           />
 
           <div className="inline-flex flex-wrap items-center border border-solid divide-x divide-default-200 divide-solid rounded-md overflow-hidden">
@@ -213,6 +214,15 @@ export default function TransactionsTable (){
             >
               {OrderStatusLabel[OrderStatus.Completed]}
             </Button>
+            <Button
+                size="md"
+                variant={selectedStatus === OrderStatus.ReAssignTo ? "default" : "ghost"}
+                color="default"
+                className="ring-0 outline-0 hover:ring-0 hover:ring-offset-0 font-normal border-default-200 rounded-none cursor-pointer"
+                onClick={() => filterOrdersByStatus(OrderStatus.ReAssignTo)}
+            >
+              {OrderStatusLabel[OrderStatus.ReAssignTo]}
+            </Button>
           </div>
         </div>
 
@@ -244,16 +254,16 @@ export default function TransactionsTable (){
                     {table.getRowModel().rows?.length ? (
                         table.getRowModel().rows.map((row) => (
                             <TableRow
-                                key={row.id}
-                                data-state={row.getIsSelected() && "selected"}
+                              key={row.id}
+                              data-state={row.getIsSelected() && "selected"}
+                              className={cn(
+                                row.original.status === 7 && "line-through opacity-60 text-muted-foreground"
+                              )}
                             >
                               {row.getVisibleCells().map((cell) => (
-                                  <TableCell key={cell.id} className="h-[75px]">
-                                    {flexRender(
-                                        cell.column.columnDef.cell,
-                                        cell.getContext()
-                                    )}
-                                  </TableCell>
+                                <TableCell key={cell.id} className="h-[75px]">
+                                  {flexRender(cell.column.columnDef.cell, cell.getContext())}
+                                </TableCell>
                               ))}
                             </TableRow>
                         ))

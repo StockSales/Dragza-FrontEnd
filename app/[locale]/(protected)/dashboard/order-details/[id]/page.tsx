@@ -34,7 +34,7 @@ const OrderDetails = () => {
     const params = useParams();
     const router = useRouter();
 
-    const userType = Cookies.get("userType");
+    const userType = Cookies.get("userRole");
 
     const id: string | string[] | undefined = params?.id;
     const [order, setOrder] = useState<Orders | null>(null);

@@ -8,9 +8,10 @@ import useGenerateOrderInvoice from "@/services/invoices/generate/generateOrderI
 
 interface Props {
     orderId: string;
+    isDisabled?: boolean;
 }
 
-const GenerateInvoiceButton = ({ orderId }: Props) => {
+const GenerateInvoiceButton = ({ isDisabled, orderId }: Props) => {
     const {loading, generateOrderInvoice} = useGenerateOrderInvoice()
 
     const handleGenerateInvoice = async () => {
@@ -28,7 +29,7 @@ const GenerateInvoiceButton = ({ orderId }: Props) => {
         <div className="flex items-center gap-2">
             <Button
                 onClick={handleGenerateInvoice}
-                disabled={loading}
+                disabled={loading || isDisabled}
                 size="icon"
                 variant="ghost"
                 className="flex items-center p-2 border text-green-600 hover:text-white bg-green-100 hover:bg-green-400 transition-all rounded-full w-[32px] h-[32px]"

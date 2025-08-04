@@ -15,6 +15,7 @@ import useRemoveItemsFromOrder from "@/services/Orders/removeItemsFromOrder";
 import {useRouter} from "@/i18n/routing";
 import {toast} from "sonner";
 import ChangeInventoryUserDialogBulk from "@/components/partials/ChangeInventoryUserDialog/ChangeInventoryUserDialog";
+import { formatOrderDate } from "@/utils";
 
 const RemoveItems: React.FC = () => {
   const { loading: removeLoading, error: removeError, removeItemsFromOrder } = useRemoveItemsFromOrder()
@@ -41,6 +42,9 @@ const RemoveItems: React.FC = () => {
     if (order) {
       setItems(order.items);
       setOriginalItems(order.items);
+      console.log("Order items loaded:", order?.items);
+      console.log("Order items loaded:", order?.items[0]?.inventoryName);
+
     }
   }, [order]);
 
@@ -96,6 +100,7 @@ const RemoveItems: React.FC = () => {
       const { success, error } = await removeItemsFromOrder({
         orderId: id,
         itemId: itemId,
+        orderNumber: order.orderNumber,
       });
 
       if (success) {
@@ -191,7 +196,7 @@ const RemoveItems: React.FC = () => {
               <div>
                 <span className="block text-default-900 font-medium text-xl">Bill to:</span>
                 <div className="text-default-500 font-normal mt-4 text-sm">
-                  Pharmacy ID: {order.pharmacyName || 'N/A'}
+                  Pharmacy Name: {order.pharmacyName || 'N/A'}
                   <div className="flex space-x-2 mt-2">
                     <p>Inventory Manager:</p>
                     <span>
@@ -210,7 +215,7 @@ const RemoveItems: React.FC = () => {
               </div>
               <div className="space-y-1 text-xs text-default-600 uppercase">
                 {/*<h4>Order Id: {order.id || 'N/A'}</h4>*/}
-                <h4>Order Date: {order.orderDate ? new Date(order.orderDate).toLocaleString() : 'N/A'}</h4>
+              <h4>Order Date: {formatOrderDate(order.orderDate)}</h4>
                 <h4>Status: {order.status !== undefined ? OrderStatus[order.status] : 'N/A'}</h4>
               </div>
             </div>
