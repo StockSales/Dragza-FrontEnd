@@ -1,4 +1,5 @@
 import {BillSummaryProps, OrderItem} from "@/types/orders";
+import { useTranslations } from "next-intl";
 
 const BillSummary: React.FC<BillSummaryProps> = ({ items, deletedItems, defaultItems = [] }) => {
   const activeItems: OrderItem[] = items.filter((item: OrderItem) => !deletedItems?.includes(item?.productId || ''));
@@ -7,6 +8,8 @@ const BillSummary: React.FC<BillSummaryProps> = ({ items, deletedItems, defaultI
       0
   );
   const invoiceTotal: number = subtotal || 0;
+
+  const t = useTranslations("orderDetailsPage.billSummary");
 
   return (
       <div className="border border-solid border-default-400 rounded-md overflow-hidden">
@@ -17,16 +20,16 @@ const BillSummary: React.FC<BillSummaryProps> = ({ items, deletedItems, defaultI
               colSpan={3}
               className="bg-default-50 text-xs font-medium leading-4 uppercase text-default-600 text-left"
             >
-              <span className="block px-6 py-5 font-semibold">ITEM</span>
+              <span className="block px-6 py-5 font-semibold">{t("item")}</span>
             </th>
             <th className="bg-default-50 text-xs font-medium leading-4 uppercase text-default-600 text-left">
-              <span className="block px-6 py-5 font-semibold">QUANTITY</span>
+              <span className="block px-6 py-5 font-semibold">{t("quantity")}</span>
             </th>
             <th className="bg-default-50 text-xs font-medium leading-4 uppercase text-default-600 text-left">
-              <span className="block px-6 py-5 font-semibold">UNIT PRICE</span>
+              <span className="block px-6 py-5 font-semibold">{t("unitPrice")}</span>
             </th>
             <th className="bg-default-50 text-xs font-medium leading-4 uppercase text-default-600 text-left last:text-right">
-              <span className="block px-6 py-5 font-semibold">TOTAL</span>
+              <span className="block px-6 py-5 font-semibold">{t("total")}</span>
             </th>
           </tr>
           </thead>
@@ -77,13 +80,13 @@ const BillSummary: React.FC<BillSummaryProps> = ({ items, deletedItems, defaultI
           <div className="flex-1 min-w-[270px] space-y-3">
             <div className="flex justify-between">
             <span className="font-medium text-default-600 text-xs uppercase">
-              Subtotal:
+              {t("subtotal")}:
             </span>
               <span className="text-default-900">{subtotal.toFixed(2)} EGP</span>
             </div>
             <div className="flex justify-between border-solid border-t border-default-200 pt-3">
             <span className="font-medium text-default-600 text-xs uppercase">
-              Invoice total:
+              {t("totalAmount")}:
             </span>
               <span className="text-default-900 font-bold">{invoiceTotal.toFixed(2)} EGP</span>
             </div>

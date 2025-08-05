@@ -45,7 +45,7 @@ const ItemsTable = ({ items, deletedItems, onDeleteItem, onSelectionChange }: Pr
                     <td className="p-2">{item.productName}</td>
                     <td className="p-2">{item.inventoryName || "N/A"}</td>
                     <td className="p-2">
-                        <button onClick={() => onDeleteItem(item.productId, item.productName)}>
+                        <button onClick={() => onDeleteItem(item.id as string, item.productName)}>
                             <Trash2 className="text-red-500 hover:text-red-700 w-4 h-4" />
                         </button>
                     </td>

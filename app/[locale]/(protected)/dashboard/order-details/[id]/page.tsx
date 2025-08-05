@@ -24,12 +24,15 @@ import useGettingOrderById from "@/services/Orders/gettingOrderById";
 import useGettingInvoiceByOrderId from "@/services/invoices/order/gettingInvoiceByOrderId";
 import {Orders} from "@/types/orders";
 import BillSummary from "@/app/[locale]/(protected)/dashboard/remove-item/[id]/BillSummary";
-import loading from "@/app/[locale]/(protected)/app/projects/loading";
+// import loading from "@/app/[locale]/(protected)/app/projects/loading";
 import {Loader2} from "lucide-react";
 import useUpdateOrderStatus from "@/services/Orders/updateOrderStatus";
 import Cookies from "js-cookie";
+import { useTranslations } from "next-intl";
 
 const OrderDetails = () => {
+    const t= useTranslations("orderDetailsPage");
+
     // state for the order data
     const params = useParams();
     const router = useRouter();
@@ -75,7 +78,7 @@ const OrderDetails = () => {
     if (!currentOrder) {
         return (
             <div className="flex items-center justify-center h-full">
-                <p>No order data found</p>
+                <p>{t("noOrderFound")}</p>
             </div>
         );
     }
@@ -86,36 +89,36 @@ const OrderDetails = () => {
             {userType === "Inventory" && (
                 <Card>
                     <CardHeader>
-                        <CardTitle>Order Status</CardTitle>
+                        <CardTitle>{t("orderStatus")}</CardTitle>
                     </CardHeader>
                     <CardContent>
                         <div className="space-y-4">
                             <div className="flex items-center flex-wrap gap-4">
-                                <Label className="w-[150px] flex-none">Order Status: </Label>
+                                <Label className="w-[150px] flex-none">{t("orderStatus")}: </Label>
                                 <Select
                                     value={currentOrder?.status?.toString()}
                                     onValueChange={(value: string) => {
                                         const numericValue = Number(value) as OrderStatus;
                                         setOrder({ ...currentOrder, status: numericValue });
                                     }}
-                                >
+                                    >
                                     <SelectTrigger className="flex-1 cursor-pointer">
-                                        <SelectValue placeholder="Select Status" />
+                                        <SelectValue placeholder={t("updateStatus")} />
                                     </SelectTrigger>
                                     <SelectContent>
                                         <SelectGroup>
-                                            <SelectLabel>Status</SelectLabel>
-                                            {Object.values(OrderStatus)
-                                                .filter((value) => typeof value === "number")
-                                                .map((status) => (
-                                                    <SelectItem
-                                                        key={status}
-                                                        value={status.toString()}
-                                                        disabled={status === OrderStatus.Pending}
-                                                    >
-                                                        {OrderStatusLabel[status as OrderStatus]}
-                                                    </SelectItem>
-                                                ))}
+                                        <SelectLabel>{t("status")}</SelectLabel>
+                                        {Object.values(OrderStatus)
+                                            .filter((value) => typeof value === "number")
+                                            .map((status) => (
+                                            <SelectItem
+                                                key={status}
+                                                value={status.toString()}
+                                                disabled={status === OrderStatus.Pending}
+                                            >
+                                                {t(`statusOptions.${OrderStatus[status]}`)}
+                                            </SelectItem>
+                                            ))}
                                         </SelectGroup>
                                     </SelectContent>
                                 </Select>
@@ -136,14 +139,14 @@ const OrderDetails = () => {
                                         const result = await updateOrderStatus(id as string, currentOrder.status);
 
                                         if (result.success) {
-                                            toast.success("Order status updated successfully!");
+                                            toast.success(t("updateStatusSuccess"));
                                             getOrderById(id as string); // Refresh data
                                         } else {
-                                            toast.error(`Update failed: ${result.error}`);
+                                            toast.error(t("updateStatusError"));
                                         }
                                     }}
                                 >
-                                    {updateLoading ? <Loader2 className="h-4 w-4 animate-spin" /> : "Update"}
+                                    {updateLoading ? <Loader2 className="h-4 w-4 animate-spin" /> : t("updateStatus")}
                                 </Button>
                             </div>
                         </div>
@@ -156,11 +159,11 @@ const OrderDetails = () => {
                 <CardHeader className="border-0">
                     <div className="flex justify-between flex-wrap gap-4 items-center">
                         <div>
-                            <span className="block text-default-900 font-medium text-xl">Order Details</span>
+                            <span className="block text-default-900 font-medium text-xl">{t("orderDetails")}</span>
                             <div className="text-default-500 font-normal mt-4 text-sm">
-                                Pharmacy ID: {currentOrder.pharmacyName || 'N/A'}
+                                {t("pharmacyName")}: {currentOrder.pharmacyName || 'N/A'}
                                 <div className="flex space-x-2 mt-2">
-                                    <p>Inventory Manager:</p>
+                                    <p>{t("inventoryManger")}:</p>
                                     <span>
                       {currentOrder.items?.length > 0
                           ? Array.from(
@@ -177,8 +180,13 @@ const OrderDetails = () => {
                         </div>
                         <div className="space-y-1 text-xs text-default-600 uppercase">
                             {/*<h4>Order Id: {currentOrder.id || 'N/A'}</h4>*/}
-                            <h4>Order Date: {currentOrder.orderDate ? new Date(currentOrder.orderDate).toLocaleString() : 'N/A'}</h4>
-                            <h4>Status: {currentOrder.status !== undefined ? OrderStatusLabel[currentOrder.status as OrderStatus] : 'N/A'}</h4>
+                            <h4>{t("date")}: {currentOrder.orderDate ? new Date(currentOrder.orderDate).toLocaleString() : 'N/A'}</h4>
+                            <h4>
+                                {t("status")}:{" "}
+                                {currentOrder.status !== undefined
+                                    ? t(`statusOptions.${OrderStatus[currentOrder.status as OrderStatus]}`)
+                                    : "N/A"}
+                            </h4>
                         </div>
                     </div>
                 </CardHeader>

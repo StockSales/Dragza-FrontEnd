@@ -8,8 +8,8 @@ function useCreateProductPrice() {
     const createProductPrice = async (data: {
         productId: string;
         categoryId: string;
-        purchasePrice: number;
-        salesPrice: number;
+        purchasePrice: number | string;
+        salesPrice: number | string;
         stockQuantity: number;
     }): Promise<boolean> => {
         setLoading(true);

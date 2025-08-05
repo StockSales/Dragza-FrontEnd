@@ -13,15 +13,18 @@ import Cookies from "js-cookie";
 // import gettingAllOrders from "@/services/Orders/gettingAllOrders";
 import GenerateInvoiceButton from "@/components/partials/GenerateInvoiceButton/GenerateInvoiceButton";
 
-export const baseColumns = ({refresh} : {refresh: () => void}) : ColumnDef<Orders>[] => [
+export const baseColumns = ({refresh, t} : {
+  refresh: () => void;
+  t: (key: string) => string;
+}) : ColumnDef<Orders>[] => [
   {
     accessorKey: "orderNumber",
-    header: "Code",
+    header: t("orderNumber"),
     cell: ({ row }) => <span>{row.getValue("orderNumber") || "N/A"}</span>,
   },
   {
     accessorKey: "pharmacyName",
-    header: "Pharmacy Name",
+    header: t("pharmacyName"),
     cell: ({ row }) => {
       const name = row.original.pharmacyName;
       return (
@@ -35,7 +38,7 @@ export const baseColumns = ({refresh} : {refresh: () => void}) : ColumnDef<Order
   },
   {
     accessorKey: "inventoryName",
-    header: "Inventory Username",
+    header: t("inventoryName"),
     cell: ({ row }) => {
       const items = row.original.items || [];
 
@@ -74,23 +77,22 @@ export const baseColumns = ({refresh} : {refresh: () => void}) : ColumnDef<Order
   },
   {
     accessorKey: "orderDate",
-    header: "Order Date",
+    header: t("date"),
     cell: ({ row }) => {
       return <span>{formatDateToDMY(row.original.orderDate)}</span>;
     },
   },
   {
     accessorKey: "totalAmount",
-    header: "Order Cost",
+    header: t("totalAmount"),
     cell: ({ row }) => {
       return <span>{row.getValue("totalAmount")}</span>;
     },
   },
   {
     accessorKey: "status",
-    header: "Order Status",
+    header: t("orderStatus"),
     cell: ({ row }) => {
-      // Map status numbers to class names
       const statusColors: Record<number, string> = {
         0: "bg-yellow-200 text-yellow-700", // Pending
         1: "bg-blue-200 text-blue-700",     // Approved
@@ -102,33 +104,34 @@ export const baseColumns = ({refresh} : {refresh: () => void}) : ColumnDef<Order
         7: "bg-gray-200 text-gray-700",     // Reassign
       };
 
-      // Map status numbers to display names
-      const statusLabels: Record<number, string> = {
-        0: "Pending",
-        1: "Approved",
-        2: "Rejected",
-        3: "Prepared",
-        4: "Shipped",
-        5: "Delivered",
-        6: "Completed",
-        7: "Reassigned",
-      };
-
       const status = row.getValue<number>("status");
       const statusStyle = statusColors[status] || "bg-gray-200 text-gray-700";
-      const statusLabel = statusLabels[status] || "Unknown";
+
+      const statusTranslationKeys: Record<number, string> = {
+        0: "statusCode.pending",
+        1: "statusCode.approved",
+        2: "statusCode.rejected",
+        3: "statusCode.prepared",
+        4: "statusCode.shipped",
+        5: "statusCode.delivered",
+        6: "statusCode.completed",
+        7: "statusCode.reassigned",
+      };
+
+
+      const statusLabel = t(statusTranslationKeys[status] ?? "status.unknown");
 
       return (
-          <Badge className={cn("rounded-full px-5 py-1 text-sm", statusStyle)}>
-            {statusLabel}
-          </Badge>
+        <Badge className={cn("rounded-full px-5 py-1 text-sm", statusStyle)}>
+          {statusLabel}
+        </Badge>
       );
     },
   },
   {
     id: "actions",
     accessorKey: "action",
-    header: "Actions",
+    header: t("Actions"),
     enableHiding: false,
     cell: ({ row }) => {
       const userRole = Cookies.get("userRole");
