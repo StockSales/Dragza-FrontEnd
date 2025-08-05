@@ -569,5 +569,31 @@
     "Cash": "Cash",
     "Credit": "Credit",
     "noBalanceFound": "No balance information available."
+  },
+  "ReturnList": {
+    "returnList": "Return List",
+    "returnDetails": "Return Details",
+    "returnNumber": "Return Number",
+    "pharmacyName": "Pharmacy Name",
+    "inventoryName": "Inventory Name",
+    "date": "Date",
+    "unknown": "Unknown",
+    "status": "Status",
+    "totalAmount": "Total Amount",
+    "deliverDate": "Deliver Date",
+    "items": "Items",
+    "itemName": "Item Name",
+    "quantity": "Quantity",
+    "price": "Price",
+    "total": "Total",
+    "actions": "Actions",
+    "returnDate": "Return Date",
+    "viewDetails": "View Details",
+    "noReturnsFound": "No returns found.",
+    "statusCode": {
+      "pending": "Pending",
+      "approved": "Approved",
+      "rejected": "Rejected"
+    }
   }
 }

@@ -530,5 +530,31 @@
     "Cash": "نقدي",
     "Credit": "ائتمان",
     "noBalanceFound": "لا توجد معلومات رصيد متاحة."
+  }, 
+  "ReturnList": {
+    "returnList": "قائمة الإرجاع",
+    "returnDetails": "تفاصيل الإرجاع",
+    "returnNumber": "رقم الإرجاع",
+    "pharmacyName": "اسم الصيدلية",
+    "inventoryName": "اسم المخزن",
+    "date": "التاريخ",
+    "unknown": "غير معروف",
+    "status": "الحالة",
+    "totalAmount": "المبلغ الإجمالي",
+    "deliverDate": "تاريخ التسليم",
+    "items": "العناصر",
+    "itemName": "اسم العنصر",
+    "quantity": "الكمية",
+    "price": "السعر",
+    "total": "المجموع",
+    "actions": "الإجراءات",
+    "returnDate": "تاريخ الإرجاع",
+    "viewDetails": "عرض التفاصيل",
+    "noReturnsFound": "لا توجد إرجاعات.",
+    "statusCode": {
+      "pending": "قيد الانتظار",
+      "approved": "موافق عليه",
+      "rejected": "مرفوض"
+    }
   }
 }

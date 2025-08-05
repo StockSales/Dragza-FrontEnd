@@ -2,24 +2,26 @@ import { ColumnDef } from "@tanstack/react-table";
 import {formatDateToDMY} from "@/utils";
 
 
-export const columns: ColumnDef<any>[] = [
+export const basecolumns = ({t} : {
+  t: (key: string) => string;
+}) : ColumnDef<any>[] => [
   {
     accessorKey: "pharmacyName",
-    header: "Pharmacy Name",
+    header: t("pharmacyName"),
     cell: ({ row }) => {
       const name = row.original.pharmacyName;
       return (
           <div className="font-medium text-card-foreground/80">
-          <span className="text-sm text-default-600 whitespace-nowrap">
-            {name ?? "Unknown User"}
-          </span>
+            <span className="text-sm text-default-600 whitespace-nowrap">
+              {name ?? t("unknown")}
+            </span>
           </div>
       );
     },
   },
   {
     accessorKey: "inventoryName",
-    header: "Inventory Username",
+    header: t("inventoryName"),
     cell: ({ row }) => {
       const items = row.original.items || [];
 
@@ -27,13 +29,13 @@ export const columns: ColumnDef<any>[] = [
       const names = Array.from(
           new Set(
               items
-                  .map((item: any) => item.inventoryName)
-                  .filter(Boolean)
+                .map((item: any) => item.inventoryName)
+                .filter(Boolean)
           )
       );
 
       if (names.length === 0) {
-        return <span>John Doe</span>;
+        return <span>{t("unknown")}</span>;
       }
 
       const firstTwo = names.slice(0, 2);
@@ -58,7 +60,7 @@ export const columns: ColumnDef<any>[] = [
   },
   {
     accessorKey: "requestDate",
-    header: "Return Date",
+    header: t("returnDate"),
     cell: ({ row }) => {
       return <span>{formatDateToDMY(row.original.requestDate)}</span>;
     },

@@ -12,7 +12,7 @@ import {
   getSortedRowModel,
   useReactTable,
 } from "@tanstack/react-table";
-import { columns } from "./columns";
+import { basecolumns } from "./columns";
 import { Input } from "@/components/ui/input";
 
 import {
@@ -41,6 +41,7 @@ import {useEffect, useState} from "react";
 import {Loader2} from "lucide-react";
 import useVendorReturns from "@/services/returns/VendorReturns";
 import Cookies from "js-cookie";
+import { useTranslations } from "next-intl";
 
 const TransactionsTable = () => {
   const [sorting, setSorting] = React.useState<SortingState>([]);
@@ -73,6 +74,10 @@ const TransactionsTable = () => {
       setFilteredData(newData);
     }
   };
+
+  const t = useTranslations("ReturnList")
+
+  const columns = basecolumns({t}); 
 
   const table = useReactTable({
     data: filteredData || [],
