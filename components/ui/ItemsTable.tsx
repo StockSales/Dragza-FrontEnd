@@ -2,6 +2,7 @@ import { useEffect, useState } from "react";
 import { Trash2 } from "lucide-react";
 import { Checkbox } from "@/components/ui/checkbox";
 import { OrderItem } from "@/types/orders";
+import { useTranslations } from "next-intl";
 
 interface Props {
     items: OrderItem[];
@@ -11,6 +12,7 @@ interface Props {
 }
 
 const ItemsTable = ({ items, deletedItems, onDeleteItem, onSelectionChange }: Props) => {
+    const t = useTranslations("removeItem");
     const [selectedIds, setSelectedIds] = useState<string[]>([]);
 
     const toggleSelection = (id: string) => {
@@ -28,9 +30,9 @@ const ItemsTable = ({ items, deletedItems, onDeleteItem, onSelectionChange }: Pr
             <thead className="bg-gray-100">
             <tr>
                 <th className="p-2"><Checkbox disabled /></th>
-                <th className="p-2">Product</th>
-                <th className="p-2">Inventory Manager</th>
-                <th className="p-2">Actions</th>
+                <th className="p-2">{t("Product")}</th>
+                <th className="p-2">{t("inventoryManager")}</th>
+                <th className="p-2">{t("Actions")}</th>
             </tr>
             </thead>
             <tbody>
@@ -45,7 +47,7 @@ const ItemsTable = ({ items, deletedItems, onDeleteItem, onSelectionChange }: Pr
                     <td className="p-2">{item.productName}</td>
                     <td className="p-2">{item.inventoryName || "N/A"}</td>
                     <td className="p-2">
-                        <button onClick={() => onDeleteItem(item.productId, item.productName)}>
+                        <button onClick={() => onDeleteItem(item.id as string, item.productName)}>
                             <Trash2 className="text-red-500 hover:text-red-700 w-4 h-4" />
                         </button>
                     </td>

@@ -10,6 +10,7 @@ import { UserType } from "@/types/users";
 import { toast } from "sonner";
 import useGetUsersByRoleId from "@/services/users/GetUsersByRoleId";
 import UseResignOrderInventoryUser from "@/services/Orders/ResignOrderInventoryUser";
+import { useTranslations } from "next-intl";
 
 interface Props {
     orderId: string;
@@ -18,6 +19,7 @@ interface Props {
 }
 
 const ChangeInventoryUserDialogBulk = ({ orderId, itemIds, onSuccess }: Props) => {
+    const t = useTranslations("removeItem");
     const { loading, resignOrder } = UseResignOrderInventoryUser();
     const { users: inventoryManagers, getUsersByRoleId } = useGetUsersByRoleId();
 
@@ -39,27 +41,27 @@ const ChangeInventoryUserDialogBulk = ({ orderId, itemIds, onSuccess }: Props) =
                 return;
             }
 
-            toast.success("Inventory manager reassigned successfully");
+            toast.success(t("inventoryManagerChangedSuccessfully"));
             setOpen(false);
             onSuccess();
         } catch {
-            toast.error("Failed to reassign manager");
+            toast.error(t("inventoryManagerChangeError"));
         }
     };
 
     return (
         <Dialog open={open} onOpenChange={setOpen}>
             <DialogTrigger asChild>
-                <Button disabled={itemIds.length === 0}>Reassign Inventory Manager</Button>
+                <Button disabled={itemIds.length === 0}>{t("changeInventoryUserButton")}</Button>
             </DialogTrigger>
             <DialogContent>
                 <DialogHeader>
-                    <DialogTitle>Reassign Inventory Manager</DialogTitle>
+                    <DialogTitle>{t("changeInventoryUserButton")}</DialogTitle>
                 </DialogHeader>
                 <div className="my-4">
                     <Select onValueChange={(val) => setSelectedUserId(val)}>
                         <SelectTrigger>
-                            <SelectValue placeholder="Select manager" />
+                            <SelectValue placeholder={t("selectInventoryManagerPlaceholder")} />
                         </SelectTrigger>
                         <SelectContent>
                             {inventoryManagers.map((user: UserType) => (
@@ -72,7 +74,7 @@ const ChangeInventoryUserDialogBulk = ({ orderId, itemIds, onSuccess }: Props) =
                 </div>
                 <DialogFooter>
                     <Button onClick={handleSubmit} disabled={loading}>
-                        {loading ? "Updating..." : "Update"}
+                        {loading ? `${t("updating")}...` : t("update")}
                     </Button>
                 </DialogFooter>
             </DialogContent>

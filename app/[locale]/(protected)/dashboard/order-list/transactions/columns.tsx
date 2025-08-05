@@ -10,18 +10,21 @@ import {Orders} from "@/types/orders";
 import {formatDateToDMY} from "@/utils";
 import Cookies from "js-cookie";
 // import ChangeInventoryUserDialog from "@/components/partials/ChangeInventoryUserDialog/ChangeInventoryUserDialog";
-import gettingAllOrders from "@/services/Orders/gettingAllOrders";
+// import gettingAllOrders from "@/services/Orders/gettingAllOrders";
 import GenerateInvoiceButton from "@/components/partials/GenerateInvoiceButton/GenerateInvoiceButton";
 
-export const baseColumns = ({refresh} : {refresh: () => void}) : ColumnDef<Orders>[] => [
-  // {
-  //   accessorKey: "id",
-  //   header: "Order",
-  //   cell: ({ row }) => <span>{row.getValue("id")}</span>,
-  // },
+export const baseColumns = ({refresh, t} : {
+  refresh: () => void;
+  t: (key: string) => string;
+}) : ColumnDef<Orders>[] => [
+  {
+    accessorKey: "orderNumber",
+    header: t("orderNumber"),
+    cell: ({ row }) => <span>{row.getValue("orderNumber") || "N/A"}</span>,
+  },
   {
     accessorKey: "pharmacyName",
-    header: "Pharmacy Name",
+    header: t("pharmacyName"),
     cell: ({ row }) => {
       const name = row.original.pharmacyName;
       return (
@@ -35,7 +38,7 @@ export const baseColumns = ({refresh} : {refresh: () => void}) : ColumnDef<Order
   },
   {
     accessorKey: "inventoryName",
-    header: "Inventory Username",
+    header: t("inventoryName"),
     cell: ({ row }) => {
       const items = row.original.items || [];
 
@@ -49,7 +52,7 @@ export const baseColumns = ({refresh} : {refresh: () => void}) : ColumnDef<Order
       );
 
       if (names.length === 0) {
-        return <span>John Doe</span>;
+        return <span>N/A</span>;
       }
 
       const firstTwo = names.slice(0, 2);
@@ -74,23 +77,22 @@ export const baseColumns = ({refresh} : {refresh: () => void}) : ColumnDef<Order
   },
   {
     accessorKey: "orderDate",
-    header: "Order Date",
+    header: t("date"),
     cell: ({ row }) => {
       return <span>{formatDateToDMY(row.original.orderDate)}</span>;
     },
   },
   {
     accessorKey: "totalAmount",
-    header: "Order Cost",
+    header: t("totalAmount"),
     cell: ({ row }) => {
       return <span>{row.getValue("totalAmount")}</span>;
     },
   },
   {
     accessorKey: "status",
-    header: "Order Status",
+    header: t("orderStatus"),
     cell: ({ row }) => {
-      // Map status numbers to class names
       const statusColors: Record<number, string> = {
         0: "bg-yellow-200 text-yellow-700", // Pending
         1: "bg-blue-200 text-blue-700",     // Approved
@@ -102,60 +104,80 @@ export const baseColumns = ({refresh} : {refresh: () => void}) : ColumnDef<Order
         7: "bg-gray-200 text-gray-700",     // Reassign
       };
 
-      // Map status numbers to display names
-      const statusLabels: Record<number, string> = {
-        0: "Pending",
-        1: "Approved",
-        2: "Rejected",
-        3: "Prepared",
-        4: "Shipped",
-        5: "Delivered",
-        6: "Completed",
-        7: "Reassigned",
-      };
-
       const status = row.getValue<number>("status");
       const statusStyle = statusColors[status] || "bg-gray-200 text-gray-700";
-      const statusLabel = statusLabels[status] || "Unknown";
+
+      const statusTranslationKeys: Record<number, string> = {
+        0: "statusCode.pending",
+        1: "statusCode.approved",
+        2: "statusCode.rejected",
+        3: "statusCode.prepared",
+        4: "statusCode.shipped",
+        5: "statusCode.delivered",
+        6: "statusCode.completed",
+        7: "statusCode.reassigned",
+      };
+
+
+      const statusLabel = t(statusTranslationKeys[status] ?? "status.unknown");
 
       return (
-          <Badge className={cn("rounded-full px-5 py-1 text-sm", statusStyle)}>
-            {statusLabel}
-          </Badge>
+        <Badge className={cn("rounded-full px-5 py-1 text-sm", statusStyle)}>
+          {statusLabel}
+        </Badge>
       );
     },
   },
   {
     id: "actions",
     accessorKey: "action",
-    header: "Actions",
+    header: t("Actions"),
     enableHiding: false,
     cell: ({ row }) => {
       const userRole = Cookies.get("userRole");
       const isAdmin = userRole == "Admin";
       return (
         <div className="flex items-center gap-1">
-          <Link
-            href={`/dashboard/order-details/${row.original.id}`}
-            className="flex items-center p-2 border-b text-warning hover:text-warning-foreground bg-warning/20 hover:bg-warning duration-200 transition-all rounded-full cursor-pointer"
-          >
-            <Eye className="w-4 h-4" />
-          </Link>
+          {row.original.status === 7 ? (
+            <div
+              className="flex items-center p-2 text-destructive bg-destructive/20 opacity-50 rounded-full cursor-not-allowed"
+              title="Action disabled for reassigned orders"
+            >
+              <Eye className="w-4 h-4" />
+            </div>
+          ) : (
+            <Link
+              href={`/dashboard/order-details/${row.original.id}`}
+              className="flex items-center p-2 border-b text-warning hover:text-warning-foreground bg-warning/20 hover:bg-warning duration-200 transition-all rounded-full cursor-pointer"
+            >
+              <Eye className="w-4 h-4" />
+            </Link>
+          )}
           {isAdmin && (
               <>
-                <Link
+                {row.original.status === 7 ? (
+                  <div
+                    className="flex items-center p-2 text-destructive bg-destructive/20 opacity-50 rounded-full cursor-not-allowed"
+                    title="Action disabled for reassigned orders"
+                  >
+                    <Trash2 className="w-4 h-4" />
+                  </div>
+                ) : (
+                  <Link
                     href={`/dashboard/remove-item/${row.original.id}`}
                     className="flex items-center p-2 text-destructive bg-destructive/40 duration-200 transition-all hover:bg-destructive/80 hover:text-destructive-foreground rounded-full cursor-pointer"
-                >
-                  <Trash2 className="w-4 h-4" />
-                </Link>
+                  >
+                    <Trash2 className="w-4 h-4" />
+                  </Link>
+                )}
+
                 {/*<ChangeInventoryUserDialog*/}
                 {/*  orderId={row.original.id}*/}
                 {/*  inventoryUserId={row.original.items[0]?.inventoryUserId}*/}
                 {/*  onSuccess={() => refresh()}*/}
                 {/*/>*/}
 
-                <GenerateInvoiceButton orderId={row.original.id}/>
+                <GenerateInvoiceButton isDisabled={row.original.status == 7} orderId={row.original.id}/>
 
               </>
           )}

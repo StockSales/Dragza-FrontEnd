@@ -20,8 +20,11 @@ import useDepositCash from "@/services/balance/deposit-cash";
 import useGettingAllMainAreas from "@/services/area/gettingAllMainAreas";
 import {Controller} from "react-hook-form";
 import useUpdateUser from "@/services/users/updateUser";
+import { useTranslations } from "next-intl";
 
 const EditUser = () => {
+    const t = useTranslations("EditUser");
+
   // Params
   const params = useParams();
   const id = params?.id;
@@ -77,15 +80,13 @@ const EditUser = () => {
         try {
             const {success, error} =  await updateUser(formData, id);
             if (success) {
-                toast.success("User Updated", { description: "User updated successfully." });
+                toast.success(t("updateUser"), { description: t("userUpdated") });
                 await getUserById(id)
             } else if (error) {
                 throw new Error(error)
             }
         } catch (err) {
-            toast.error("Update Failed", {
-                description: err instanceof Error ? err.message : "Something went wrong.",
-            });
+            toast.error(t("updateFailed"));
         }
     };
 
@@ -94,15 +95,13 @@ const EditUser = () => {
         try {
             const {success, error} =  await deactivateUser(id);
             if (success) {
-                toast.success("User Updated", { description: "User updated successfully." });
+                toast.success(t("updateUser"), { description: t("userUpdated") });
                 await getUserById(id)
             } else if (error) {
                 throw new Error(error)
             }
         } catch (err) {
-            toast.error("Update Failed", {
-                description: err instanceof Error ? err.message : "Something went wrong.",
-            });
+            toast.error(t("updateFailed"));
         }
     };
 
@@ -111,7 +110,7 @@ const EditUser = () => {
         try {
             const {success, error} =  await depositCash({amount, description}, id);
             if (success) {
-                toast.success("Deposit Cash", { description: "Deposit cash successfully." });
+                toast.success(t("depositCash"), { description: t("depositAmountSuccess") });
                 setDescription("")
                 setAmount("");
                 getBalanceForUser(id); // Refresh balance after deposit
@@ -119,9 +118,7 @@ const EditUser = () => {
                 throw new Error(error)
             }
         } catch (err) {
-            toast.error("Deposit Cash Failed", {
-                description: err instanceof Error ? err.message : "Something went wrong.",
-            });
+            toast.error(t("depositAmountError"));
         }
     };
 
@@ -156,12 +153,12 @@ const EditUser = () => {
               <div className="col-span-12 space-y-6">
                   <Card>
                       <CardHeader className="border-b border-solid border-default-200 mb-6">
-                          <CardTitle>User Information</CardTitle>
+                          <CardTitle>{t("userInformation")}</CardTitle>
                       </CardHeader>
 
                       <CardContent className="space-y-4">
                           <div className="flex items-center flex-wrap">
-                              <Label className="w-[150px] flex-none" htmlFor="userName">Username</Label>
+                              <Label className="w-[150px] flex-none" htmlFor="userName">{t("userName")}</Label>
                               <Input
                                   id="userName"
                                   className="flex-1"
@@ -171,7 +168,7 @@ const EditUser = () => {
                           </div>
 
                           <div className="flex items-center flex-wrap">
-                              <Label className="w-[150px] flex-none" htmlFor="email">Email</Label>
+                              <Label className="w-[150px] flex-none" htmlFor="email">{t("email")}</Label>
                               <Input
                                   id="email"
                                   className="flex-1"
@@ -181,7 +178,7 @@ const EditUser = () => {
                           </div>
 
                           <div className="flex items-center flex-wrap">
-                              <Label className="w-[150px] flex-none" htmlFor="phone">Phone</Label>
+                              <Label className="w-[150px] flex-none" htmlFor="phone">{t("phoneNumber")}</Label>
                               <Input
                                   id="phone"
                                   className="flex-1"
@@ -191,7 +188,7 @@ const EditUser = () => {
                           </div>
 
                           <div className="flex items-center flex-wrap">
-                              <Label className="w-[150px] flex-none" htmlFor="business">Business Name</Label>
+                              <Label className="w-[150px] flex-none" htmlFor="business">{t("businessName")}</Label>
                               <Input
                                   id="business"
                                   className="flex-1"
@@ -201,7 +198,7 @@ const EditUser = () => {
                           </div>
 
                           <div className="space-y-2 flex items-center flex-wrap">
-                              <Label className="w-[150px] flex-none" htmlFor="region">Region</Label>
+                              <Label className="w-[150px] flex-none" htmlFor="region">{t("Region")}</Label>
                               <Select value={region} onValueChange={(value) => setRegion(value)}>
                                   <SelectTrigger className="flex-1 cursor-pointer">
                                       <SelectValue placeholder="Select region" />
@@ -218,7 +215,7 @@ const EditUser = () => {
                           </div>
 
                           <div className="flex items-center flex-wrap">
-                              <Label className="w-[150px] flex-none" htmlFor="minOrder">Min Order</Label>
+                              <Label className="w-[150px] flex-none" htmlFor="minOrder">{t("minOrderAmount")}</Label>
                               <Input
                                   id="minOrder"
                                   type="number"
@@ -238,7 +235,7 @@ const EditUser = () => {
                                           </div>
                                       </div>
                                   ) : (
-                                      "Update user"
+                                      t("updateUser")
                                   )}
                               </Button>
                           </div>
@@ -247,18 +244,18 @@ const EditUser = () => {
 
                   <Card>
                       <CardHeader className="border-b border-solid border-default-200 mb-6">
-                          <CardTitle>Profile Activation</CardTitle>
+                          <CardTitle> {t("ProfileActivation")} </CardTitle>
                       </CardHeader>
                       <CardContent>
                           <div className="flex items-center flex-wrap">
-                              <Label className="w-[150px] flex-none" htmlFor="active">Active Status</Label>
+                              <Label className="w-[150px] flex-none" htmlFor="active">{t("active")}</Label>
                               <Select value={activate ? "true" : "false"} onValueChange={(value) => setActivate(value === "true")}>
                                   <SelectTrigger className="flex-1 cursor-pointer">
                                       <SelectValue placeholder="Select status" />
                                   </SelectTrigger>
                                   <SelectContent>
-                                      <SelectItem value="true">Active</SelectItem>
-                                      <SelectItem value="false">Inactive</SelectItem>
+                                      <SelectItem value="true">{t("activate")}</SelectItem>
+                                      <SelectItem value="false">{t("deactivate")}</SelectItem>
                                   </SelectContent>
                               </Select>
                           </div>
@@ -272,7 +269,7 @@ const EditUser = () => {
                                           </div>
                                       </div>
                                   ) : (
-                                      "Change user Activation"
+                                    t("changeUserActivation")
                                   )}
                               </Button>
                           </div>
@@ -289,7 +286,7 @@ const EditUser = () => {
         ) : (
             <Card>
                 <CardHeader className="border-b border-solid border-default-200 mb-6 mt-4">
-                    <CardTitle>Balance Information</CardTitle>
+                    <CardTitle>{t("BalanceInformation")}</CardTitle>
                 </CardHeader>
 
                 <CardContent className="space-y-4">
@@ -298,17 +295,17 @@ const EditUser = () => {
                           <table className="min-w-full border border-gray-300 text-sm text-left">
                             <thead className="bg-gray-100">
                             <tr>
-                              <th className="px-4 py-2 border">Account Type</th>
-                              <th className="px-4 py-2 border">Balance</th>
-                              <th className="px-4 py-2 border">Credit Limit</th>
-                              <th className="px-4 py-2 border">Created At</th>
+                              <th className="px-4 py-2 border">{t("AccountType")}</th>
+                              <th className="px-4 py-2 border">{t("Balance")}</th>
+                              <th className="px-4 py-2 border">{t("CreditLimit")}</th>
+                              <th className="px-4 py-2 border">{t("CreatedAt")}</th>
                             </tr>
                             </thead>
                             <tbody>
                             {balances.map((balance) => (
                                 <tr key={balance.id}>
                                   <td className="px-4 py-2 border">
-                                    {balance.accountType === '0' ? 'Cash' : 'Credit'}
+                                    {balance.accountType === '0' ? t('Cash') : t('Credit')}
                                   </td>
                                   <td className="px-4 py-2 border">{balance.balance.toFixed(2)}</td>
                                   <td className="px-4 py-2 border">{balance.creditLimit.toFixed(2)}</td>
@@ -320,7 +317,7 @@ const EditUser = () => {
                             </tbody>
                           </table>
                       ) : (
-                          <p>No balance information available.</p>
+                          <p>{t("noBalanceFound")}</p>
                       )}
                     </table>
                 </CardContent>
@@ -330,30 +327,29 @@ const EditUser = () => {
 
         <Card>
             <CardHeader className="border-b border-solid border-default-200 mb-6 mt-4">
-                <CardTitle>Deposit Cash</CardTitle>
+                <CardTitle>{t("depositCash")}</CardTitle>
             </CardHeader>
 
             <CardContent className="space-y-4">
                 <div className="flex items-center flex-wrap">
-                    <Label className="w-[150px] flex-none" htmlFor="amount">Amount</Label>
+                    <Label className="w-[150px] flex-none" htmlFor="amount">{t("amount")}</Label>
                     <Input
                         id="amount"
                         type="number"
                         className="flex-1"
                         onChange={(e) => setAmount(e.target.value)}
                         value={amount}
-                        placeholder="Enter amount to deposit"
+                        placeholder={t("depositAmountPlaceholder")}
                     />
                 </div>
 
                 <div className="flex items-center flex-wrap">
-                    <Label className="w-[150px] flex-none" htmlFor="description">Description</Label>
+                    <Label className="w-[150px] flex-none" htmlFor="description">{t("Description")}</Label>
                     <Textarea
                         id="description"
                         className="flex-1"
                         onChange={(e) => setDescription(e.target.value)}
                         value={description}
-                        placeholder="Enter discription"
                     />
                 </div>
 
@@ -364,7 +360,7 @@ const EditUser = () => {
                         {depositCashLoading ? (
                             <Loader2 color="white" className={"animate-spin"} />
                         ) : (
-                            "Deposit Cash"
+                            t("depositCash")
                         )}
                     </Button>
                 </div>

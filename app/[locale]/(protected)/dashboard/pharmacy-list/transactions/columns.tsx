@@ -21,17 +21,19 @@ export type DataProps = {
     phoneNumber: string;
   }
 };
-export const columns: ColumnDef<DataProps>[] = [
+export const baseColumn = ({t} : {
+  t: (key: string) => string;
+}) : ColumnDef<DataProps>[] => [
   {
     accessorKey: "userName",
-    header: "UserName",
+    header: t("userName"),
     cell: ({ row }) => {
       const user = row.original.userName;
       return (
         <div className="font-medium text-card-foreground/80">
           <div className="flex gap-3 items-center">
             <span className="text-sm text-default-600 whitespace-nowrap">
-              {user ?? "Unknown User"}
+              {user ?? t("unknown")}
             </span>
           </div>
         </div>
@@ -45,33 +47,33 @@ export const columns: ColumnDef<DataProps>[] = [
   // },
   {
     accessorKey: "email",
-    header: "Email",
+    header: t("email"),
     cell: ({ row }) => <span>{row.getValue("email")}</span>,
   },
   {
     accessorKey: "pharmacyDetails",
-    header: "Arabic Name",
+    header: t("arabicName"),
     cell: ({ row }) => {
       return <span> {row.original?.pharmacyDetails?.arabicName || "N/A"}</span>;
     },
   },
   {
     accessorKey: "pharmacyDetails",
-    header: "English Name",
+    header: t("englishName"),
     cell: ({ row }) => {
       return <span> {row.original?.pharmacyDetails?.englishName || "N/A"}</span>;
     },
   },
   {
     accessorKey: "phoneNumber",
-    header: "Phone Number",
+    header: t("phoneNumber"),
     cell: ({ row }) => {
       return <span> {row.original?.pharmacyDetails?.phoneNumber || "N/A"}</span>;
     },
   },
   {
     accessorKey: "area",
-    header: "Area",
+    header: t("area"),
     cell: ({ row }) => {
       return <span>{row.original?.regionName || "N/A"}</span>;
     },
@@ -79,7 +81,7 @@ export const columns: ColumnDef<DataProps>[] = [
   {
     id: "actions",
     accessorKey: "action",
-    header: "Actions",
+    header: t("actions"),
     enableHiding: false,
     cell: ({ row }) => {
       return (

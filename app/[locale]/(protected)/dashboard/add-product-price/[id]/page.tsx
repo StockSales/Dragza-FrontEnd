@@ -21,8 +21,8 @@ function AddProductPrice() {
     const productId = params?.id as string;
 
     // states for product
-    const [purchasePrice, setPurchasePrice] = useState<number>(0)
-    const [salesPrice, setSalesPrice] = useState<number>(0)
+    const [purchasePrice, setPurchasePrice] = useState<number | string>("")
+    const [salesPrice, setSalesPrice] = useState<number | string>("");
     const [stock, setStock] = useState<number>(0)
     const [discount, setDiscount] = useState<number>(0)
     const [categoryId, setCategoryId] = useState<string>(product?.category?.name as string)
@@ -116,7 +116,10 @@ function AddProductPrice() {
                                 type="number"
                                 placeholder="sales price"
                                 value={salesPrice}
-                                onChange={(e) => setSalesPrice(parseInt(e?.target?.value))}
+                                onChange={(e) => {
+                                    const value = e.target.value;
+                                    setSalesPrice(value === "" ? "" : parseFloat(value));
+                                }}
                             />
                         </div>
 
@@ -133,9 +136,11 @@ function AddProductPrice() {
                                     const value = parseFloat(e.target.value);
                                     setPurchasePrice(value);
                                     if (salesPrice) {
-                                        const calculatedDiscount = ((salesPrice - value) / salesPrice) * 100;
+                                        const sales = Number(salesPrice);
+                                        const calculatedDiscount = ((sales - value) / sales) * 100;
                                         setDiscount(parseFloat(calculatedDiscount.toFixed(2)));
                                     }
+
                                 }}
                             />
                         </div>
@@ -168,15 +173,16 @@ function AddProductPrice() {
                                         setDiscount(value);
 
                                         if (salesPrice) {
-                                            const calculatedPurchasePrice = salesPrice * (1 - value / 100);
+                                            const sales = Number(salesPrice);
+                                            const calculatedPurchasePrice = sales * (1 - value / 100);
                                             setPurchasePrice(parseFloat(calculatedPurchasePrice.toFixed(2)));
                                         }
                                     }}
                                     className="pr-10" // padding-right for icon space
                                 />
                                 <span className="absolute inset-y-0 right-3 flex items-center pointer-events-none text-gray-500 text-sm">
-      %
-    </span>
+                                    %
+                                </span>
                             </div>
                         </div>
 

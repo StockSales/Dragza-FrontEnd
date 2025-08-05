@@ -5,21 +5,24 @@ import { toast } from "sonner";
 import { Button } from "@/components/ui/button";
 import { FileText } from "lucide-react";
 import useGenerateOrderInvoice from "@/services/invoices/generate/generateOrderInvoice";
+import { useTranslations } from "next-intl";
 
 interface Props {
     orderId: string;
+    isDisabled?: boolean;
 }
 
-const GenerateInvoiceButton = ({ orderId }: Props) => {
+const GenerateInvoiceButton = ({ isDisabled, orderId }: Props) => {
+    const t = useTranslations("generateInvoice");
     const {loading, generateOrderInvoice} = useGenerateOrderInvoice()
 
     const handleGenerateInvoice = async () => {
         const {success, error} =  await generateOrderInvoice(orderId);
 
         if (success) {
-            toast.success("Invoice generated successfully");
+            toast.success(t("invoiceGenerated"));
         } else {
-            toast.error("Failed to generate invoice or that order already has an invoice");
+            toast.error(t("invoiceGenerationError"));
         }
 
     };
@@ -28,7 +31,7 @@ const GenerateInvoiceButton = ({ orderId }: Props) => {
         <div className="flex items-center gap-2">
             <Button
                 onClick={handleGenerateInvoice}
-                disabled={loading}
+                disabled={loading || isDisabled}
                 size="icon"
                 variant="ghost"
                 className="flex items-center p-2 border text-green-600 hover:text-white bg-green-100 hover:bg-green-400 transition-all rounded-full w-[32px] h-[32px]"

@@ -12,7 +12,7 @@ import {
   getSortedRowModel,
   useReactTable,
 } from "@tanstack/react-table";
-import { columns } from "./columns";
+import { baseColumn } from "./columns";
 import { Input } from "@/components/ui/input";
 
 import {
@@ -39,6 +39,7 @@ import useGetUsersByRoleId from "@/services/users/GetUsersByRoleId";
 import {useEffect} from "react";
 import {Loader2} from "lucide-react";
 import SearchInput from "@/app/[locale]/(protected)/components/SearchInput/SearchInput";
+import { useTranslations } from "next-intl";
 
 const TransactionsTable = () => {
   // getting all users that their role is pharmacy
@@ -55,6 +56,9 @@ const TransactionsTable = () => {
   // for searching users
   const [filteredUsers, setFilteredUsers] = React.useState<any[]>([]);
 
+  const t = useTranslations("pharmacyList")
+
+  const columns = baseColumn({t});
 
   const table = useReactTable({
     data: filteredUsers ?? [],

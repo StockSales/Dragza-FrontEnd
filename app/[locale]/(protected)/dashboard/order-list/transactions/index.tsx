@@ -38,6 +38,8 @@ import useGettingMyOrders from "@/services/Orders/gettingMyOrders";
 import {Button} from "@/components/ui/button";
 import {OrderStatus, OrderStatusLabel} from "@/enum";
 import useVendorOrder from "@/services/Orders/vendor-order";
+import { cn } from "@/lib/utils";
+import { useTranslations } from "next-intl";
 
 // @ts-ignore
 export default function TransactionsTable (){
@@ -64,6 +66,8 @@ export default function TransactionsTable (){
   const allOrdersData = isAdmin ? orders : myOrders;
   const isLoadingData = isAdmin ? loading : myOrdersLoading;
 
+  const t = useTranslations("OrderList")
+
   const columns = baseColumns({
     refresh: () => {
       if (isAdmin) {
@@ -71,7 +75,8 @@ export default function TransactionsTable (){
       } else {
         gettingVendorOrders(userId);
       }
-    }
+    }, 
+    t
   });
 
   const table = useReactTable({
@@ -126,11 +131,11 @@ export default function TransactionsTable (){
 
   return (
       <Card className="w-full">
-        <div className="px-5 py-4 flex flex-col xl:flex-row items-center gap-4">
+        <div className="px-5 py-4 flex flex-col 2xl:flex-row items-center gap-4">
           <SearchInput
               data={allOrdersData ?? []}
               setFilteredData={setFilteredOrders}
-              filterKey="pharmacyName"
+              filterKey="orderNumber"
           />
 
           <div className="inline-flex flex-wrap items-center border border-solid divide-x divide-default-200 divide-solid rounded-md overflow-hidden">
@@ -141,7 +146,7 @@ export default function TransactionsTable (){
                 className="ring-0 outline-0 hover:ring-0 hover:ring-offset-0 font-normal border-default-200 rounded-none cursor-pointer"
                 onClick={() => filterOrdersByStatus("all")}
             >
-              All
+              {t("All")}
             </Button>
 
             <Button
@@ -151,7 +156,7 @@ export default function TransactionsTable (){
                 className="ring-0 outline-0 hover:ring-0 hover:ring-offset-0 font-normal border-default-200 rounded-none cursor-pointer"
                 onClick={() => filterOrdersByStatus(OrderStatus.Pending)}
             >
-              {OrderStatusLabel[OrderStatus.Pending]}
+              {t(`statusCode.${OrderStatusLabel[OrderStatus.Pending].toLowerCase()}`)}
             </Button>
 
             <Button
@@ -161,7 +166,7 @@ export default function TransactionsTable (){
                 className="ring-0 outline-0 hover:ring-0 hover:ring-offset-0 font-normal border-default-200 rounded-none cursor-pointer"
                 onClick={() => filterOrdersByStatus(OrderStatus.Approved)}
             >
-              {OrderStatusLabel[OrderStatus.Approved]}
+              {t(`statusCode.${OrderStatusLabel[OrderStatus.Approved].toLowerCase()}`)}
             </Button>
 
             <Button
@@ -171,7 +176,7 @@ export default function TransactionsTable (){
                 className="ring-0 outline-0 hover:ring-0 hover:ring-offset-0 font-normal border-default-200 rounded-none cursor-pointer"
                 onClick={() => filterOrdersByStatus(OrderStatus.Rejected)}
             >
-              {OrderStatusLabel[OrderStatus.Rejected]}
+              {t(`statusCode.${OrderStatusLabel[OrderStatus.Rejected].toLowerCase()}`)}
             </Button>
 
             <Button
@@ -181,7 +186,7 @@ export default function TransactionsTable (){
                 className="ring-0 outline-0 hover:ring-0 hover:ring-offset-0 font-normal border-default-200 rounded-none cursor-pointer"
                 onClick={() => filterOrdersByStatus(OrderStatus.Prepared)}
             >
-              {OrderStatusLabel[OrderStatus.Prepared]}
+              {t(`statusCode.${OrderStatusLabel[OrderStatus.Prepared].toLowerCase()}`)}
             </Button>
 
             <Button
@@ -191,7 +196,7 @@ export default function TransactionsTable (){
                 className="ring-0 outline-0 hover:ring-0 hover:ring-offset-0 font-normal border-default-200 rounded-none cursor-pointer"
                 onClick={() => filterOrdersByStatus(OrderStatus.Shipped)}
             >
-              {OrderStatusLabel[OrderStatus.Shipped]}
+              {t(`statusCode.${OrderStatusLabel[OrderStatus.Shipped].toLowerCase()}`)}
             </Button>
 
             <Button
@@ -201,7 +206,7 @@ export default function TransactionsTable (){
                 className="ring-0 outline-0 hover:ring-0 hover:ring-offset-0 font-normal border-default-200 rounded-none cursor-pointer"
                 onClick={() => filterOrdersByStatus(OrderStatus.Delivered)}
             >
-              {OrderStatusLabel[OrderStatus.Delivered]}
+              {t(`statusCode.${OrderStatusLabel[OrderStatus.Delivered].toLowerCase()}`)}
             </Button>
 
             <Button
@@ -211,7 +216,16 @@ export default function TransactionsTable (){
                 className="ring-0 outline-0 hover:ring-0 hover:ring-offset-0 font-normal border-default-200 rounded-none cursor-pointer"
                 onClick={() => filterOrdersByStatus(OrderStatus.Completed)}
             >
-              {OrderStatusLabel[OrderStatus.Completed]}
+              {t(`statusCode.${OrderStatusLabel[OrderStatus.Completed].toLowerCase()}`)}
+            </Button>
+            <Button
+                size="md"
+                variant={selectedStatus === OrderStatus.ReAssignTo ? "default" : "ghost"}
+                color="default"
+                className="ring-0 outline-0 hover:ring-0 hover:ring-offset-0 font-normal border-default-200 rounded-none cursor-pointer"
+                onClick={() => filterOrdersByStatus(OrderStatus.ReAssignTo)}
+            >
+              {t(`statusCode.${OrderStatusLabel[OrderStatus.ReAssignTo].toLocaleLowerCase()}`)}
             </Button>
           </div>
         </div>
@@ -244,16 +258,16 @@ export default function TransactionsTable (){
                     {table.getRowModel().rows?.length ? (
                         table.getRowModel().rows.map((row) => (
                             <TableRow
-                                key={row.id}
-                                data-state={row.getIsSelected() && "selected"}
+                              key={row.id}
+                              data-state={row.getIsSelected() && "selected"}
+                              className={cn(
+                                row.original.status === 7 && "line-through opacity-60 text-muted-foreground"
+                              )}
                             >
                               {row.getVisibleCells().map((cell) => (
-                                  <TableCell key={cell.id} className="h-[75px]">
-                                    {flexRender(
-                                        cell.column.columnDef.cell,
-                                        cell.getContext()
-                                    )}
-                                  </TableCell>
+                                <TableCell key={cell.id} className="h-[75px]">
+                                  {flexRender(cell.column.columnDef.cell, cell.getContext())}
+                                </TableCell>
                               ))}
                             </TableRow>
                         ))
