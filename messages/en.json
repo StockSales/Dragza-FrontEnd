@@ -494,5 +494,29 @@
   "generateInvoice" : {
     "invoiceGenerated": "Invoice generated successfully.",
     "invoiceGenerationError": "Failed to generate invoice. Please try again."
+  },
+  "pharmacyList": {
+    "pharmacyList": "Pharmacy List",
+    "pharmacyName": "Pharmacy Name",
+    "location": "Location",
+    "contactNumber": "Contact Number",
+    "email": "Email",
+    "userName": "Username",
+    "arabicName": "Arabic Name",
+    "englishName": "English Name",
+    "phoneNumber": "Phone Number",
+    "area": "Area",
+    "unknown": "Unknown",
+    "actions": "Actions",
+    "viewDetails": "View Details",
+    "editPharmacy": "Edit Pharmacy",
+    "removePharmacy": "Remove Pharmacy",
+    "confirmRemovePharmacy": "Are you sure you want to remove this pharmacy?",
+    "remove": "Remove",
+    "cancel": "Cancel",
+    "successMessage": "Pharmacy removed successfully.",
+    "errorMessage": "Failed to remove pharmacy. Please try again.",
+    "loading": "Loading pharmacy list...",
+    "noPharmaciesFound": "No pharmacies found."
   }
 }

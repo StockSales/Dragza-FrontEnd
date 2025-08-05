@@ -455,5 +455,29 @@
   "generateInvoice" : {
     "invoiceGenerated": "تم إنشاء الفاتورة بنجاح.",
     "invoiceGenerationError": "فشل في إنشاء الفاتورة. يرجى المحاولة مرة أخرى."
+  },
+  "pharmacyList": {
+    "pharmacyList": "قائمة الصيدليات",
+    "pharmacyName": "اسم الصيدلية",
+    "location": "الموقع",
+    "contactNumber": "رقم التواصل",
+    "email": "البريد الإلكتروني",
+    "userName": "اسم المستخدم",
+    "arabicName": "الاسم بالعربية",
+    "englishName": "الاسم بالإنجليزية",
+    "phoneNumber": "رقم الهاتف",
+    "area": "المنطقة",
+    "unknown": "غير معروف",
+    "actions": "الإجراءات",
+    "viewDetails": "عرض التفاصيل",
+    "editPharmacy": "تعديل الصيدلية",
+    "removePharmacy": "إزالة الصيدلية",
+    "confirmRemovePharmacy": "هل أنت متأكد أنك تريد إزالة هذه الصيدلية؟",
+    "remove": "إزالة",
+    "cancel": "إلغاء",
+    "successMessage": "تمت إزالة الصيدلية بنجاح.",
+    "errorMessage": "فشل في إزالة الصيدلية. يرجى المحاولة مرة أخرى.",
+    "loading": "جارٍ تحميل قائمة الصيدليات...",
+    "noPharmaciesFound": "لا توجد صيدليات."
   }
 }
