@@ -5,6 +5,7 @@ import { toast } from "sonner";
 import { Button } from "@/components/ui/button";
 import { FileText } from "lucide-react";
 import useGenerateOrderInvoice from "@/services/invoices/generate/generateOrderInvoice";
+import { useTranslations } from "next-intl";
 
 interface Props {
     orderId: string;
@@ -12,15 +13,16 @@ interface Props {
 }
 
 const GenerateInvoiceButton = ({ isDisabled, orderId }: Props) => {
+    const t = useTranslations("generateInvoice");
     const {loading, generateOrderInvoice} = useGenerateOrderInvoice()
 
     const handleGenerateInvoice = async () => {
         const {success, error} =  await generateOrderInvoice(orderId);
 
         if (success) {
-            toast.success("Invoice generated successfully");
+            toast.success(t("invoiceGenerated"));
         } else {
-            toast.error("Failed to generate invoice or that order already has an invoice");
+            toast.error(t("invoiceGenerationError"));
         }
 
     };

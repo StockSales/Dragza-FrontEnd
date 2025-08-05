@@ -397,5 +397,63 @@
       "totalAmount": "المبلغ الإجمالي",
       "noItems": "لا توجد عناصر في هذا الطلب"
     }
+  },
+  "removeItem": {
+    "removeItem": "إزالة العنصر",
+    "confirmRemoveItem": "هل أنت متأكد أنك تريد إزالة هذا العنصر؟",
+    "remove": "إزالة",
+    "cancel": "إلغاء",
+    "itemRemoved": "تمت إزالة العنصر بنجاح.",
+    "errorRemovingItem": "حدث خطأ أثناء إزالة العنصر. يرجى المحاولة مرة أخرى.",
+    "loadingOrderDetails": "جارٍ تحميل تفاصيل الطلب...",
+    "orderNotFound": "الطلب غير موجود.",
+    "noItemsFound": "لا توجد عناصر في هذا الطلب.",
+    "orderDetailsLoaded": "تم تحميل تفاصيل الطلب بنجاح.",
+    "orderManagement": "إدارة الطلبات",
+    "orderNumber": "رقم الطلب",
+    "pharmacyName": "اسم الصيدلية",
+    "inventoryManager": "مدير المخزن",
+    "status": "الحالة",
+    "totalAmount": "المبلغ الإجمالي",
+    "deliverDate": "تاريخ التسليم",
+    "items": "العناصر",
+    "billTo": "فاتورة إلى",
+    "inventoryManagerChangedSuccessfully": "تم تغيير مدير المخزن بنجاح.",
+    "inventoryManagerChansgeError": "فشل في تغيير مدير المخزن. يرجى المحاولة مرة أخرى.",
+    "inventoryManagerChange": "تغيير مدير المخزن",
+    "selectInventoryManager": "اختر مدير المخزن",
+    "changeInventoryManager": "تغيير مدير المخزن",
+    "changeInventoryUser": "تغيير مستخدم المخزن",
+    "changeInventoryUserDesc": "اختر مستخدم مخزن جديد لتعيينه لهذا الطلب.",
+    "ReAssignInventoryUser": "إعادة تعيين مستخدم المخزن",
+    "ReAssignInventoryUserDesc": "اختر مستخدم مخزن جديد لإعادة تعيينه لهذا الطلب.",
+    "inventoryManagerRequired": "مدير المخزن مطلوب.",
+    "selectInventoryManagerPlaceholder": "اختر مدير المخزن",
+    "changeInventoryUserSuccess": "تم تغيير مستخدم المخزن بنجاح.",
+    "changeInventoryUserError": "فشل في تغيير مستخدم المخزن. يرجى المحاولة مرة أخرى.",
+    "changeInventoryUserButton": "تغيير مستخدم المخزن",
+    "update": "تحديث",
+    "Product": "المنتج",
+    "Actions": "الإجراءات",
+    "statusOptions": {
+      "Pending": "قيد الانتظار",
+      "Approved": "موافق عليه",
+      "Rejected": "مرفوض",
+      "Prepared": "تم التجهيز",
+      "Shipped": "تم الشحن",
+      "Delivered": "تم التسليم",
+      "Completed": "مكتمل",
+      "ReAssignTo": "معاد التعيين"
+    }
+  },
+  "exportFile": {
+    "Exporting": "جارٍ التصدير",
+    "exportFile": "تصدير الملف",
+    "fileDownloaded": "تم تنزيل الملف بنجاح.",
+    "fileDownloadError": "فشل في تنزيل الملف. يرجى المحاولة مرة أخرى."
+  },
+  "generateInvoice" : {
+    "invoiceGenerated": "تم إنشاء الفاتورة بنجاح.",
+    "invoiceGenerationError": "فشل في إنشاء الفاتورة. يرجى المحاولة مرة أخرى."
   }
 }

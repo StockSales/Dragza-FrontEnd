@@ -447,6 +447,52 @@
     "loadingOrderDetails": "Loading order details...",
     "orderNotFound": "Order not found.",
     "noItemsFound": "No items found in this order.",
-    "orderDetailsLoaded": "Order details loaded successfully."
+    "orderDetailsLoaded": "Order details loaded successfully.",
+    "orderManagement": "Order Management",
+    "orderNumber": "Order Number",
+    "pharmacyName": "Pharmacy Name",
+    "inventoryManager": "Inventory Manager",
+    "status": "Status",
+    "totalAmount": "Total Amount",
+    "deliverDate": "Deliver Date",
+    "items": "Items",
+    "billTo": "Bill to",
+    "inventoryManagerChangedSuccessfully": "Inventory Manager changed successfully.",
+    "inventoryManagerChangeError": "Failed to change Inventory Manager. Please try again.",
+    "inventoryManagerChange": "Change Inventory Manager",
+    "selectInventoryManager": "Select Inventory Manager",
+    "changeInventoryManager": "Change Inventory Manager",
+    "changeInventoryUser": "Change Inventory User",
+    "changeInventoryUserDesc": "Select a new inventory user to assign to this order.",
+    "ReAssignInventoryUser": "Reassign Inventory User",
+    "ReAssignInventoryUserDesc": "Select a new inventory user to reassign to this order.",
+    "inventoryManagerRequired": "Inventory manager is required.",
+    "selectInventoryManagerPlaceholder": "Select inventory manager",
+    "changeInventoryUserSuccess": "Inventory user changed successfully.",
+    "changeInventoryUserError": "Failed to change inventory user. Please try again.",
+    "changeInventoryUserButton": "Change Inventory User",
+    "update": "Update",
+    "Product": "Product",
+    "Actions": "Actions",
+    "statusOptions": {
+      "Pending": "Pending",
+      "Approved": "Approved",
+      "Rejected": "Rejected",
+      "Prepared": "Prepared",
+      "Shipped": "Shipped",
+      "Delivered": "Delivered",
+      "Completed": "Completed",
+      "ReAssignTo": "Reassigned"
+    }
+  },
+  "exportFile": {
+    "Exporting": "Exporting",
+    "exportFile": "Export File",
+    "fileDownloaded": "File downloaded successfully.",
+    "fileDownloadError": "Failed to download file. Please try again."
+  },
+  "generateInvoice" : {
+    "invoiceGenerated": "Invoice generated successfully.",
+    "invoiceGenerationError": "Failed to generate invoice. Please try again."
   }
 }

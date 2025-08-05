@@ -153,7 +153,7 @@ const TablePagination = ({ table }: DataTablePaginationProps) => {
           disabled={!table.getCanPreviousPage()}
           className="w-8 h-8"
         >
-          <ChevronLeft className="w-4 h-4" />
+          <ChevronLeft className={`w-4 h-4 ${document?.dir === 'rtl' ? 'rotate-180' : ''}`} />
         </Button>
         
         {renderPageNumbers()}
@@ -165,7 +165,7 @@ const TablePagination = ({ table }: DataTablePaginationProps) => {
           disabled={!table.getCanNextPage()}
           className="w-8 h-8"
         >
-          <ChevronRight className="w-4 h-4" />
+          <ChevronRight className={`w-4 h-4 ${document?.dir === 'rtl' ? 'rotate-180' : ''}`} />
         </Button>
       </div>
       
