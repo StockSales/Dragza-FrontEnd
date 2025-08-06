@@ -306,6 +306,7 @@
     "date": "Order Date",
     "All": "All",
     "items": "Items",
+    "orderStatus": "Order Status",
     "actions": "Actions",
     "viewDetails": "View Details",
     "editOrder": "Edit Order",
@@ -493,7 +494,12 @@
   },
   "generateInvoice" : {
     "invoiceGenerated": "Invoice generated successfully.",
-    "invoiceGenerationError": "Failed to generate invoice. Please try again."
+    "invoiceGenerationError": "Failed to generate invoice. Please try again.",
+    "fileUploaded": "File uploaded successfully.",
+    "fileUploadError": "Failed to upload file. Please try again.",
+    "uploadFile": "Upload File",
+    "uploadFileDesc": "Upload a file to generate an invoice.",
+    "uploadFileButton": "Upload"
   },
   "pharmacyList": {
     "pharmacyList": "Pharmacy List",
@@ -688,5 +694,26 @@
     "selectCategoryPlaceholder": "Select category",
     "selectActiveIngredientPlaceholder": "Select active ingredient",
     "save": "Save"
+  },
+  "inventoryManagement": {
+    "productName": "Product Name",
+    "arabicName": "Arabic Name",
+    "unknown": "Unknown",
+    "category": "Category",
+    "purchasePrice": "Purchase Price",
+    "salesPrice": "Sales Price",
+    "stockQuantity": "Stock Quantity",
+    "actions": "Actions",
+    "createdAt": "Created At",
+    "discount": "Discount(%)",
+    "discount_": "Discount",
+    "productInformation": "Product Information",
+    "purchasePriceValidation": "Purchase price is required.",
+    "salesPriceValidation": "Sales price is required.",
+    "stockQuantityValidation": "Stock quantity is required.",
+    "discountValidation": "Discount is required.",
+    "productPriceAdded": "Product price added successfully.",
+    "productPriceAddFailed": "Failed to add product price, please try again.",
+    "saveProductPrice": "Save Product Price"
   }
 }

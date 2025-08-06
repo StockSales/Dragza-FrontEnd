@@ -305,6 +305,7 @@
     "deliverDate": "تاريخ التسليم",
     "actions": "الإجراءات",
     "All": "الكل",
+    "orderStatus": "حالة الطلب",
     "viewDetails": "عرض التفاصيل",
     "noOrdersFound": "لا توجد طلبات",
     "statusCode": {
@@ -454,7 +455,12 @@
   },
   "generateInvoice" : {
     "invoiceGenerated": "تم إنشاء الفاتورة بنجاح.",
-    "invoiceGenerationError": "فشل في إنشاء الفاتورة. يرجى المحاولة مرة أخرى."
+    "invoiceGenerationError": "فشل في إنشاء الفاتورة. يرجى المحاولة مرة أخرى.",
+    "fileUploaded": "تم رفع الملف بنجاح.",
+    "fileUploadError": "فشل في رفع الملف. يرجى المحاولة مرة أخرى.",
+    "uploadFile": "رفع ملف",
+    "uploadFileDesc": "قم برفع ملف لإنشاء فاتورة.",
+    "uploadFileButton": "رفع"
   },
   "pharmacyList": {
     "pharmacyList": "قائمة الصيدليات",
@@ -649,5 +655,26 @@
     "selectCategoryPlaceholder": "اختر الفئة",
     "selectActiveIngredientPlaceholder": "اختر المكون النشط",
     "save": "حفظ"
+  },
+  "inventoryManagement": {
+    "productName": "اسم المنتج",
+    "arabicName": "الاسم بالعربية",
+    "unknown": "غير معروف",
+    "category": "الفئة",
+    "purchasePrice": "سعر الشراء",
+    "salesPrice": "سعر البيع",
+    "stockQuantity": "كمية المخزون",
+    "actions": "الإجراءات",
+    "createdAt": "تاريخ الإنشاء",
+    "discount": "الخصم (%)",
+    "discount_": "الخصم",
+    "productInformation": "معلومات المنتج",
+    "purchasePriceValidation": "سعر الشراء مطلوب.",
+    "salesPriceValidation": "سعر البيع مطلوب.",
+    "stockQuantityValidation": "كمية المخزون مطلوبة.",
+    "discountValidation": "الخصم مطلوب.",
+    "productPriceAdded": "تمت إضافة سعر المنتج بنجاح.",
+    "productPriceAddFailed": "فشل في إضافة سعر المنتج، يرجى المحاولة مرة أخرى.",
+    "saveProductPrice": "حفظ سعر المنتج"
   }
 }

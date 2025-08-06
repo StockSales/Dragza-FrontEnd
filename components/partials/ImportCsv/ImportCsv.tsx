@@ -12,12 +12,14 @@ import {
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { toast } from "sonner"; // or use your toast lib
+import { useTranslations } from "next-intl";
 
 type CSVUploadModalProps = {
     onUpload: (file: File) => Promise<void>; // Accepts a CSV file, uploads it
 };
 
 export function CSVUploadModal({ onUpload }: CSVUploadModalProps) {
+    const t = useTranslations("generateInvoice");
     const [open, setOpen] = useState(false);
     const [selectedFile, setSelectedFile] = useState<File | null>(null);
     const [error, setError] = useState("");
@@ -45,11 +47,11 @@ export function CSVUploadModal({ onUpload }: CSVUploadModalProps) {
         try {
             setIsUploading(true);
             await onUpload(selectedFile);
-            toast.success("File uploaded successfully!");
+            toast.success(t("fileUploaded"));
             setOpen(false);
             setSelectedFile(null);
         } catch (err) {
-            toast.error("Upload failed.");
+            toast.error(t("fileUploadError"));
             console.error(err);
         } finally {
             setIsUploading(false);
@@ -59,11 +61,11 @@ export function CSVUploadModal({ onUpload }: CSVUploadModalProps) {
     return (
         <Dialog open={open} onOpenChange={setOpen}>
             <DialogTrigger asChild>
-                <Button variant="outline">Upload File</Button>
+                <Button variant="outline">{t("uploadFile")}</Button>
             </DialogTrigger>
             <DialogContent>
                 <DialogHeader>
-                    <DialogTitle>Upload File</DialogTitle>
+                    <DialogTitle>{t("uploadFile")}</DialogTitle>
                 </DialogHeader>
 
                 <Input type="file" accept=".xlsx,text/xlsx" onChange={handleFileChange} />
@@ -71,7 +73,7 @@ export function CSVUploadModal({ onUpload }: CSVUploadModalProps) {
 
                 <DialogFooter className="pt-4">
                     <Button disabled={isUploading} onClick={handleUpload}>
-                        {isUploading ? "Uploading..." : "Upload"}
+                        {isUploading ? `${t("uploadFileButton")}...` : t("uploadFileButton")}
                     </Button>
                 </DialogFooter>
             </DialogContent>

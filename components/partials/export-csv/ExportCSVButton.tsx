@@ -27,7 +27,7 @@ export function ExportCSVButton() {
 
     return (
         <Button onClick={handleClick} disabled={loading}>
-            {loading ? `${t("Exporting")}...` : "Export File"}
+            {loading ? `${t("Exporting")}...` : t("exportFile")}
         </Button>
     );
 }
