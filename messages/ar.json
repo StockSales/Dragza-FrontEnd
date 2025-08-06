@@ -556,5 +556,38 @@
       "approved": "موافق عليه",
       "rejected": "مرفوض"
     }
+  },
+  "activeIngredients": {
+    "activeIngredients": "المكونات النشطة",
+    "ingredientName": "اسم المكون",
+    "description": "الوصف",
+    "unknown": "غير معروف",
+    "actions": "الإجراءات",
+    "isActive": "هل نشط؟",
+    "active": "نشط",
+    "inactive": "غير نشط",
+    "toggleStatus": "تبديل الحالة",
+    "toggleStatusSuccess": "تم تحديث الحالة بنجاح.",
+    "toggleStatusError": "فشل في تحديث الحالة. يرجى المحاولة مرة أخرى.",
+    "clickToActivate": "انقر للتفعيل",
+    "clickToDeactivate": "انقر لإلغاء التفعيل",
+    "loading_": "جارٍ التحميل",
+    "addIngredient": "إضافة مكون",
+    "editIngredient": "تعديل المكون",
+    "removeIngredient": "إزالة المكون",
+    "confirmRemoveIngredient": "هل أنت متأكد أنك تريد إزالة هذا المكون؟",
+    "remove": "إزالة",
+    "cancel": "إلغاء",
+    "successMessage": "تمت إزالة المكون بنجاح.",
+    "errorMessage": "فشل في إزالة المكون. يرجى المحاولة مرة أخرى.",
+    "loading": "جارٍ تحميل المكونات النشطة...",
+    "noIngredientsFound": "لا توجد مكونات نشطة.",
+    "activeIngredientCreated": "تم إنشاء المكون النشط بنجاح.",
+    "activeIngredientUpdated": "تم تحديث المكون النشط بنجاح.",
+    "activeIngredientCreationError": "فشل في إنشاء المكون النشط. يرجى المحاولة مرة أخرى.",
+    "activeIngredientUpdateError": "فشل في تحديث المكون النشط. يرجى المحاولة مرة أخرى.",
+    "ingredientDetails": "تفاصيل المكون",
+    "fillAllFields": "يرجى ملء جميع الحقول.",
+    "updateActiveIngredient": "تحديث المكون النشط"
   }
 }

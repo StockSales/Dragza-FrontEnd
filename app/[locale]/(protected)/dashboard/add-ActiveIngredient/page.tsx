@@ -41,8 +41,12 @@ import useActiveIngredientById from "@/services/ActiveIngerients/ActiveIngredien
 import {ActiveIngredient} from "@/types/activeIngredient";
 import useUpdateActiveIngredient from "@/services/ActiveIngerients/updateActiveIngredient";
 import useCreateActiveIngredients from "@/services/ActiveIngerients/createActiveIngredients";
+import { useTranslations } from "next-intl";
 
 const AddActiveIngredient = () => {
+
+  const t = useTranslations("activeIngredients");
+
   // router for navigation
   const router = useRouter();
 
@@ -63,21 +67,19 @@ const AddActiveIngredient = () => {
     try {
       const {success, error} = await createActiveIngredient({name: formData.name})
        if (success) {
-        toast.success("Active Ingredient Created successfully");
+        toast.success(t("activeIngredientCreated"));
         setTimeout(() => {
           router.push('/dashboard/ActiveIngredients');
         }, 2000);
       }
       if (error) {
-        toast.error("Adding new active ingredient Failed",{
-            description: error
-        });
+        toast.error(t("activeIngredientCreationError"));
         setTimeout(() => {
           toast.dismiss();
         }, 2000);
       }
     } catch (error: any)  {
-      toast.error( "Network Error",{ description: error.message});
+      toast.error( t("activeIngredientCreationError"));
     }
   }
 
@@ -86,17 +88,17 @@ const AddActiveIngredient = () => {
       <div className="col-span-12 md:col-span-12 space-y-12 lg:col-span-12 ">
         <Card>
           <CardHeader className="border-b border-solid border-default-200 mb-6">
-            <CardTitle>Active Ingredient Information</CardTitle>
+            <CardTitle>{t("ingredientDetails")}</CardTitle>
           </CardHeader>
           <CardContent className="space-y-4">
             <div className="flex items-center flex-wrap">
               <Label className="w-[150px] flex-none" htmlFor="h_Fullname">
-                Name
+                {t("ingredientName")}
               </Label>
               <Input
                   id="h_Fullname"
                   type="text"
-                  placeholder="Full name"
+                  placeholder={t("ingredientName")}
                   value={formData?.name}
                   onChange={(e) => setFormData({...formData, name: e.target.value})}
               />
@@ -106,7 +108,7 @@ const AddActiveIngredient = () => {
       </div>
 
       <div className="col-span-12 flex justify-end">
-        <Button onClick={() => handleUpdateProduct(formData)}>{activeIngredientLoading ? <Loader2 className="mr-2 h-4 w-4 animate-spin"/> : null}Add Active Ingredients</Button>
+        <Button onClick={() => handleUpdateProduct(formData)}>{activeIngredientLoading ? <Loader2 className="mr-2 h-4 w-4 animate-spin"/> : null} {t("addIngredient")}</Button>
       </div>
     </div>
   );

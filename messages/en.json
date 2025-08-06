@@ -595,5 +595,38 @@
       "approved": "Approved",
       "rejected": "Rejected"
     }
+  },
+  "activeIngredients": {
+    "activeIngredients": "Active Ingredients",
+    "ingredientName": "Ingredient Name",
+    "description": "Description",
+    "unknown": "Unknown",
+    "actions": "Actions",
+    "isActive": "Is Active?",
+    "active": "Active",
+    "inactive": "Inactive",
+    "toggleStatus": "Toggle Status",
+    "toggleStatusSuccess": "Status updated successfully.",
+    "toggleStatusError": "Failed to update status. Please try again.",
+    "clickToActivate": "Click to activate",
+    "clickToDeactivate": "Click to deactivate",
+    "loading_": "loading",
+    "addIngredient": "Add Ingredient",
+    "editIngredient": "Edit Ingredient",
+    "removeIngredient": "Remove Ingredient",
+    "confirmRemoveIngredient": "Are you sure you want to remove this ingredient?",
+    "remove": "Remove",
+    "cancel": "Cancel",
+    "successMessage": "Ingredient removed successfully.",
+    "errorMessage": "Failed to remove ingredient. Please try again.",
+    "loading": "Loading active ingredients...",
+    "noIngredientsFound": "No active ingredients found.",
+    "activeIngredientCreated": "Active ingredient created successfully.",
+    "activeIngredientUpdated": "Active ingredient updated successfully.",
+    "activeIngredientCreationError": "Failed to create active ingredient. Please try again.",
+    "activeIngredientUpdateError": "Failed to update active ingredient. Please try again.",
+    "ingredientDetails": "Ingredient Details",
+    "fillAllFields": "Please fill all the fields.",
+    "updateActiveIngredient": "Update Active Ingredient"
   }
 }
