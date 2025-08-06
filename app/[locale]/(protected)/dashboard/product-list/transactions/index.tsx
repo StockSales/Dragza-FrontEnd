@@ -49,8 +49,10 @@ import product from "@/app/[locale]/(protected)/dashboard/dash-ecom/components/p
 import SearchInput from "@/app/[locale]/(protected)/components/SearchInput/SearchInput";
 import {ExportCSVButton} from "@/components/partials/export-csv/ExportCSVButton";
 import {CSVUploadModal} from "@/components/partials/ImportCsv/ImportCsv";
+import { useTranslations } from "next-intl";
 
 const TransactionsTable = () => {
+  const t = useTranslations("productList")
   const userRole = Cookies.get("userRole");
   const userId = Cookies.get("userId");
   // getting all products
@@ -67,7 +69,7 @@ const TransactionsTable = () => {
     React.useState<VisibilityState>({});
   const [rowSelection, setRowSelection] = React.useState({});
 
-  const columns = baseColumns({ refresh: () => getAllProducts("false") });
+  const columns = baseColumns({ refresh: () => getAllProducts("false"), t });
 
   const [filteredProducts, setFilteredProducts] = useState<ProductType[]>([])
 
@@ -181,7 +183,7 @@ const TransactionsTable = () => {
             {userRole == "Admin" && (
               <Link href="/dashboard/add-product">
                 <Button size={"md"} variant="outline" color="secondary">
-                  Add Product
+                  {t("addProduct")}
                 </Button>
               </Link>
             )}
@@ -247,7 +249,7 @@ const TransactionsTable = () => {
                           colSpan={columns.length}
                           className="h-24 text-center"
                         >
-                          No results.
+                          {t("noProductsFound")}
                         </TableCell>
                       </TableRow>
                     )}

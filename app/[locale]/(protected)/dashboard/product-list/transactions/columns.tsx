@@ -8,17 +8,17 @@ import useDeleteProductById from "@/services/products/deleteProductById";
 import {Button} from "@/components/ui/button";
 import Cookies from "js-cookie";
 
-export const baseColumns = ({ refresh }: { refresh: () => void }): ColumnDef<ProductType>[] =>
+export const baseColumns = ({ refresh, t }: { refresh: () => void , t: (key: string) => string; }): ColumnDef<ProductType>[] =>
 [
   {
     accessorKey: "name",
-    header: "Product",
+    header: t("productName"),
     cell: ({ row }) => {
       const product = row.original.name;
       return (
         <div className="font-medium text-card-foreground/80">
             <span className="text-sm text-default-600">
-              {product ?? "Unknown Product"}
+              {product ?? t("unknown")}
             </span>
         </div>
       );
@@ -26,13 +26,13 @@ export const baseColumns = ({ refresh }: { refresh: () => void }): ColumnDef<Pro
   },
     {
     accessorKey: "arabicName",
-    header: "Product",
+    header: t("arabicName"),
     cell: ({ row }) => {
       const product = row.original.arabicName;
       return (
         <div className="font-medium text-card-foreground/80">
             <span className="text-sm text-default-600">
-              {product ?? "Unknown"}
+              {product ?? t("unknown")}
             </span>
         </div>
       );
@@ -40,13 +40,13 @@ export const baseColumns = ({ refresh }: { refresh: () => void }): ColumnDef<Pro
   },
   {
     accessorKey: "preef",
-    header: "Company",
+    header: t("company"),
     cell: ({ row }) => {
       const pref = row.original.preef;
       return (
         <div className="font-medium text-card-foreground/80">
             <span className="text-sm text-default-600">
-              {pref ?? "N/A"}
+              {pref ?? ("unknown")}
             </span>
         </div>
       );
@@ -68,13 +68,13 @@ export const baseColumns = ({ refresh }: { refresh: () => void }): ColumnDef<Pro
   // },
   {
     accessorKey: "category",
-    header: "Category",
+    header: t("category"),
     cell: ({ row }) => <span>{row.original.category.name}</span>,
   },
     {
     accessorKey: "activeIngredient",
-    header: "Active Ingredient",
-    cell: ({ row }) => <span>{row.original.activeIngredient.name || "acetaminophen"}</span>,
+    header: t("activeIngredient"),
+    cell: ({ row }) => <span>{row.original.activeIngredient.name || t("unknown")}</span>,
   },
   // {
   //   accessorKey: "stock",
@@ -132,7 +132,7 @@ export const baseColumns = ({ refresh }: { refresh: () => void }): ColumnDef<Pro
   {
     id: "actions",
     accessorKey: "action",
-    header: "Actions",
+    header: t("actions"),
     enableHiding: false,
     cell: ({ row }) => {
         const userRole = Cookies.get("userRole");
@@ -149,7 +149,7 @@ export const baseColumns = ({ refresh }: { refresh: () => void }): ColumnDef<Pro
 
         const handleDeleteProduct = (id: string | undefined) => {
             const toastId = toast("Delete Product", {
-                description: "Are you sure you want to delete this product?",
+                description: t("areYouWantToRemove"),
                 action: (
                     <div className="flex justify-end mx-auto items-center my-auto gap-2">
                         <Button
@@ -157,7 +157,7 @@ export const baseColumns = ({ refresh }: { refresh: () => void }): ColumnDef<Pro
                             onClick={() => toast.dismiss(toastId)}
                             className="text-white px-3 py-1 rounded-md"
                         >
-                            Cancel
+                            {t("cancel")}
                         </Button>
                         <Button
                             size="sm"
@@ -169,22 +169,18 @@ export const baseColumns = ({ refresh }: { refresh: () => void }): ColumnDef<Pro
                                     const {success, error} = await deleteProductById(id);
                                     toast.dismiss(toastId);
                                     if (success) {
-                                        toast("Product deleted", {
-                                            description: "The product was deleted successfully.",
-                                        });
+                                        toast(t("successMessage"));
                                         refresh();
                                     } else {
                                         throw new Error(error);
                                     }
                                 } catch (error) {
                                     toast.dismiss(toastId);
-                                    toast("Error", {
-                                        description: (error as Error).message,
-                                    });
+                                    toast(t("errorMessage"));
                                 }
                             }}
                         >
-                            Confirm
+                            {t("remove")}
                         </Button>
                     </div>
                 ),

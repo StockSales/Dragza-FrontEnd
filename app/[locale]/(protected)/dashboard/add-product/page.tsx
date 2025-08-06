@@ -22,8 +22,10 @@ import useCreateProduct from "@/services/products/createProduct";
 import {toast} from "sonner";
 import {useRouter} from "@/i18n/routing";
 import useGettingAllActiveIngredient from "@/services/ActiveIngerients/gettingAllActiveIngerients";
+import { useTranslations } from "next-intl";
 
 const AddProduct = () => {
+  const t = useTranslations("productList");
   const router = useRouter();
 
   // states for product
@@ -55,31 +57,27 @@ const AddProduct = () => {
   // on submit
   const onSubmit = async () => {
     if (!name.trim()) {
-      toast.error("Validation Error", { description: "Name is required." });
+      toast.error(t("nameValidation"));
       return;
     }
     if (!arabicName.trim()) {
-      toast.error("Validation Error", { description: "Arabic Name is required." });
+      toast.error(t("arabicNameValidation"));
       return;
     }
     if (!preef.trim()) {
-      toast.error("Validation Error", { description: "Pref is required." });
+      toast.error(t("companyValidation"));
       return;
     }
     if (!description.trim()) {
-      toast.error("Validation Error", { description: "Description is required." });
+      toast.error(t("descriptionValidation"));
       return;
     }
     if (!categoryId?.trim()) {
-      toast.error("Validation Error", {
-        description: "Category is required."
-      })
+      toast.error(t("categoryValidation"))
       return;
     }
     if (!activeIngredientId?.trim()) {
-      toast.error("Validation Error", {
-        description: "Active Ingredient is required."
-      })
+      toast.error(t("activeIngredientValidation"))
       return;
     }
 
@@ -96,20 +94,14 @@ const AddProduct = () => {
       const success = await createProduct(formData)
 
       if (success) {
-        toast.success("Product Created", {
-          description: "Product added successfully"
-        })
+        toast.success(t("productCreated"))
         setTimeout(() => {
           router.push("/dashboard/product-list");
         }, 1000);
       }
     } catch (error: any) {
-      toast.error("Network Error", {
-        description: error,
-      });
+      toast.error(t("productCreationError"));
     }
-
-
   }
 
   // mounted data
@@ -131,17 +123,17 @@ const AddProduct = () => {
       <div className="col-span-12 space-y-4 ">
         <Card>
           <CardHeader className="border-b border-solid border-default-200 mb-6">
-            <CardTitle>Product Information</CardTitle>
+            <CardTitle> {t("productDetails")} </CardTitle>
           </CardHeader>
           <CardContent className="space-y-4">
             <div className="flex items-center flex-wrap">
               <Label className="w-[150px] flex-none" htmlFor="h_Fullname">
-                Product Name
+                {t("productName")}
               </Label>
               <Input
                 id="h_Fullname"
                 type="text"
-                placeholder="Name"
+                placeholder={t("productName")}
                 value={name}
                 onChange={(e) => setName(e?.target?.value)}
               />
@@ -149,12 +141,12 @@ const AddProduct = () => {
 
             <div className="flex items-center flex-wrap">
               <Label className="w-[150px] flex-none" htmlFor="arabicName">
-                Product Arabic Name
+                {t("arabicName")}
               </Label>
               <Input
                 id="arabicName"
                 type="text"
-                placeholder="Arabic Name"
+                placeholder={t("arabicName")}
                 value={arabicName}
                 onChange={(e) => setArabicName(e?.target?.value)}
               />
@@ -162,19 +154,19 @@ const AddProduct = () => {
 
             <div className="flex items-center flex-wrap">
               <Label className="w-[150px] flex-none" htmlFor="pref">
-                Company
+                {t("company")}
               </Label>
               <Input
                   id="pref"
                   type="text"
-                  placeholder="Company"
+                  placeholder={t("company")}
                   value={preef}
                   onChange={(e) => setPref(e?.target?.value)}
               />
             </div>
             <div className="flex items-center flex-wrap">
               <Label className="w-[150px] flex-none" htmlFor="pref">
-                Product Photo
+                {t("productPhoto")}
               </Label>
               <Input
                   id="photo"
@@ -190,14 +182,14 @@ const AddProduct = () => {
             </div>
 
             <div className="flex items-center flex-wrap gap-4 md:gap-0">
-              <Label className="w-[131px] md:w-[150px] flex-none">Category</Label>
+              <Label className="w-[131px] md:w-[150px] flex-none">{t("category")}</Label>
               <Select onValueChange={(e) => setCategoryId(e)}>
                 <SelectTrigger className="flex-1 cursor-pointer">
-                  <SelectValue placeholder="Select Category" />
+                  <SelectValue placeholder={t("selectCategoryPlaceholder")} />
                 </SelectTrigger>
                 <SelectContent>
                   <SelectGroup>
-                    <SelectLabel>Category</SelectLabel>
+                    <SelectLabel>{t("category")}</SelectLabel>
                     {data.map((category: any) => (
                         <SelectItem
                             key={category.id}
@@ -212,22 +204,22 @@ const AddProduct = () => {
             </div>
 
             <div className="flex items-center flex-wrap gap-4 md:gap-0">
-              <Label className="w-[131px] md:w-[150px] flex-none">Active Ingredient</Label>
+              <Label className="w-[131px] md:w-[150px] flex-none"> {t("activeIngredient")} </Label>
               <Select onValueChange={(value) => setActiveIngredient(value)}>
                 <SelectTrigger className="flex-1 cursor-pointer">
-                  <SelectValue placeholder="Select Active Ingredient" />
+                  <SelectValue placeholder={t("selectActiveIngredientPlaceholder")} />
                 </SelectTrigger>
                 <SelectContent onCloseAutoFocus={(e) => e.preventDefault()}>
                   <div className="px-2 py-1" tabIndex={-1}>
                     <Input
-                      placeholder="Search by name"
+                      placeholder={t("searchActiveIngredient")}
                       value={activeIngredientSearch}
                       onChange={(e) => setActiveIngredientSearch(e.target.value)}
                       className="w-full"
                     />
                   </div>
                   <SelectGroup>
-                    <SelectLabel>Active Ingredient</SelectLabel>
+                    <SelectLabel> {t("activeIngredient")} </SelectLabel>
                     {filteredActiveIngredients.length > 0 ? (
                       filteredActiveIngredients.map((item: any) => (
                         <SelectItem key={item.id} value={item.id}>
@@ -236,7 +228,7 @@ const AddProduct = () => {
                       ))
                     ) : (
                       <SelectItem value="null" className="px-2 py-1 text-sm text-muted-foreground">
-                        No results found.
+                        {t("noActiveIngredientFound")}
                       </SelectItem>
                     )}
                   </SelectGroup>
@@ -247,11 +239,11 @@ const AddProduct = () => {
 
             <div className="flex items-center flex-wrap">
               <Label className="w-[150px] flex-none" htmlFor="desc">
-                Description
+                {t("description")}
               </Label>
               <Textarea
                   id="desc"
-                  placeholder="description"
+                  placeholder={t("description")}
                   value={description}
                   onChange={(e) => setDescription(e?.target?.value)}
               />
@@ -264,7 +256,7 @@ const AddProduct = () => {
             className={`cursor-pointer ${creatingProductLoading === true ? "cursor-not-allowed" : ""}`}
             onClick={() => onSubmit()}
         >
-          {creatingProductLoading === true ? <Loader2 className="mr-2 h-4 w-4 animate-spin"/> : "Save Product"}
+          {creatingProductLoading === true ? <Loader2 className="mr-2 h-4 w-4 animate-spin"/> : t("save")}
         </Button>
       </div>
     </div>
