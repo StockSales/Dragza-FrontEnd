@@ -24,6 +24,7 @@ export interface OrderItem {
     quantity?: number;
     unitPrice?: number;
     total?: number;
+    status?: number;
 }
 
 export interface ItemsTableProps {

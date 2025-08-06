@@ -37,8 +37,10 @@ import {
 } from "@tanstack/react-table";
 import {productColumns} from "@/app/[locale]/(protected)/dashboard/edit-product/[id]/columns";
 import useUpdateProductById from "@/services/products/UpdateProductById";
+import { useTranslations } from "next-intl";
 
 const EditProduct = () => {
+  const t = useTranslations("productList")
   // router for navigation
   const router = useRouter();
 
@@ -104,7 +106,7 @@ const EditProduct = () => {
     try {
      const { success: isUpdated, error} = await updatingProductById(productId, data)
       if (isUpdated) {
-        toast.success("Product updated successfully");
+        toast.success(t("Product updated successfully"));
         setTimeout(() => {
           router.push('/dashboard/product-list');
         }, 2000);
@@ -112,7 +114,7 @@ const EditProduct = () => {
         throw new Error(error);
       }
     } catch (error: any) {
-      toast.error(error.message);
+      toast.error(t("productUpdateError"));
     }
   }
 
@@ -167,17 +169,17 @@ const EditProduct = () => {
       <div className="col-span-12 md:col-span-12 space-y-12 lg:col-span-12 ">
         <Card>
           <CardHeader className="border-b border-solid border-default-200 mb-6">
-            <CardTitle>Product Information</CardTitle>
+            <CardTitle>{t("productDetails")}</CardTitle>
           </CardHeader>
           <CardContent className="space-y-4">
             <div className="flex items-center flex-wrap">
               <Label className="w-[150px] flex-none" htmlFor="h_Fullname">
-                Product Name
+                {t("productName")}
               </Label>
               <Input
                   id="h_Fullname"
                   type="text"
-                  placeholder="Full name"
+                  placeholder={t("productName")}
                   value={formData?.name}
                   onChange={(e) => setFormData({...formData, name: e.target.value})}
               />
@@ -185,12 +187,12 @@ const EditProduct = () => {
 
             <div className="flex items-center flex-wrap">
               <Label className="w-[150px] flex-none" htmlFor="arabicName">
-                Product Arabic Name
+                {t("arabicName")}
               </Label>
               <Input
                   id="arabicName"
                   type="text"
-                  placeholder="Arabic name"
+                  placeholder={t("arabicName")}
                   value={formData?.arabicName}
                   onChange={(e) => setFormData({...formData, arabicName: e.target.value})}
               />
@@ -198,23 +200,23 @@ const EditProduct = () => {
 
             <div className="flex items-center flex-wrap">
               <Label className="w-[150px] flex-none" htmlFor="pref">
-                Pref
+                {t("company")}
               </Label>
               <Input
                   id="pref"
                   type="text"
-                  placeholder="Pref"
+                  placeholder={t("company")}
                   value={formData?.pref}
                     onChange={(e) => setFormData({...formData, pref: e.target.value})}
               />
             </div>
 
             <div className="flex items-center flex-wrap">
-              <Label className="w-[150px] flex-none" htmlFor="pref">
-                Product Photo
+              <Label className="w-[150px] flex-none" htmlFor="image">
+                {t("productPhoto")}
               </Label>
               <Input
-                  id="pref"
+                  id="image"
                   type="file"
                   accept="image/*"
                   onChange={(e) => {
@@ -227,14 +229,14 @@ const EditProduct = () => {
             </div>
 
             <div className="flex items-center flex-wrap gap-4 md:gap-0">
-              <Label className="w-[150px] flex-none">Category</Label>
+              <Label className="w-[150px] flex-none">{t("company")}</Label>
               <Select value={product?.category.id?.toString()} onValueChange={(value) => setFormData({...formData, categoryId: value})}>
                 <SelectTrigger className="flex-1 cursor-pointer">
-                  <SelectValue placeholder="Select Category" />
+                  <SelectValue placeholder={t("selectCategory")} />
                 </SelectTrigger>
                 <SelectContent>
                   <SelectGroup>
-                    <SelectLabel>Category</SelectLabel>
+                    <SelectLabel>{t("company")}</SelectLabel>
                     {categories.map((category: any) => (
                         <SelectItem
                             key={category.id}
@@ -249,25 +251,25 @@ const EditProduct = () => {
             </div>
 
             <div className="flex items-center flex-wrap gap-4 md:gap-0">
-              <Label className="w-[150px] flex-none">Active Ingredient</Label>
+              <Label className="w-[150px] flex-none">{t("activeIngredient")}</Label>
               <Select
                 value={formData.activeIngredientId}
                 onValueChange={(value) => setFormData({ ...formData, activeIngredientId: value })}
               >
                 <SelectTrigger className="flex-1 cursor-pointer">
-                  <SelectValue placeholder="Select Active Ingredient" />
+                  <SelectValue placeholder={t("selectActiveIngredient")} />
                 </SelectTrigger>
                 <SelectContent onCloseAutoFocus={(e) => e.preventDefault()}>
                   <div className="px-2 py-1" tabIndex={-1}>
                     <Input
-                      placeholder="Search Active Ingredient"
+                      placeholder={t("searchActiveIngredient")}
                       value={activeIngredientSearch}
                       onChange={(e) => setActiveIngredientSearch(e.target.value)}
                       className="w-full"
                     />
                   </div>
                   <SelectGroup>
-                    <SelectLabel>Active Ingredient</SelectLabel>
+                    <SelectLabel>{t("activeIngredient")}</SelectLabel>
                     {filteredActiveIngredients.length > 0 ? (
                       filteredActiveIngredients.map((active: any) => (
                         <SelectItem key={active.id} value={active.id}>
@@ -275,7 +277,7 @@ const EditProduct = () => {
                         </SelectItem>
                       ))
                     ) : (
-                      <SelectItem value="no-results" disabled>No results found</SelectItem>
+                      <SelectItem value="no-results" disabled>{t("noResultsFound")}</SelectItem>
                     )}
                   </SelectGroup>
                 </SelectContent>
@@ -286,11 +288,11 @@ const EditProduct = () => {
 
               <div className="flex items-center flex-wrap">
               <Label className="w-[150px] flex-none" htmlFor="Description">
-                Description
+                {t("description")}
               </Label>
               <Textarea
                   id="Description"
-                  placeholder="Description"
+                  placeholder={t("description")}
                   value={formData?.description}
               />
             </div>
@@ -300,7 +302,7 @@ const EditProduct = () => {
         {product?.prices && product?.prices.length > 0 && (
   <Card>
     <CardHeader className="border-b border-solid border-default-200 mb-6">
-      <CardTitle>Product Price</CardTitle>
+      <CardTitle>{t("productPrice")}</CardTitle>
     </CardHeader>
     <CardContent className="space-y-4">
       <Accordion type="single" collapsible className="w-full">
@@ -314,16 +316,16 @@ const EditProduct = () => {
               <div>
                 {item.inventoryUserName}
                 <span className="font-semibold text-xs text-default-400">
-                  {" "}– Published on {formatDateToDMY(item.creationDate)}
+                  {" "}– {t("publishedDate")} {formatDateToDMY(item.creationDate)}
                 </span>
               </div>
             </AccordionTrigger>
             <AccordionContent>
               {/* You can show details of this specific price item here */}
               <div className="border border-solid border-default-200 rounded-lg overflow-hidden border-t-0 p-4 space-y-2">
-                <p><strong>Purchase Price:</strong> {item.purchasePrice}</p>
-                <p><strong>Sales Price:</strong> {item.salesPrice}</p>
-                <p><strong>Stock Quantity:</strong> {item.stockQuantity}</p>
+                <p><strong>{t("purchasePrice")}:</strong> {item.purchasePrice}</p>
+                <p><strong>{t("salesPrice")}:</strong> {item.salesPrice}</p>
+                <p><strong>{t("stockQuantity")}:</strong> {item.stockQuantity}</p>
               </div>
             </AccordionContent>
           </AccordionItem>
@@ -336,7 +338,7 @@ const EditProduct = () => {
       </div>
 
       <div className="col-span-12 flex justify-end">
-        <Button onClick={() => handleUpdateProduct(productId, formData)}>Update Product</Button>
+        <Button onClick={() => handleUpdateProduct(productId, formData)}>{t("updateProduct")}</Button>
       </div>
     </div>
   );

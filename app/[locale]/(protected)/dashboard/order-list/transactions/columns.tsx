@@ -93,6 +93,7 @@ export const baseColumns = ({refresh, t} : {
     accessorKey: "status",
     header: t("orderStatus"),
     cell: ({ row }) => {
+      const isAdmin = Cookies.get("userRole") == "Admin";
       const statusColors: Record<number, string> = {
         0: "bg-yellow-200 text-yellow-700", // Pending
         1: "bg-blue-200 text-blue-700",     // Approved
@@ -104,7 +105,7 @@ export const baseColumns = ({refresh, t} : {
         7: "bg-gray-200 text-gray-700",     // Reassign
       };
 
-      const status = row.getValue<number>("status");
+      const status = isAdmin ? row.getValue<number>("status") : row.original.items[0]?.status || 0;
       const statusStyle = statusColors[status] || "bg-gray-200 text-gray-700";
 
       const statusTranslationKeys: Record<number, string> = {

@@ -96,11 +96,23 @@ const OrderDetails = () => {
                             <div className="flex items-center flex-wrap gap-4">
                                 <Label className="w-[150px] flex-none">{t("orderStatus")}: </Label>
                                 <Select
-                                    value={currentOrder?.status?.toString()}
+                                    value={order?.items[0]?.status?.toString()}
                                     onValueChange={(value: string) => {
                                         const numericValue = Number(value) as OrderStatus;
-                                        setOrder({ ...currentOrder, status: numericValue });
-                                    }}
+
+                                        setOrder((prevOrder) => {
+                                            if (!prevOrder) return prevOrder;
+                                            const updatedItems = [...prevOrder.items];
+                                            updatedItems[0] = {
+                                            ...updatedItems[0],
+                                            status: numericValue,
+                                            };
+                                            return {
+                                            ...prevOrder,
+                                            items: updatedItems,
+                                            };
+                                        });
+                                        }}
                                     >
                                     <SelectTrigger className="flex-1 cursor-pointer">
                                         <SelectValue placeholder={t("updateStatus")} />
@@ -129,14 +141,14 @@ const OrderDetails = () => {
                                     variant="outline"
                                     className="w-[150px] flex-none"
                                     type="button"
-                                    disabled={updateLoading || currentOrder?.status === OrderStatus.Pending}
+                                    disabled={updateLoading || order?.items[0]?.status === OrderStatus.Pending}
                                     onClick={async () => {
-                                        if (!id || !currentOrder?.status || currentOrder.status === OrderStatus.Pending) {
-                                            toast.warning("Invalid status selected.");
-                                            return;
-                                        }
+                                        // if (!id || !currentOrder?.status || currentOrder.status === OrderStatus.Pending || !order?.items[0]?.status) {
+                                        //     toast.warning("Invalid status selected.");
+                                        //     return;
+                                        // }
 
-                                        const result = await updateOrderStatus(id as string, currentOrder.status);
+                                        const result = await updateOrderStatus(id as string, order?.items[0]?.status as OrderStatus);
 
                                         if (result.success) {
                                             toast.success(t("updateStatusSuccess"));
@@ -184,7 +196,7 @@ const OrderDetails = () => {
                             <h4>
                                 {t("status")}:{" "}
                                 {currentOrder.status !== undefined
-                                    ? t(`statusOptions.${OrderStatus[currentOrder.status as OrderStatus]}`)
+                                    ? t(`statusOptions.${OrderStatus[currentOrder.items[0]?.status as OrderStatus]}`)
                                     : "N/A"}
                             </h4>
                         </div>

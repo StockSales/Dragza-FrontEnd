@@ -11,8 +11,12 @@ import {Card, CardContent, CardHeader, CardTitle} from "@/components/ui/card";
 import {Label} from "@/components/ui/label";
 import {Input} from "@/components/ui/input";
 import {Button} from "@/components/ui/button";
+import { useTranslations } from 'next-intl';
 
 function AddProductPrice() {
+
+    const t = useTranslations("inventoryManagement")
+
     // getting all products
     const {loading: gettingAllProductsLoading, getProductById, product} = useGettingProductById()
     const router = useRouter();
@@ -34,19 +38,19 @@ function AddProductPrice() {
     // on submit
     const onSubmit = async () => {
         if (!purchasePrice) {
-            toast.error("Validation Error", { description: "Purchase Price is required." });
+            toast.error(t("purchasePriceValidation"));
             return;
         }
         if (!salesPrice) {
-            toast.error("Validation Error", { description: "Sales Price is required." });
+            toast.error(t("salesPriceValidation"));
             return;
         }
         if (!stock) {
-            toast.error("Validation Error", { description: "Stock is required." });
+            toast.error(t("stockQuantityValidation"));
             return;
         }
         if (!discount) {
-            toast.error("Validation Error", { description: "Discount is required." });
+            toast.error(t("discountValidation"));
             return;
         }
 
@@ -60,8 +64,7 @@ function AddProductPrice() {
             });
 
             if (success) {
-                toast.success("Product price Created", {
-                    description: "Product price added successfully",
+                toast.success(t("productPriceAdded"), {
                     duration: 1500, // customize duration if needed
                 });
 
@@ -71,9 +74,7 @@ function AddProductPrice() {
                 }, 1500); // Wait for toast to appear
             }
         } catch (error: any) {
-            toast.error("Network Error", {
-                description: error,
-            });
+            toast.error(t("productPriceAddFailed"));
         }
     };
 
@@ -81,7 +82,6 @@ function AddProductPrice() {
     // mounted data
     useEffect(() => {
         getProductById(productId)
-        console.log("product", product, categoryId)
     }, [categoryId]);
 
     useEffect(() => {
@@ -103,18 +103,18 @@ function AddProductPrice() {
             <div className="col-span-12 space-y-4 ">
                 <Card>
                     <CardHeader className="border-b border-solid border-default-200 mb-6">
-                        <CardTitle>Product Information</CardTitle>
+                        <CardTitle>{t("productInformation")}</CardTitle>
                     </CardHeader>
                     <CardContent className="space-y-4">
 
                         <div className="flex items-center flex-wrap">
                             <Label className="w-[150px] flex-none" htmlFor="salesPrice">
-                                Sales Price
+                                {t("salesPrice")} 
                             </Label>
                             <Input
                                 id="salesPrice"
                                 type="number"
-                                placeholder="sales price"
+                                placeholder={t("salesPrice")}
                                 value={salesPrice}
                                 onChange={(e) => {
                                     const value = e.target.value;
@@ -125,12 +125,12 @@ function AddProductPrice() {
 
                         <div className="flex items-center flex-wrap">
                             <Label className="w-[150px] flex-none" htmlFor="purchasePrice">
-                                Purchase Price
+                                {t("purchasePrice")}
                             </Label>
                             <Input
                                 id="purchasePrice"
                                 type="number"
-                                placeholder="purchase price"
+                                placeholder={t("purchasePrice")}
                                 value={purchasePrice}
                                 onChange={(e) => {
                                     const value = parseFloat(e.target.value);
@@ -147,7 +147,7 @@ function AddProductPrice() {
 
                         <div className="flex items-center flex-wrap">
                             <Label className="w-[150px] flex-none" htmlFor="stock">
-                                Stock
+                                {t("stockQuantity")}
                             </Label>
                             <Input
                                 id="stock"
@@ -159,7 +159,7 @@ function AddProductPrice() {
                         </div>
                         <div className="flex items-center">
                             <Label className="w-[150px] flex-none" htmlFor="discount">
-                                Discount
+                                {t("discount_")}
                             </Label>
                             <div className="relative w-full ">
                                 <Input
@@ -194,7 +194,7 @@ function AddProductPrice() {
                     className={`cursor-pointer ${productPriceLoading === true ? "cursor-not-allowed" : ""}`}
                     onClick={() => onSubmit()}
                 >
-                    {productPriceLoading === true ? <Loader2 className="mr-2 h-4 w-4 animate-spin"/> : "Save Product price"}
+                    {productPriceLoading === true ? <Loader2 className="mr-2 h-4 w-4 animate-spin"/> : t("saveProductPrice")}
                 </Button>
             </div>
         </div>

@@ -10,17 +10,17 @@ import useDeleteActiveIngredientById from "@/services/ActiveIngerients/deleteAct
 import useToggleStatusSubArea from "@/services/subArea/toggleStatusSubArea";
 import useToggleAreaStatus from "@/services/area/toggleAreaStatus";
 
-export const baseColumns = ({ refresh }: { refresh: () => void }): ColumnDef<ActiveIngredient>[] =>
+export const baseColumns = ({ refresh, t }: { refresh: () => void , t: (key: string) => string; }): ColumnDef<ActiveIngredient>[] =>
 [
   {
     accessorKey: "name",
-    header: "Name",
+    header: t("ingredientName"),
     cell: ({ row }) => {
       const product = row.original.name;
       return (
         <div className="font-medium text-card-foreground/80">
             <span className="text-sm text-default-600">
-              {product ?? "Unknown Product"}
+              {product ?? t("unknown")}
             </span>
         </div>
       );
@@ -28,11 +28,11 @@ export const baseColumns = ({ refresh }: { refresh: () => void }): ColumnDef<Act
   },
     {
         accessorKey: "isDeleted",
-        header: "Is Active",
+        header: t("isActive"),
         cell: ({ row }) => {
             const isDeleted = row.getValue("isDeleted");
             const isActive = !isDeleted;
-            const label = isActive ? "Active" : "Inactive";
+            const label = isActive ? t("active") : t("inactive");
             const badgeColor = isActive
                 ? "bg-green-100 text-green-800"
                 : "bg-red-100 text-red-800";
@@ -46,7 +46,7 @@ export const baseColumns = ({ refresh }: { refresh: () => void }): ColumnDef<Act
     },
     {
         accessorKey: "id",
-        header: "Toggle Area Status",
+        header: t("toggleStatus"),
         cell: ({ row }) => {
             const id: string = row.getValue("id");
 
@@ -66,18 +66,17 @@ export const baseColumns = ({ refresh }: { refresh: () => void }): ColumnDef<Act
                         refresh();
                         // Success toast
                         toast.success(
-                            `Active ingredient status ${isActive ? "deactivated" : "activated"} successfully!`
+                            t("toggleStatusSuccess")
                         );
                     } else {
                         // Error toast
                         toast.error(
-                            result.error || `Failed to ${isActive ? "deactivate" : "activate"} Active ingredient"}`
+                            t("toggleStatusError")
                         );
                     }
                 } catch (error) {
                     // Catch any unexpected errors
-                    toast.error("An unexpected error occurred. Please try again.");
-                    console.error("Toggle status error:", error);
+                    toast.error(t("toggleStatusError"));
                 }
             };
 
@@ -91,7 +90,7 @@ export const baseColumns = ({ refresh }: { refresh: () => void }): ColumnDef<Act
                             : "bg-green-100 text-green-700 hover:bg-green-200 disabled:bg-green-50"
                     } disabled:opacity-50 disabled:cursor-not-allowed`}
                 >
-                    {loading ? "Loading..." : isActive == true || isActive == null ? "Click to deactivate" : "Click to activate"}
+                    {loading ? `${t("loading_")}...` : isActive == true || isActive == null ? t("clickToActivate") : t("clickToDeactivate")}
                 </button>
             );
         },
@@ -152,7 +151,7 @@ export const baseColumns = ({ refresh }: { refresh: () => void }): ColumnDef<Act
   {
     id: "actions",
     accessorKey: "action",
-    header: "Actions",
+    header: t("actions"),
     enableHiding: false,
     cell: ({ row }) => {
         const userRole = Cookies.get("userRole");

@@ -52,8 +52,11 @@ import {CSVUploadModal} from "@/components/partials/ImportCsv/ImportCsv";
 import ActiveIngredients from "@/app/[locale]/(protected)/dashboard/ActiveIngredients/page";
 import useGettingAllActiveIngredient from "@/services/ActiveIngerients/gettingAllActiveIngerients";
 import {ActiveIngredient} from "@/types/activeIngredient";
+import { useTranslations } from "next-intl";
 
 const TransactionsTable = () => {
+  const t = useTranslations("activeIngredients")
+
   const userRole = Cookies.get("userRole");
   const userId = Cookies.get("userId");
 
@@ -67,7 +70,7 @@ const TransactionsTable = () => {
     React.useState<VisibilityState>({});
   const [rowSelection, setRowSelection] = React.useState({});
 
-  const columns = baseColumns({ refresh: () => gettingAllActiveIngredients() });
+  const columns = baseColumns({ refresh: () => gettingAllActiveIngredients(), t });
 
   const [filteredProducts, setFilteredProducts] = useState<ActiveIngredient[]>([])
 
@@ -114,7 +117,7 @@ const TransactionsTable = () => {
             />
             <Link href="/dashboard/add-ActiveIngredient">
               <Button size={"md"} variant="outline" color="secondary">
-                Add Active Ingredient
+                {t("addIngredient")}
               </Button>
             </Link>
           </div>

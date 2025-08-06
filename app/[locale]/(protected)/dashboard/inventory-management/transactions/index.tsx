@@ -14,7 +14,7 @@ import {
   useReactTable,
 } from "@tanstack/react-table";
 
-import { columns } from "./columns";
+import { baseColumns } from "./columns";
 import { Price } from "@/types/price";
 
 import { Input } from "@/components/ui/input";
@@ -48,6 +48,7 @@ import { Loader2 } from "lucide-react";
 import {ExportCSVButton} from "@/components/partials/export-csv/ExportCSVButton";
 import {CSVUploadModal} from "@/components/partials/ImportCsv/ImportCsv";
 import useUploadCsv from "@/services/products/csv/uploadCSV";
+import { useTranslations } from "next-intl";
 
 const TransactionsTable = () => {
   const userRole = Cookies.get("userRole");
@@ -87,6 +88,10 @@ const TransactionsTable = () => {
   // Table Data: Admin → based on selected user, Others → default manager data
   const tableData = isAdmin ? adminPrices : managerPrices;
   const isLoading = isAdmin ? inventoryIdLoading : managerLoading;
+  
+  const t = useTranslations("inventoryManagement")
+
+  const columns = baseColumns({t});
 
   const table = useReactTable({
     data: tableData ?? [],

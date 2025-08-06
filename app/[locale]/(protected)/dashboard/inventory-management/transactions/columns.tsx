@@ -6,10 +6,12 @@ import {formatDateToDMY} from "@/utils";
 import {Price} from "@/types/price";
 
 
-export const columns: ColumnDef<Price>[] = [
+export const baseColumns = ({t} : {
+  t: (key: string) => string;
+}) : ColumnDef<Price>[] =>[
   {
     accessorKey: "productName",
-    header: "Product Name",
+    header: t("productName"),
     cell: ({ row }) => {
       return (
         <div className="font-medium text-card-foreground/80">
@@ -24,21 +26,21 @@ export const columns: ColumnDef<Price>[] = [
   },
   {
     accessorKey: "categoryName",
-    header: "Category Name",
+    header: t("category"),
     cell: ({ row }) => <span>{row.getValue("categoryName")}</span>,
   },
   {
     accessorKey: "purchasePrice",
-    header: "Purchase Price",
+    header: t("purchasePrice"),
     cell: ({ row }) => <span>{row.getValue("purchasePrice")}</span>,
   },
   {
     accessorKey: "salesPrice",
-    header: "Sales Price",
+    header: t("salesPrice"),
     cell: ({ row }) => <span>{row.getValue("salesPrice")}</span>,
   },
   {
-    header: "Discount (%)",
+    header: t("discount"),
     cell: ({ row }) => {
       const { salesPrice, purchasePrice } = row.original;
       const discount = ((salesPrice - purchasePrice) / salesPrice) * 100;
@@ -48,14 +50,14 @@ export const columns: ColumnDef<Price>[] = [
   },
   {
     accessorKey: "stockQuantity",
-    header: "Stock",
+    header: t("stockQuantity"),
     cell: ({ row }) => {
       return <span>{row.original?.stockQuantity}</span>;
     },
   },
   {
     accessorKey: "creationDate",
-    header: "Creation Date",
+    header: t("createdAt"),
     cell: ({ row }) => {
       return <span>{formatDateToDMY(row.original.creationDate)}</span>;
     },
