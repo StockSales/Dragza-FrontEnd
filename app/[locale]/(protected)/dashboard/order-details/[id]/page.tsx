@@ -148,7 +148,7 @@ const OrderDetails = () => {
                                         //     return;
                                         // }
 
-                                        const result = await updateOrderStatus(id as string, order?.items[0]?.status);
+                                        const result = await updateOrderStatus(id as string, order?.items[0]?.status as OrderStatus);
 
                                         if (result.success) {
                                             toast.success(t("updateStatusSuccess"));
