@@ -17,7 +17,7 @@ function useUpdateOrderStatus() {
             }
 
             const response = await AxiosInstance.put(`/api/Orders/${id}/${statusPath}`);
-            if (response.status !== 200) {
+            if (response.status !== 204) {
                 throw new Error("Failed to update order status");
             }
 
