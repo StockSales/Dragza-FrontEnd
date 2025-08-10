@@ -30,6 +30,8 @@ export const roleRoutes: Record<string, string[]> = {
         "/en/dashboard/add-product-price",
         "/en/dashboard/inventory-management",
         "/ar/dashboard/inventory-management",
+        "/en/dashboard/edit-user/:id",
+        "/ar/dashboard/edit-user/:id",
     ],
     sales: ["/en/dashboard/sales", "/en/dashboard/register", "/ar/dashboard/sales", "/ar/dashboard/register"]
 };

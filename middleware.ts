@@ -31,11 +31,23 @@ function isRouteAllowed(pathname: string, role: string): boolean {
   const allowedRoutes = roleRoutes[role] || [];
 
   return allowedRoutes.some(route => {
+    // Wildcard: allow everything
+    if (route === "*") return true;
+
     // Exact match
     if (route === pathname) return true;
 
-    // Match prefix for dynamic routes
-    if (pathname.startsWith(route)) return true;
+    // Match prefix (if you intentionally allow all subpaths)
+    if (pathname.startsWith(route) && !route.includes(":")) return true;
+
+    // Handle dynamic routes like /en/dashboard/edit-user/:id
+    if (route.includes(":")) {
+      const pattern = "^" + route
+              .replace(/:[^/]+/g, "[^/]+") // Replace :id with a regex
+              .replace(/\//g, "\\/")       // Escape slashes
+          + "$";
+      return new RegExp(pattern).test(pathname);
+    }
 
     return false;
   });
