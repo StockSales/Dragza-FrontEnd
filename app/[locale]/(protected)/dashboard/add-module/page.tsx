@@ -9,10 +9,12 @@ import { Textarea } from "@/components/ui/textarea";
 import { toast } from "sonner";
 import { useRouter } from "@/i18n/routing";
 import useCreateMainCategories from "@/services/MainCategories/createMainCategories";
+import { useTranslations } from "next-intl";
 
 const AddModule = () => {
   // creating new module
   const {loading, createMainCategory} = useCreateMainCategories()
+  const t = useTranslations("Module");
 
   const router = useRouter();
 
@@ -22,24 +24,22 @@ const AddModule = () => {
 
   const addModule = async () => {
     if (!name.trim()) {
-      toast.error("Validation Error", { description: "Module Name is required." });
+      toast.error(t("validationError"), { description: t("moduleNameValidation") });
       return;
     }
     if (!arabicName.trim()) {
-      toast.error("Validation Error", { description: "Module Arabic Name is required." });
+      toast.error(t("validationError"), { description: t("arabicNameValidation") });
       return;
     }
     if (!description.trim()) {
-      toast.error("Validation Error", { description: "Description is required." });
+      toast.error(t("validationError"), { description: t("moduleDescriptionValidation") });
       return;
     }
 
     try {
       const {success, error} = await createMainCategory({name,arabicName, description});
       if (success) {
-        toast.success("Module Added", {
-          description: "Module added successfully!",
-        });
+        toast.success(t("moduleCreated"));
         setTimeout(() => {
           router.push("/dashboard/modules");
         }, 1000);
@@ -48,9 +48,7 @@ const AddModule = () => {
             throw error;
         }
     } catch (error: any) {
-      toast.error("Network Error", {
-        description: error,
-      });
+      toast.error(t("moduleCreationError"));
     }
   };
 
@@ -59,17 +57,17 @@ const AddModule = () => {
         <div className="col-span-12">
           <Card>
             <CardHeader className="border-b border-solid border-default-200 mb-6">
-              <CardTitle>Module Information</CardTitle>
+              <CardTitle>{t("moduleInformation")}</CardTitle>
             </CardHeader>
             <CardContent className="space-y-4">
               <div className="flex items-center flex-wrap">
                 <Label className="w-[150px] flex-none" htmlFor="moduleName">
-                  Module Name
+                  {t("moduleName")}
                 </Label>
                 <Input
                     id="moduleName"
                     type="text"
-                    placeholder="Name"
+                    placeholder={t("moduleName")}
                     value={name}
                     onChange={(e) => setName(e.target.value)}
                 />
@@ -79,12 +77,12 @@ const AddModule = () => {
             <CardContent className="space-y-4">
               <div className="flex items-center flex-wrap">
                 <Label className="w-[150px] flex-none" htmlFor="moduleArabicName">
-                  Module Arabic Name
+                  {t("arabicName")}
                 </Label>
                 <Input
                     id="moduleArabicName"
                     type="text"
-                    placeholder="Module Arabic Name"
+                    placeholder={t("arabicName")}
                     value={arabicName}
                     onChange={(e) => setArabicName(e.target.value)}
                 />
@@ -93,11 +91,11 @@ const AddModule = () => {
             <CardContent className="space-y-4">
               <div className="flex items-center flex-wrap">
                 <Label className="w-[150px] flex-none" htmlFor="Description">
-                  Description
+                  {t("moduleDescription")}
                 </Label>
                 <Textarea
                     id="Description"
-                    placeholder="Description"
+                    placeholder={t("moduleDescription")}
                     value={description}
                     onChange={(e) => setDescription(e.target.value)}
                 />
@@ -107,7 +105,7 @@ const AddModule = () => {
         </div>
         <div className="col-span-12 flex justify-center">
           <Button onClick={addModule} disabled={loading}>
-            {loading ? "Loading..." : "Add Module"}
+            {loading ? "Loading..." : t("addModule")}
           </Button>
         </div>
       </div>

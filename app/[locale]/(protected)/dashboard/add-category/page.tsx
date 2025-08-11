@@ -12,10 +12,12 @@ import useCreateCategory from "@/services/categories/CreateCategory";
 import {Select, SelectContent, SelectItem, SelectTrigger, SelectValue} from "@/components/ui/select";
 import useGettingAllMainCategories from "@/services/MainCategories/gettingAllMainCategories";
 import {Loader2} from "lucide-react";
+import { useTranslations } from "next-intl";
 
 const AddCategory = () => {
   const { creatingCategory, loading } = useCreateCategory()
   const router = useRouter();
+  const t = useTranslations("categories")
 
   // getting all main Categories
   const {loading: mainCategoriesLoading, mainCategories, getAllMainCategories, error: mainCategoriesError} = useGettingAllMainCategories()
@@ -28,36 +30,34 @@ const AddCategory = () => {
 
   const addCategory = async () => {
     if (!name.trim()) {
-      toast.error("Validation Error", { description: "Category Name is required." });
+      toast.error(t("validationError"), { description: t("category_name_required") });
       return;
     }
     if (!arabicName.trim()) {
-      toast.error("Validation Error", { description: "Category Arabic Name is required." });
+      toast.error(t("validationError"), { description: t("category_arabic_name_required") });
       return;
     }
     if (!pref.trim()) {
-      toast.error("Validation Error", { description: "Pref is required." });
+      toast.error(t("validationError"), { description: t("category_pref_required") });
       return;
     }
     if (!description.trim()) {
-      toast.error("Validation Error", { description: "Description is required." });
+      toast.error(t("validationError"), { description: t("category_description_required") });
       return;
     }
 
     try {
       const success = await creatingCategory({ name,arabicName, mainCategoryId: module , pref, description });
       if (success) {
-        toast.success("Category Added", {
-          description: "Category added successfully!",
+        toast.success(t("category_added"), {
+          description: t("category_added_success"),
         });
         setTimeout(() => {
           router.push("/dashboard/categories");
         }, 1000);
       }
     } catch (error: any) {
-      toast.error("Network Error", {
-        description: error,
-      });
+      toast.error(t("failed_to_add_category"));
     }
   };
 
@@ -78,16 +78,16 @@ const AddCategory = () => {
         <div className="col-span-12">
           <Card>
             <CardHeader className="border-b border-solid border-default-200 mb-6">
-              <CardTitle>Category Information</CardTitle>
+              <CardTitle>{t("category_Information")} </CardTitle>
             </CardHeader>
             <CardContent className="space-y-4">
               <div className="flex items-center">
                 <Label className="w-[150px] flex-none" htmlFor="module">
-                  Module Name
+                  {t("Module_Name")}
                 </Label>
                 <Select onValueChange={(value) => setModule(value)}>
                   <SelectTrigger id="module" className="felx-1">
-                    <SelectValue placeholder="Select Module" />
+                    <SelectValue />
                   </SelectTrigger>
                   <SelectContent>
                     {mainCategories.map((module) => (
@@ -103,12 +103,12 @@ const AddCategory = () => {
             <CardContent className="space-y-4">
               <div className="flex items-center flex-wrap">
                 <Label className="w-[150px] flex-none" htmlFor="categoryArabicName">
-                  Category Arabic Name
+                  {t("category_arabic_name")}
                 </Label>
                 <Input
                     id="categoryArabicName"
                     type="text"
-                    placeholder="Arabic Name"
+                    placeholder={t("category_arabic_name")}
                     value={arabicName}
                     onChange={(e) => setArabicName(e.target.value)}
                 />
@@ -118,12 +118,12 @@ const AddCategory = () => {
             <CardContent className="space-y-4">
               <div className="flex items-center flex-wrap">
                 <Label className="w-[150px] flex-none" htmlFor="categoryName">
-                  Category Name
+                  {t("category_name")}
                 </Label>
                 <Input
                     id="categoryName"
                     type="text"
-                    placeholder="Name"
+                    placeholder={t("category_name")}
                     value={name}
                     onChange={(e) => setName(e.target.value)}
                 />
@@ -132,12 +132,12 @@ const AddCategory = () => {
             <CardContent className="space-y-4">
               <div className="flex items-center flex-wrap">
                 <Label className="w-[150px] flex-none" htmlFor="categoryPref">
-                  Pref
+                  {t("pref")}
                 </Label>
                 <Input
                     id="categoryPref"
                     type="text"
-                    placeholder="Pref"
+                    placeholder={t("pref")}      
                     value={pref}
                     onChange={(e) => setPref(e.target.value)}
                 />
@@ -146,11 +146,10 @@ const AddCategory = () => {
             <CardContent className="space-y-4">
               <div className="flex items-center flex-wrap">
                 <Label className="w-[150px] flex-none" htmlFor="categoryDescription">
-                  Description
+                  {t("description")}
                 </Label>
                 <Textarea
                     id="categoryDescription"
-                    placeholder="Description"
                     value={description}
                     onChange={(e) => setDescription(e.target.value)}
                 />
@@ -160,7 +159,7 @@ const AddCategory = () => {
         </div>
         <div className="col-span-12 flex justify-center">
           <Button onClick={addCategory} disabled={loading}>
-            {loading ? "Loading..." : "Add Category"}
+            {loading ? <Loader2 className="w-6 h-6"/> : t("add_category")}
           </Button>
         </div>
       </div>

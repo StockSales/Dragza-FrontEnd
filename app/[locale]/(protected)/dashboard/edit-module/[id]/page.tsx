@@ -13,11 +13,14 @@ import useUpdateMainCategory from "@/services/MainCategories/updateMainCategory"
 import useGettingMainCategoryById from "@/services/MainCategories/gettingMainCategoryById";
 import {Loader2} from "lucide-react";
 import gettingMainCategoryById from "@/services/MainCategories/gettingMainCategoryById";
+import { useTranslations } from "next-intl";
 
 
 const EditModule = () => {
   // update Module
   const {loading, error, updateMainCategory} = useUpdateMainCategory()
+
+  const t = useTranslations("Module");
 
   // getting module by id
   const {loading: loadingMainCategory, error: errorMainCategory, mainCategory, getMainCategory} = useGettingMainCategoryById()
@@ -33,15 +36,15 @@ const EditModule = () => {
 
   const updateModule = async () => {
     if (!name.trim()) {
-      toast.error("Validation Error", { description: "Module Name is required." });
+      toast.error(t("validationError"), { description: t("moduleNameValidation") });
       return;
     }
     if (!arabicName.trim()) {
-      toast.error("Validation Error", { description: "Module Arabic Name is required." });
+      toast.error(t("validationError"), { description: t("arabicNameValidation") });
       return;
     }
     if (!description.trim()) {
-      toast.error("Validation Error", { description: "Description is required." });
+      toast.error(t("validationError"), { description: t("moduleDescriptionValidation") });
       return;
     }
 
@@ -49,9 +52,7 @@ const EditModule = () => {
       const {success, error} = await updateMainCategory(id,{name,arabicName, description});
 
       if (success) {
-        toast.success("Module Updated", {
-          description: "Module updated successfully!",
-        });
+        toast.success(t("moduleUpdated"));
         setTimeout(() => {
           router.push("/dashboard/modules");
         }, 1000);
@@ -60,9 +61,7 @@ const EditModule = () => {
           throw error;
       }
     } catch (error: any) {
-      toast.error("Network Error", {
-        description: error?.message || "Something went wrong",
-      });
+      toast.error(t("moduleUpdateError"));
     }
   };
 
@@ -91,18 +90,18 @@ const EditModule = () => {
         <div className="col-span-12">
           <Card>
             <CardHeader className="border-b border-solid border-default-200 mb-6">
-              <CardTitle>Edit Module</CardTitle>
+              <CardTitle>{t("editModule")}</CardTitle>
             </CardHeader>
 
             <CardContent className="space-y-4">
               <div className="flex items-center flex-wrap">
                 <Label className="w-[150px] flex-none" htmlFor="moduleName">
-                  Module Name
+                  {t("moduleName")}
                 </Label>
                 <Input
                     id="moduleName"
                     type="text"
-                    placeholder="Name"
+                    placeholder={t("moduleName")}
                     value={name}
                     onChange={(e) => setName(e.target.value)}
                 />
@@ -112,12 +111,12 @@ const EditModule = () => {
             <CardContent className="space-y-4">
               <div className="flex items-center flex-wrap">
                 <Label className="w-[150px] flex-none" htmlFor="arabicModuleName">
-                  Module Arabic Name
+                  {t("arabicName")}
                 </Label>
                 <Input
                     id="arabicModuleName"
                     type="text"
-                    placeholder="Arabic Name"
+                    placeholder={t("arabicName")}
                     value={arabicName}
                     onChange={(e) => setArabicName(e.target.value)}
                 />
@@ -127,11 +126,11 @@ const EditModule = () => {
             <CardContent className="space-y-4">
               <div className="flex items-center flex-wrap">
                 <Label className="w-[150px] flex-none" htmlFor="Description">
-                  Description
+                  {t("moduleDescription")}
                 </Label>
                 <Textarea
                     id="Description"
-                    placeholder="Description"
+                    placeholder={t("moduleDescription")}
                     value={description}
                     onChange={(e) => setDescription(e.target.value)}
                 />
@@ -142,7 +141,7 @@ const EditModule = () => {
 
         <div className="col-span-12 flex justify-center">
           <Button onClick={updateModule} disabled={loading}>
-            {loading ? "Updating..." : "Update Module"}
+            {loading ? `${t("updatingModule")}...` : t("updateModule")}
           </Button>
         </div>
       </div>

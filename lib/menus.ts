@@ -1,4 +1,5 @@
 import { roleRoutes, defaultRouteByRole } from "@/lib/roleRoutes";
+import Cookies from "js-cookie";
 
 export type SubChildren = {
   href: string;
@@ -48,6 +49,7 @@ function getLocalizedRoute(route: string, locale: string): string {
 }
 
 export function getMenuList(pathname: string, t: any, role: string, locale: string = 'en'): Group[] {
+  const id = Cookies.get("userId")
   const rawAllowedRoutes = roleRoutes[role] || [];
   const allowedRoutes = new Set(
       rawAllowedRoutes.includes("*")
@@ -60,7 +62,22 @@ export function getMenuList(pathname: string, t: any, role: string, locale: stri
 
     // Strip locale prefix for comparison
     const normalizedHref = href.replace(/^\/[a-z]{2}\//, '/');
-    return allowedRoutes.has(normalizedHref);
+
+    for (const route of allowedRoutes) {
+      if (route === normalizedHref) return true;
+
+      // Dynamic route handling
+      if (route.includes(":")) {
+        const pattern = "^" + route
+            .replace(/:[^/]+/g, "[^/]+") // replace :id with regex
+            .replace(/\//g, "\\/") + "$";
+        if (new RegExp(pattern).test(normalizedHref)) {
+          return true;
+        }
+      }
+    }
+
+    return false;
   };
 
   // Function to localize href
@@ -152,6 +169,13 @@ export function getMenuList(pathname: string, t: any, role: string, locale: stri
               href: "/dashboard/inventory-management",
               label: t("Inventory Management"),
               active: pathname === "/dashboard/inventory-management",
+              children: [],
+              icon: "heroicons:document-text",
+            },
+            {
+              href: `/dashboard/edit-user/${id}`,
+              label: t("edit-user"),
+              active: pathname.startsWith(`/dashboard/edit-user/`),
               children: [],
               icon: "heroicons:document-text",
             },

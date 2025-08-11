@@ -21,6 +21,7 @@ import useGettingAllMainAreas from "@/services/area/gettingAllMainAreas";
 import {Controller} from "react-hook-form";
 import useUpdateUser from "@/services/users/updateUser";
 import { useTranslations } from "next-intl";
+import Cookies from "js-cookie";
 
 const EditUser = () => {
     const t = useTranslations("EditUser");
@@ -28,6 +29,7 @@ const EditUser = () => {
   // Params
   const params = useParams();
   const id = params?.id;
+  const isAdmin = Cookies.get("userRole") == "Admin";
 
   // getting user Data by id
   const {error, loading, user, getUserById} = useGettingUserById()
@@ -137,8 +139,10 @@ const EditUser = () => {
 
   useEffect(() => {
     getUserById(id);
-    getBalanceForUser(id);
-      getAllMainAreas();
+    getAllMainAreas();
+    if (isAdmin) {
+        getBalanceForUser(id);
+    }
   }, []);
 
 
@@ -284,88 +288,94 @@ const EditUser = () => {
               <Loader2 className="animate-spin" />
             </div>
         ) : (
+            <>
+                {isAdmin && (
+                    <Card>
+                        <CardHeader className="border-b border-solid border-default-200 mb-6 mt-4">
+                            <CardTitle>{t("BalanceInformation")}</CardTitle>
+                        </CardHeader>
+
+                        <CardContent className="space-y-4">
+                            <table className="min-w-full border border-gray-300 text-sm text-left">
+                              {balances && balances.length > 0 ? (
+                                  <table className="min-w-full border border-gray-300 text-sm text-left">
+                                    <thead className="bg-gray-100">
+                                    <tr>
+                                      <th className="px-4 py-2 border">{t("AccountType")}</th>
+                                      <th className="px-4 py-2 border">{t("Balance")}</th>
+                                      <th className="px-4 py-2 border">{t("CreditLimit")}</th>
+                                      <th className="px-4 py-2 border">{t("CreatedAt")}</th>
+                                    </tr>
+                                    </thead>
+                                    <tbody>
+                                    {balances.map((balance) => (
+                                        <tr key={balance.id}>
+                                          <td className="px-4 py-2 border">
+                                            {balance.accountType === '0' ? t('Cash') : t('Credit')}
+                                          </td>
+                                          <td className="px-4 py-2 border">{balance.balance.toFixed(2)}</td>
+                                          <td className="px-4 py-2 border">{balance.creditLimit.toFixed(2)}</td>
+                                          <td className="px-4 py-2 border">
+                                            {new Date(balance.createdAt).toLocaleString()}
+                                          </td>
+                                        </tr>
+                                    ))}
+                                    </tbody>
+                                  </table>
+                              ) : (
+                                  <p>{t("noBalanceFound")}</p>
+                              )}
+                            </table>
+                        </CardContent>
+                    </Card>
+                )}
+            </>
+        )}
+
+          {isAdmin && (
             <Card>
                 <CardHeader className="border-b border-solid border-default-200 mb-6 mt-4">
-                    <CardTitle>{t("BalanceInformation")}</CardTitle>
+                    <CardTitle>{t("depositCash")}</CardTitle>
                 </CardHeader>
 
                 <CardContent className="space-y-4">
-                    <table className="min-w-full border border-gray-300 text-sm text-left">
-                      {balances && balances.length > 0 ? (
-                          <table className="min-w-full border border-gray-300 text-sm text-left">
-                            <thead className="bg-gray-100">
-                            <tr>
-                              <th className="px-4 py-2 border">{t("AccountType")}</th>
-                              <th className="px-4 py-2 border">{t("Balance")}</th>
-                              <th className="px-4 py-2 border">{t("CreditLimit")}</th>
-                              <th className="px-4 py-2 border">{t("CreatedAt")}</th>
-                            </tr>
-                            </thead>
-                            <tbody>
-                            {balances.map((balance) => (
-                                <tr key={balance.id}>
-                                  <td className="px-4 py-2 border">
-                                    {balance.accountType === '0' ? t('Cash') : t('Credit')}
-                                  </td>
-                                  <td className="px-4 py-2 border">{balance.balance.toFixed(2)}</td>
-                                  <td className="px-4 py-2 border">{balance.creditLimit.toFixed(2)}</td>
-                                  <td className="px-4 py-2 border">
-                                    {new Date(balance.createdAt).toLocaleString()}
-                                  </td>
-                                </tr>
-                            ))}
-                            </tbody>
-                          </table>
-                      ) : (
-                          <p>{t("noBalanceFound")}</p>
-                      )}
-                    </table>
+                    <div className="flex items-center flex-wrap">
+                        <Label className="w-[150px] flex-none" htmlFor="amount">{t("amount")}</Label>
+                        <Input
+                            id="amount"
+                            type="number"
+                            className="flex-1"
+                            onChange={(e) => setAmount(e.target.value)}
+                            value={amount}
+                            placeholder={t("depositAmountPlaceholder")}
+                        />
+                    </div>
+
+                    <div className="flex items-center flex-wrap">
+                        <Label className="w-[150px] flex-none" htmlFor="description">{t("Description")}</Label>
+                        <Textarea
+                            id="description"
+                            className="flex-1"
+                            onChange={(e) => setDescription(e.target.value)}
+                            value={description}
+                        />
+                    </div>
+
+                    <div  className={"flex items-center justify-end"}>
+                        <Button onClick={() => {
+                            handleDepositCash();
+                        }}>
+                            {depositCashLoading ? (
+                                <Loader2 color="white" className={"animate-spin"} />
+                            ) : (
+                                t("depositCash")
+                            )}
+                        </Button>
+                    </div>
                 </CardContent>
             </Card>
-        )}
+          )}
 
-
-        <Card>
-            <CardHeader className="border-b border-solid border-default-200 mb-6 mt-4">
-                <CardTitle>{t("depositCash")}</CardTitle>
-            </CardHeader>
-
-            <CardContent className="space-y-4">
-                <div className="flex items-center flex-wrap">
-                    <Label className="w-[150px] flex-none" htmlFor="amount">{t("amount")}</Label>
-                    <Input
-                        id="amount"
-                        type="number"
-                        className="flex-1"
-                        onChange={(e) => setAmount(e.target.value)}
-                        value={amount}
-                        placeholder={t("depositAmountPlaceholder")}
-                    />
-                </div>
-
-                <div className="flex items-center flex-wrap">
-                    <Label className="w-[150px] flex-none" htmlFor="description">{t("Description")}</Label>
-                    <Textarea
-                        id="description"
-                        className="flex-1"
-                        onChange={(e) => setDescription(e.target.value)}
-                        value={description}
-                    />
-                </div>
-
-                <div  className={"flex items-center justify-end"}>
-                    <Button onClick={() => {
-                        handleDepositCash();
-                    }}>
-                        {depositCashLoading ? (
-                            <Loader2 color="white" className={"animate-spin"} />
-                        ) : (
-                            t("depositCash")
-                        )}
-                    </Button>
-                </div>
-            </CardContent>
-        </Card>
       </div>
   );
 };

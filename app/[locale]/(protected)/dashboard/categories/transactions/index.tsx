@@ -33,6 +33,7 @@ import getCategories from "@/services/categories/getCategories";
 import {Loader2} from "lucide-react";
 import {CategoryType} from "@/types/category";
 import SearchInput from "@/app/[locale]/(protected)/components/SearchInput/SearchInput";
+import { useTranslations } from "next-intl";
 
 const TransactionsTable = () => {
   const [sorting, setSorting] = React.useState<SortingState>([]);
@@ -46,7 +47,9 @@ const TransactionsTable = () => {
   // getting all Categories as mounted
   const {data, loading, gettingAllCategories} = getCategories()
 
-  const columns = baseColumns({ refresh: gettingAllCategories });
+  const t = useTranslations("categories");
+
+  const columns = baseColumns({ refresh: gettingAllCategories, t });
 
   const [filteredCategories, setFilteredCategories] = useState<CategoryType[]>([]);
 
@@ -100,7 +103,7 @@ const TransactionsTable = () => {
           <div className="flex items-center gap-4 flex-wrap">
             <Link href="/dashboard/add-category">
               <Button size={"md"} variant="outline" >
-                Add Category
+                {t("add_category")}
               </Button>
             </Link>
           </div>
