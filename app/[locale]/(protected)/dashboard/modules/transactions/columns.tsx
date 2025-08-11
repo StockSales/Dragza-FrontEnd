@@ -11,20 +11,22 @@ import useDeleteCategoryById from "@/services/categories/DeleteCategory";
 import getCategories from "@/services/categories/getCategories";
 import {ModuleType} from "@/types/module";
 
-export const baseColumns = (): ColumnDef<ModuleType>[] => [
+export const baseColumns = ({t} : {
+  t: (key: string) => string;
+}) : ColumnDef<ModuleType>[] => [
   {
     accessorKey: "name",
-    header: "Module Name",
-    cell: ({ row }) => <span>{row.getValue("name") || "Unknown"}</span>,
+    header: t("moduleName"),
+    cell: ({ row }) => <span>{row.getValue("name") || t("unknown")}</span>,
   },
     {
     accessorKey: "arabicName",
-    header: "Arabic Name",
-    cell: ({ row }) => <span>{row.getValue("arabicName") || "Unknown"}</span>,
+    header: t("arabicName"),
+    cell: ({ row }) => <span>{row.getValue("arabicName") || t("unknown")}</span>,
   },
   {
     accessorKey: "description",
-    header: "Description",
+    header: t("moduleDescription"),
     cell: ({ row }) => {
       return <span>{row.getValue("description")}</span>;
     },
@@ -32,7 +34,7 @@ export const baseColumns = (): ColumnDef<ModuleType>[] => [
   {
     id: "actions",
     accessorKey: "action",
-    header: "Actions",
+    header: t("actions"),
     enableHiding: false,
     cell: ({ row }) => {
       const id: string | number | undefined = row.original.id;
@@ -57,7 +59,7 @@ export const baseColumns = (): ColumnDef<ModuleType>[] => [
                             onClick={() => toast.dismiss(toastId)}
                             className="text-white px-3 py-1 rounded-md"
                         >
-                            Cancel
+                            {t("cancel")}
                         </Button>
                         <Button
                             size="sm"
@@ -82,7 +84,7 @@ export const baseColumns = (): ColumnDef<ModuleType>[] => [
                                 }
                             }}
                         >
-                            Confirm
+                            {t("remove")}
                         </Button>
                     </div>
                 ),

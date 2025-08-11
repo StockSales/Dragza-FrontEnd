@@ -34,6 +34,7 @@ import SearchInput from "@/app/[locale]/(protected)/components/SearchInput/Searc
 import {ModuleType} from "@/types/module";
 import useGettingAllMainCategories from "@/services/MainCategories/gettingAllMainCategories";
 import gettingAllMainCategories from "@/services/MainCategories/gettingAllMainCategories";
+import { useTranslations } from "next-intl";
 
 const TransactionsTable = () => {
   // getting all modules
@@ -49,7 +50,9 @@ const TransactionsTable = () => {
 
   // getting all Modules as mounted
 
-  const columns = baseColumns();
+  const t = useTranslations("Module");
+
+  const columns = baseColumns({t});
 
   const [filteredModule, setFilteredModule] = useState<ModuleType[]>([]);
 
@@ -102,7 +105,7 @@ const TransactionsTable = () => {
           <div className="flex items-center gap-4 flex-wrap">
             <Link href="/dashboard/add-module">
               <Button size={"md"} variant="outline" >
-                Add Module
+                {t("addModule")}
               </Button>
             </Link>
           </div>
@@ -153,7 +156,7 @@ const TransactionsTable = () => {
                     colSpan={columns.length}
                     className="h-24 text-center"
                   >
-                    No results.
+                    {t("noModulesFound")}
                   </TableCell>
                 </TableRow>
               )}
