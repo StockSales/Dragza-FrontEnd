@@ -11,6 +11,7 @@ function useCreateProductPrice() {
         purchasePrice: number | string;
         salesPrice: number | string;
         stockQuantity: number;
+        maxQuantity: number;
     }): Promise<boolean> => {
         setLoading(true);
         setError(null);

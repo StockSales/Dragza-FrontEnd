@@ -669,6 +669,8 @@
     "createdAt": "تاريخ الإنشاء",
     "discount": "الخصم (%)",
     "discount_": "الخصم",
+    "maxQuantityValidation": "الحد الأقصى للكمية مطلوب.",
+    "maxQuantity": "الحد الأقصى للكمية",
     "productInformation": "معلومات المنتج",
     "purchasePriceValidation": "سعر الشراء مطلوب.",
     "salesPriceValidation": "سعر البيع مطلوب.",

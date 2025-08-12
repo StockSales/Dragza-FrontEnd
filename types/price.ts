@@ -10,4 +10,5 @@ export type Price = {
     inventoryUserId: string;
     inventoryUserName: string;
     stockQuantity?: string| number;
+    maxQuantity?: string | number;
 }

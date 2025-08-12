@@ -708,6 +708,8 @@
     "createdAt": "Created At",
     "discount": "Discount(%)",
     "discount_": "Discount",
+    "maxQuantityValidation": "Maximum quantity is required.",
+    "maxQuantity": "Maximum Quantity",
     "productInformation": "Product Information",
     "purchasePriceValidation": "Purchase price is required.",
     "salesPriceValidation": "Sales price is required.",
