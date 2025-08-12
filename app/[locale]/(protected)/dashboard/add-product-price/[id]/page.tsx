@@ -28,6 +28,7 @@ function AddProductPrice() {
     const [purchasePrice, setPurchasePrice] = useState<number | string>("")
     const [salesPrice, setSalesPrice] = useState<number | string>("");
     const [stock, setStock] = useState<number>(0)
+    const [maxQuantity, setMaxQuantity] = useState<number>(0)
     const [discount, setDiscount] = useState<number>(0)
     const [categoryId, setCategoryId] = useState<string>(product?.category?.name as string)
 
@@ -49,6 +50,10 @@ function AddProductPrice() {
             toast.error(t("stockQuantityValidation"));
             return;
         }
+        if (!maxQuantity) {
+            toast.error(t("maxQuantityValidation"));
+            return;
+        }
         if (!discount) {
             toast.error(t("discountValidation"));
             return;
@@ -61,6 +66,7 @@ function AddProductPrice() {
                 purchasePrice,
                 salesPrice,
                 stockQuantity: stock,
+                maxQuantity: maxQuantity,
             });
 
             if (success) {
@@ -155,6 +161,18 @@ function AddProductPrice() {
                                 placeholder="eg. 100"
                                 value={stock}
                                 onChange={(e) => setStock(parseInt(e?.target?.value))}
+                            />
+                        </div>
+                        <div className="flex items-center flex-wrap">
+                            <Label className="w-[150px] flex-none" htmlFor="stock">
+                                {t("maxQuantity")}
+                            </Label>
+                            <Input
+                                id="stock"
+                                type="number"
+                                placeholder="eg. 100"
+                                value={maxQuantity}
+                                onChange={(e) => setMaxQuantity(parseInt(e?.target?.value))}
                             />
                         </div>
                         <div className="flex items-center">

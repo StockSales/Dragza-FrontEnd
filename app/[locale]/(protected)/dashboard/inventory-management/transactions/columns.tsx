@@ -56,6 +56,13 @@ export const baseColumns = ({t} : {
     },
   },
   {
+    accessorKey: "maxQuantity",
+    header: t("maxQuantity"),
+    cell: ({ row }) => {
+      return <span>{row.original?.maxQuantity}</span>;
+    },
+  },
+  {
     accessorKey: "creationDate",
     header: t("createdAt"),
     cell: ({ row }) => {
