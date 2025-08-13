@@ -63,7 +63,7 @@ export function getMenuList(pathname: string, t: any, role: string, locale: stri
     // Strip locale prefix for comparison
     const normalizedHref = href.replace(/^\/[a-z]{2}\//, '/');
 
-    for (const route of allowedRoutes) {
+    for (const route of Array.from(allowedRoutes)) {
       if (route === normalizedHref) return true;
 
       // Dynamic route handling
