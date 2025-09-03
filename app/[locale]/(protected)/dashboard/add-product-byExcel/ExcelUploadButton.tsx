@@ -1,84 +1,124 @@
-"use client";
-
-import { useRef } from "react";
+import React, { useState } from "react";
 import { Button } from "@/components/ui/button";
-import { Loader2, FileSpreadsheet } from "lucide-react";
+import { FileSpreadsheet, AlertTriangle, CheckCircle } from "lucide-react";
 import { toast } from "sonner";
-import { useTranslations } from "next-intl";
-import useAddProductsByExcel from "@/services/products/csv/addProductByExcel";
+import addProductsByExcel from "@/services/products/csv/addProductByExcel";
 
 interface ExcelUploadButtonProps {
-    onSuccess?: () => void;
+  onSuccess?: () => void;
 }
 
-const ExcelUploadButton = ({ onSuccess }: ExcelUploadButtonProps) => {
-    const t = useTranslations("productList");
-    const fileInputRef = useRef<HTMLInputElement>(null);
+const ExcelUploadButton: React.FC<ExcelUploadButtonProps> = ({ onSuccess }) => {
+  const { loading, addProductsByExcel: uploadProducts } = addProductsByExcel();
 
-    // Use the service hook
-    const { loading, addProductsByExcel } = useAddProductsByExcel();
+  const handleFileUpload = async (file: File) => {
+    if (!file) return;
 
-    const handleFileSelect = () => {
-        fileInputRef.current?.click();
-    };
+    // Validate file type
+    const validTypes = [
+      "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
+      "application/vnd.ms-excel",
+    ];
 
-    const handleFileChange = async (event: React.ChangeEvent<HTMLInputElement>) => {
-        const file = event.target.files?.[0];
-        if (!file) return;
+    if (!validTypes.includes(file.type)) {
+      toast.error("Invalid file type", {
+        description: "Please upload an Excel file (.xlsx or .xls)",
+      });
+      return;
+    }
 
-        // Validate file type
-        const validTypes = ["application/vnd.ms-excel", "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet", "text/csv"];
+    // Show uploading toast
+    const uploadToastId = toast.loading("Uploading Excel file...", {
+      description: "Processing your product data...",
+    });
 
-        if (!validTypes.includes(file.type) && !file.name.endsWith(".xlsx") && !file.name.endsWith(".xls") && !file.name.endsWith(".csv")) {
-            toast.error(t("invalidFileType") || "Please select a valid Excel or CSV file");
-            return;
+    try {
+      const result = await uploadProducts(file, true);
+      toast.dismiss(uploadToastId);
+
+      if (result.success) {
+        if (result.hasFailedEntries) {
+          // Some entries failed validation
+          toast.warning("Upload completed with issues", {
+            description: (
+              <div className="flex flex-col gap-2">
+                <div className="flex items-center gap-2">
+                  <AlertTriangle className="w-4 h-4" />
+                  <span>
+                    Some products were processed successfully, but some failed
+                    validation.
+                  </span>
+                </div>
+                <div className="text-sm text-muted-foreground">
+                  Failed entries have been downloaded as:{" "}
+                  {result.failedEntriesFile}
+                </div>
+              </div>
+            ),
+            duration: 8000,
+          });
+        } else {
+          // All entries processed successfully
+          toast.success("Excel upload successful!", {
+            description: "All products were processed successfully.",
+            icon: <CheckCircle className="w-4 h-4" />,
+          });
         }
 
-        try {
-            const result = await addProductsByExcel(file, false);
+        onSuccess?.();
+      } else {
+        throw new Error(result.error || "Upload failed");
+      }
+    } catch (error) {
+      toast.dismiss(uploadToastId);
+      toast.error("Upload failed", {
+        description:
+          error instanceof Error
+            ? error.message
+            : "Failed to process Excel file",
+      });
+    }
+  };
 
-            if (result.success) {
-                toast.success(t("excelUploadSuccess") || "Products imported successfully!");
-                onSuccess?.();
+  const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (file) {
+      handleFileUpload(file);
+    }
+    // Reset input value to allow re-uploading the same file
+    e.target.value = "";
+  };
 
-                // Reset the file input
-                if (fileInputRef.current) {
-                    fileInputRef.current.value = "";
-                }
-            } else {
-                throw new Error(result.error || "Upload failed");
-            }
-        } catch (error: any) {
-            console.error("Upload error:", error);
-            toast.error(error?.message || t("excelUploadError") || "Failed to import products. Please check your file format.");
-        }
-    };
+  return (
+    <div className="relative">
+      <input
+        type="file"
+        id="excel-upload"
+        accept=".xlsx,.xls"
+        onChange={handleInputChange}
+        className="absolute inset-0 w-full h-full opacity-0 cursor-pointer z-10"
+        disabled={loading}
+      />
 
-    return (
-        <>
-            <input
-                ref={fileInputRef}
-                type="file"
-                accept=".xlsx,.xls,.csv"
-                onChange={handleFileChange}
-                style={{ display: "none" }}
-            />
-
-            <Button
-                onClick={handleFileSelect}
-                disabled={loading}
-                size="md"
-                className="flex items-center gap-2 bg-green-600 hover:bg-green-700 text-white border-green-600 hover:border-green-700 transition-colors duration-200"
-            >
-                {loading ? (
-                    <Loader2 className="w-4 h-4 animate-spin" />
-                ) : (
-                    <FileSpreadsheet className="w-4 h-4" />
-                )}
-                {loading ? "Uploading..." : "Import from Excel"}
-            </Button>
-        </>
-    );
+      <Button
+        size="md"
+        disabled={loading}
+        className="bg-green-600 hover:bg-green-700 text-white border-green-600 hover:border-green-700"
+      >
+        {loading ? (
+          <>
+            <div className="w-4 h-4 border-2 border-current border-t-transparent rounded-full animate-spin" />
+            Importing...
+          </>
+        ) : (
+          <>
+            <FileSpreadsheet className="w-4 h-4" />
+            Import from Excel
+          </>
+        )}
+      </Button>
+    </div>
+  );
 };
 
 export default ExcelUploadButton;
