@@ -50,6 +50,7 @@ import SearchInput from "@/app/[locale]/(protected)/components/SearchInput/Searc
 import {ExportCSVButton} from "@/components/partials/export-csv/ExportCSVButton";
 import {CSVUploadModal} from "@/components/partials/ImportCsv/ImportCsv";
 import { useTranslations } from "next-intl";
+import ExcelUploadButton from "@/app/[locale]/(protected)/dashboard/add-product-byExcel/ExcelUploadButton";
 
 const TransactionsTable = () => {
   const t = useTranslations("productList")
@@ -180,13 +181,23 @@ const TransactionsTable = () => {
               filterKey={"name"}
               setFilteredData={setFilteredProducts}
             />
-            {userRole == "Admin" && (
-              <Link href="/dashboard/add-product">
-                <Button size={"md"} variant="outline" color="secondary">
-                  {t("addProduct")}
-                </Button>
-              </Link>
-            )}
+              {userRole == "Admin" && (
+                  <div className="flex items-center gap-3">
+                      <Link href="/dashboard/add-product">
+                          <Button size={"md"} variant="outline" color="secondary">
+                              {t("addProduct")}
+                          </Button>
+                      </Link>
+                      <ExcelUploadButton
+                          onSuccess={() => {
+                              getAllProducts(includeDeleted);
+                              toast.success(
+                                  t("dataRefreshed") || "Product list refreshed"
+                              );
+                          }}
+                      />
+                  </div>
+              )}
             {/*{userRole !== "Admin" && (*/}
             {/*    <div className={"flex flex-row gap-6 justify-end"}>*/}
             {/*      <ExportCSVButton/>*/}
