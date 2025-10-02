@@ -1,15 +1,20 @@
 import { ColumnDef } from "@tanstack/react-table";
 import { SquarePen, Trash2 } from "lucide-react";
-import { Link } from '@/i18n/routing';
-import {usePathname} from "next/navigation";
-import {ProductType} from "@/types/product";
-import {toast} from "sonner";
+import { Link } from "@/i18n/routing";
+import { usePathname } from "next/navigation";
+import { ProductType } from "@/types/product";
+import { toast } from "sonner";
 import useDeleteProductById from "@/services/products/deleteProductById";
-import {Button} from "@/components/ui/button";
+import { Button } from "@/components/ui/button";
 import Cookies from "js-cookie";
 
-export const baseColumns = ({ refresh, t }: { refresh: () => void , t: (key: string) => string; }): ColumnDef<ProductType>[] =>
-[
+export const baseColumns = ({
+  refresh,
+  t,
+}: {
+  refresh: () => void;
+  t: (key: string) => string;
+}): ColumnDef<ProductType>[] => [
   {
     accessorKey: "name",
     header: t("productName"),
@@ -17,23 +22,23 @@ export const baseColumns = ({ refresh, t }: { refresh: () => void , t: (key: str
       const product = row.original.name;
       return (
         <div className="font-medium text-card-foreground/80">
-            <span className="text-sm text-default-600">
-              {product ?? t("unknown")}
-            </span>
+          <span className="text-sm text-default-600">
+            {product ?? t("unknown")}
+          </span>
         </div>
       );
     },
   },
-    {
+  {
     accessorKey: "arabicName",
     header: t("arabicName"),
     cell: ({ row }) => {
       const product = row.original.arabicName;
       return (
         <div className="font-medium text-card-foreground/80">
-            <span className="text-sm text-default-600">
-              {product ?? t("unknown")}
-            </span>
+          <span className="text-sm text-default-600">
+            {product ?? t("unknown")}
+          </span>
         </div>
       );
     },
@@ -45,9 +50,7 @@ export const baseColumns = ({ refresh, t }: { refresh: () => void , t: (key: str
       const pref = row.original.preef;
       return (
         <div className="font-medium text-card-foreground/80">
-            <span className="text-sm text-default-600">
-              {pref ?? ("unknown")}
-            </span>
+          <span className="text-sm text-default-600">{pref ?? "unknown"}</span>
         </div>
       );
     },
@@ -71,10 +74,12 @@ export const baseColumns = ({ refresh, t }: { refresh: () => void , t: (key: str
     header: t("category"),
     cell: ({ row }) => <span>{row.original.category.name}</span>,
   },
-    {
+  {
     accessorKey: "activeIngredient",
     header: t("activeIngredient"),
-    cell: ({ row }) => <span>{row.original.activeIngredient.name || t("unknown")}</span>,
+    cell: ({ row }) => (
+      <span>{row.original.activeIngredient?.name || t("unknown")}</span>
+    ),
   },
   // {
   //   accessorKey: "stock",
@@ -135,58 +140,61 @@ export const baseColumns = ({ refresh, t }: { refresh: () => void , t: (key: str
     header: t("actions"),
     enableHiding: false,
     cell: ({ row }) => {
-        const userRole = Cookies.get("userRole");
-        const { loading, deleteProductById} = useDeleteProductById()
+      const userRole = Cookies.get("userRole");
+      const { loading, deleteProductById } = useDeleteProductById();
       const pathname = usePathname();
       const getHref = () => {
-        if (pathname?.includes('/product-list') && userRole == 'Admin') {
+        if (pathname?.includes("/product-list") && userRole == "Admin") {
           return `/dashboard/edit-product/${row.original.id}`;
-        } else if( pathname?.includes('/product-list') && userRole == 'Inventory') {
-            return `/dashboard/add-product-price/${row.original.id}`;
+        } else if (
+          pathname?.includes("/product-list") &&
+          userRole == "Inventory"
+        ) {
+          return `/dashboard/add-product-price/${row.original.id}`;
         }
-        return `/dashboard/edit-product/${row.original.id}`
+        return `/dashboard/edit-product/${row.original.id}`;
       };
 
-        const handleDeleteProduct = (id: string | undefined) => {
-            const toastId = toast("Delete Product", {
-                description: t("areYouWantToRemove"),
-                action: (
-                    <div className="flex justify-end mx-auto items-center my-auto gap-2">
-                        <Button
-                            size="sm"
-                            onClick={() => toast.dismiss(toastId)}
-                            className="text-white px-3 py-1 rounded-md"
-                        >
-                            {t("cancel")}
-                        </Button>
-                        <Button
-                            size="sm"
-                            variant="shadow"
-                            disabled={loading} // Make sure you define loading state
-                            className="text-white px-3 py-1 rounded-md"
-                            onClick={async () => {
-                                try {
-                                    const {success, error} = await deleteProductById(id);
-                                    toast.dismiss(toastId);
-                                    if (success) {
-                                        toast(t("successMessage"));
-                                        refresh();
-                                    } else {
-                                        throw new Error(error);
-                                    }
-                                } catch (error) {
-                                    toast.dismiss(toastId);
-                                    toast(t("errorMessage"));
-                                }
-                            }}
-                        >
-                            {t("remove")}
-                        </Button>
-                    </div>
-                ),
-            });
-        };
-        return (
+      const handleDeleteProduct = (id: string | undefined) => {
+        const toastId = toast("Delete Product", {
+          description: t("areYouWantToRemove"),
+          action: (
+            <div className="flex justify-end mx-auto items-center my-auto gap-2">
+              <Button
+                size="sm"
+                onClick={() => toast.dismiss(toastId)}
+                className="text-white px-3 py-1 rounded-md"
+              >
+                {t("cancel")}
+              </Button>
+              <Button
+                size="sm"
+                variant="shadow"
+                disabled={loading} // Make sure you define loading state
+                className="text-white px-3 py-1 rounded-md"
+                onClick={async () => {
+                  try {
+                    const { success, error } = await deleteProductById(id);
+                    toast.dismiss(toastId);
+                    if (success) {
+                      toast(t("successMessage"));
+                      refresh();
+                    } else {
+                      throw new Error(error);
+                    }
+                  } catch (error) {
+                    toast.dismiss(toastId);
+                    toast(t("errorMessage"));
+                  }
+                }}
+              >
+                {t("remove")}
+              </Button>
+            </div>
+          ),
+        });
+      };
+      return (
         <div className="flex items-center gap-1">
           <Link
             href={getHref()}
@@ -194,14 +202,14 @@ export const baseColumns = ({ refresh, t }: { refresh: () => void , t: (key: str
           >
             <SquarePen className="w-4 h-4" />
           </Link>
-            {userRole == "Admin" && (
-              <div
-                onClick={() => handleDeleteProduct(row.original.id)}
-                className="flex items-center p-2 text-destructive bg-destructive/40 duration-200 transition-all hover:bg-destructive/80 hover:text-destructive-foreground rounded-full"
-              >
-                <Trash2 className="w-4 h-4" />
-              </div>
-            )}
+          {userRole == "Admin" && (
+            <div
+              onClick={() => handleDeleteProduct(row.original.id)}
+              className="flex items-center p-2 text-destructive bg-destructive/40 duration-200 transition-all hover:bg-destructive/80 hover:text-destructive-foreground rounded-full"
+            >
+              <Trash2 className="w-4 h-4" />
+            </div>
+          )}
         </div>
       );
     },

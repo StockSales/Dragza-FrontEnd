@@ -36,31 +36,42 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import { Link } from '@/i18n/routing';
-import {Button} from "@/components/ui/button";
+import { Link } from "@/i18n/routing";
+import { Button } from "@/components/ui/button";
 import useGettingAllProducts from "@/services/products/gettingAllProducts";
-import {useEffect, useState} from "react";
-import {Loader2} from "lucide-react";
-import {toast} from "sonner";
+import { useEffect, useState } from "react";
+import { Loader2 } from "lucide-react";
+import { toast } from "sonner";
 import GetCategories from "@/services/categories/getCategories";
 import Cookies from "js-cookie";
-import {ProductType} from "@/types/product";
+import { ProductType } from "@/types/product";
 import product from "@/app/[locale]/(protected)/dashboard/dash-ecom/components/product";
 import SearchInput from "@/app/[locale]/(protected)/components/SearchInput/SearchInput";
-import {ExportCSVButton} from "@/components/partials/export-csv/ExportCSVButton";
-import {CSVUploadModal} from "@/components/partials/ImportCsv/ImportCsv";
+import { ExportCSVButton } from "@/components/partials/export-csv/ExportCSVButton";
+import { CSVUploadModal } from "@/components/partials/ImportCsv/ImportCsv";
 import { useTranslations } from "next-intl";
 import ExcelUploadButton from "@/app/[locale]/(protected)/dashboard/add-product-byExcel/ExcelUploadButton";
 
 const TransactionsTable = () => {
-  const t = useTranslations("productList")
+  const t = useTranslations("productList");
   const userRole = Cookies.get("userRole");
   const userId = Cookies.get("userId");
   // getting all products
-  const { loading, getAllProducts, products: data, error, includeDeleted, setIncludeDeletedState } = useGettingAllProducts()
+  const {
+    loading,
+    getAllProducts,
+    products: data,
+    error,
+    includeDeleted,
+    setIncludeDeletedState,
+  } = useGettingAllProducts();
 
   // getting all categories
-  const {loading: categoriesLoading, data: categories, gettingAllCategories} = GetCategories()
+  const {
+    loading: categoriesLoading,
+    data: categories,
+    gettingAllCategories,
+  } = GetCategories();
 
   const [sorting, setSorting] = React.useState<SortingState>([]);
   const [columnFilters, setColumnFilters] = React.useState<ColumnFiltersState>(
@@ -72,7 +83,7 @@ const TransactionsTable = () => {
 
   const columns = baseColumns({ refresh: () => getAllProducts("false"), t });
 
-  const [filteredProducts, setFilteredProducts] = useState<ProductType[]>([])
+  const [filteredProducts, setFilteredProducts] = useState<ProductType[]>([]);
 
   const table = useReactTable({
     data: filteredProducts ?? [],
@@ -98,23 +109,23 @@ const TransactionsTable = () => {
     const allPrices = product.prices ?? [];
 
     // Prices added by the specific user
-    const userPrices = allPrices.filter(
-        (p) => p.inventoryUserId === userId
-    );
+    const userPrices = allPrices.filter((p) => p.inventoryUserId === userId);
 
     let selectedPrice;
 
     if (userPrices.length > 0) {
       // Pick latest price added by the user
       selectedPrice = userPrices.sort(
-          (a, b) =>
-              new Date(b.creationDate).getTime() - new Date(a.creationDate).getTime()
+        (a, b) =>
+          new Date(b.creationDate).getTime() -
+          new Date(a.creationDate).getTime()
       )[0];
     } else {
       // Pick latest price globally
       selectedPrice = allPrices.sort(
-          (a, b) =>
-              new Date(b.creationDate).getTime() - new Date(a.creationDate).getTime()
+        (a, b) =>
+          new Date(b.creationDate).getTime() -
+          new Date(a.creationDate).getTime()
       )[0];
     }
 
@@ -143,17 +154,17 @@ const TransactionsTable = () => {
 
   // mounted data
   useEffect(() => {
-    gettingAllCategories()
+    gettingAllCategories();
   }, []);
 
   // getting all products
   useEffect(() => {
-    getAllProducts(includeDeleted)
+    getAllProducts(includeDeleted);
   }, [includeDeleted]);
 
   // dependent data
   useEffect(() => {
-    if (data) setFilteredProducts(data)
+    if (data) setFilteredProducts(data);
   }, [data]);
 
   if (categoriesLoading == true) {
@@ -165,11 +176,10 @@ const TransactionsTable = () => {
   }
 
   if (error) {
-      toast.error("Something went wrong", {
-          description: error
-      });
+    toast.error("Something went wrong", {
+      description: error,
+    });
   }
-
 
   return (
     <div className="w-full">
@@ -181,23 +191,23 @@ const TransactionsTable = () => {
               filterKey={"name"}
               setFilteredData={setFilteredProducts}
             />
-              {userRole == "Admin" && (
-                  <div className="flex items-center gap-3">
-                      <Link href="/dashboard/add-product">
-                          <Button size={"md"} variant="outline" color="secondary">
-                              {t("addProduct")}
-                          </Button>
-                      </Link>
-                      <ExcelUploadButton
-                          onSuccess={() => {
-                              getAllProducts(includeDeleted);
-                              toast.success(
-                                  t("dataRefreshed") || "Product list refreshed"
-                              );
-                          }}
-                      />
-                  </div>
-              )}
+            {userRole == "Admin" && (
+              <div className="flex items-center gap-3">
+                <Link href="/dashboard/add-product">
+                  <Button size={"md"} variant="outline" color="secondary">
+                    {t("addProduct")}
+                  </Button>
+                </Link>
+                <ExcelUploadButton
+                  onSuccess={() => {
+                    getAllProducts(includeDeleted);
+                    toast.success(
+                      t("dataRefreshed") || "Product list refreshed"
+                    );
+                  }}
+                />
+              </div>
+            )}
             {/*{userRole !== "Admin" && (*/}
             {/*    <div className={"flex flex-row gap-6 justify-end"}>*/}
             {/*      <ExportCSVButton/>*/}
@@ -211,65 +221,68 @@ const TransactionsTable = () => {
       </div>
 
       {loading == true ? (
-          <div className="flex items-center justify-center h-full">
-            <Loader2 className="w-6 h-6 animate-spin" />
-          </div>
+        <div className="flex items-center justify-center h-full">
+          <Loader2 className="w-6 h-6 animate-spin" />
+        </div>
       ) : (
-          <>
-            <CardContent className="pt-6">
-              <div className="border border-solid border-default-200 rounded-lg overflow-hidden border-t-0">
-                <Table>
-                  <TableHeader className="bg-default-200">
-                    {table.getHeaderGroups().map((headerGroup) => (
-                      <TableRow key={headerGroup.id}>
-                        {headerGroup.headers.map((header) => {
-                          return (
-                            <TableHead className="last:text-start" key={header.id}>
-                              {header.isPlaceholder
-                                ? null
-                                : flexRender(
-                                    header.column.columnDef.header,
-                                    header.getContext()
-                                  )}
-                            </TableHead>
-                          );
-                        })}
+        <>
+          <CardContent className="pt-6">
+            <div className="border border-solid border-default-200 rounded-lg overflow-hidden border-t-0">
+              <Table>
+                <TableHeader className="bg-default-200">
+                  {table.getHeaderGroups().map((headerGroup) => (
+                    <TableRow key={headerGroup.id}>
+                      {headerGroup.headers.map((header) => {
+                        return (
+                          <TableHead
+                            className="last:text-start"
+                            key={header.id}
+                          >
+                            {header.isPlaceholder
+                              ? null
+                              : flexRender(
+                                  header.column.columnDef.header,
+                                  header.getContext()
+                                )}
+                          </TableHead>
+                        );
+                      })}
+                    </TableRow>
+                  ))}
+                </TableHeader>
+                <TableBody>
+                  {table.getRowModel().rows?.length ? (
+                    table.getRowModel().rows.map((row) => (
+                      <TableRow
+                        key={row.id}
+                        data-state={row.getIsSelected() && "selected"}
+                      >
+                        {row.getVisibleCells().map((cell) => (
+                          <TableCell key={cell.id} className="h-[75px]">
+                            {flexRender(
+                              cell.column.columnDef.cell,
+                              cell.getContext()
+                            )}
+                          </TableCell>
+                        ))}
                       </TableRow>
-                    ))}
-                  </TableHeader>
-                  <TableBody>
-                    {table.getRowModel().rows?.length ? (
-                      table.getRowModel().rows.map((row) => (
-                        <TableRow
-                          key={row.id}
-                          data-state={row.getIsSelected() && "selected"}
-                        >
-                          {row.getVisibleCells().map((cell) => (
-                            <TableCell key={cell.id} className="h-[75px]">
-                              {flexRender(
-                                cell.column.columnDef.cell,
-                                cell.getContext()
-                              )}
-                            </TableCell>
-                          ))}
-                        </TableRow>
-                      ))
-                    ) : (
-                      <TableRow>
-                        <TableCell
-                          colSpan={columns.length}
-                          className="h-24 text-center"
-                        >
-                          {t("noProductsFound")}
-                        </TableCell>
-                      </TableRow>
-                    )}
-                  </TableBody>
-                </Table>
-              </div>
-            </CardContent>
-            <TablePagination table={table} />
-          </>
+                    ))
+                  ) : (
+                    <TableRow>
+                      <TableCell
+                        colSpan={columns.length}
+                        className="h-24 text-center"
+                      >
+                        {t("noProductsFound")}
+                      </TableCell>
+                    </TableRow>
+                  )}
+                </TableBody>
+              </Table>
+            </div>
+          </CardContent>
+          <TablePagination table={table} />
+        </>
       )}
     </div>
   );
