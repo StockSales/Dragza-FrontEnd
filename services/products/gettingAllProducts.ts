@@ -17,11 +17,27 @@ function useGettingAllProducts() {
     try {
       // Fetch first page to get total pages
       const firstResponse = await AxiosInstance.get(
-        `/api/Products?includeDeleted=${includeDeleted}&lang=3&pageNumber=1&pageSize=50`
+        `/api/Products?includeDeleted=${includeDeleted}&lang=1&pageNumber=1&pageSize=50`
       );
 
+      console.log("First Response:", firstResponse); // Debug log
+
+      // Handle 204 No Content
+      if (firstResponse.status === 204) {
+        setProducts([]);
+        setLoading(false);
+        return;
+      }
+
       if (firstResponse.status === 200 || firstResponse.status === 201) {
-        const totalPages = firstResponse.data.pagination.totalPages;
+        // Check if data exists
+        if (!firstResponse.data || !firstResponse.data.data) {
+          setProducts([]);
+          setLoading(false);
+          return;
+        }
+
+        const totalPages = firstResponse.data.pagination?.totalPages || 1;
         let allProducts = [...firstResponse.data.data];
 
         // Fetch remaining pages in parallel
@@ -30,14 +46,14 @@ function useGettingAllProducts() {
           for (let page = 2; page <= totalPages; page++) {
             pagePromises.push(
               AxiosInstance.get(
-                `/api/Products?includeDeleted=${includeDeleted}&lang=3&pageNumber=${page}&pageSize=50`
+                `/api/Products?includeDeleted=${includeDeleted}&lang=1&pageNumber=${page}&pageSize=50`
               )
             );
           }
 
           const responses = await Promise.all(pagePromises);
           responses.forEach((res) => {
-            if (res.status === 200 || res.status === 201) {
+            if ((res.status === 200 || res.status === 201) && res.data?.data) {
               allProducts = [...allProducts, ...res.data.data];
             }
           });
@@ -45,16 +61,32 @@ function useGettingAllProducts() {
 
         setProducts(allProducts);
       } else {
-        const firstKey = Object.keys(firstResponse.data.errors)[0];
-        const firstMessage = firstResponse.data.errors[firstKey][0];
-        setError(`${firstKey}: ${firstMessage}`);
+        // Handle error responses
+        if (firstResponse.data?.errors) {
+          const firstKey = Object.keys(firstResponse.data.errors)[0];
+          const firstMessage = firstResponse.data.errors[firstKey]?.[0] || "Unknown error";
+          setError(`${firstKey}: ${firstMessage}`);
+        } else {
+          setError("An unexpected error occurred.");
+        }
       }
     } catch (err: any) {
-      const apiErrors = err?.response?.data?.errors;
-      if (apiErrors && typeof apiErrors === "object") {
+      console.error("Error fetching products:", err); // Debug log
+
+      // Better error handling
+      if (err?.response?.status === 404) {
+        setError("Products endpoint not found.");
+      } else if (err?.response?.status === 401) {
+        setError("Unauthorized. Please log in again.");
+      } else if (err?.response?.status === 403) {
+        setError("Access forbidden.");
+      } else if (err?.response?.data?.errors) {
+        const apiErrors = err.response.data.errors;
         const firstKey = Object.keys(apiErrors)[0];
-        const firstMessage = apiErrors[firstKey][0];
+        const firstMessage = apiErrors[firstKey]?.[0] || "Unknown error";
         setError(`${firstKey}: ${firstMessage}`);
+      } else if (err?.message) {
+        setError(err.message);
       } else {
         setError("An unexpected error occurred.");
       }

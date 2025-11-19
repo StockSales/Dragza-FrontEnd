@@ -27,13 +27,13 @@ function useUploadCsv() {
       formData.append("file", file);
 
       const response = await AxiosInstance.post(
-        `/api/Products/import-product-prices-excel?returnFile=${returnFile}`,
+        `/api/Products/ImportAddProductsFromExcel?returnFile=${returnFile}`,
         formData,
         {
           headers: {
             "Content-Type": "multipart/form-data",
           },
-          responseType: "blob", // Handle binary response
+          responseType: "blob",
         }
       );
 

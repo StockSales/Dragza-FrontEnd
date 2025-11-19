@@ -17,7 +17,7 @@ function useDownloadCsv(): DownloadCsvHook {
 
         try {
             const response = await AxiosInstance.get('/api/Products/export-excel', {
-                responseType: 'blob', // Ensure proper handling of binary data
+                responseType: 'blob',
             });
 
             if (response.status !== 200) {

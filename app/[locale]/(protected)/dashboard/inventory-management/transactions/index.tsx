@@ -45,8 +45,8 @@ import useGetUsersByRoleId from "@/services/users/GetUsersByRoleId";
 
 import Cookies from "js-cookie";
 import { Loader2 } from "lucide-react";
-import {ExportCSVButton} from "@/components/partials/export-csv/ExportCSVButton";
-import {CSVUploadModal} from "@/components/partials/ImportCsv/ImportCsv";
+import { ExportCSVButton } from "@/components/partials/export-csv/ExportCSVButton";
+import { CSVUploadModal } from "@/components/partials/ImportCsv/ImportCsv";
 import useUploadCsv from "@/services/products/csv/uploadCSV";
 import { useTranslations } from "next-intl";
 
@@ -55,7 +55,7 @@ const TransactionsTable = () => {
 
   const [selectedUserId, setSelectedUserId] = useState<string | null>(null);
 
-  const {loading: uploadLoading, error: uploadError, uploadCSV} = useUploadCsv();
+  const { loading: uploadLoading, error: uploadError, uploadCSV } = useUploadCsv();
 
   // Non-admin prices
   const {
@@ -88,10 +88,10 @@ const TransactionsTable = () => {
   // Table Data: Admin → based on selected user, Others → default manager data
   const tableData = isAdmin ? adminPrices : managerPrices;
   const isLoading = isAdmin ? inventoryIdLoading : managerLoading;
-  
+
   const t = useTranslations("inventoryManagement")
 
-  const columns = baseColumns({t});
+  const columns = baseColumns({ t });
 
   const table = useReactTable({
     data: tableData ?? [],
@@ -129,108 +129,108 @@ const TransactionsTable = () => {
 
   if (usersLoading) {
     return (
-        <div className="flex items-center justify-center h-full">
-          <Loader2 className="w-6 h-6 animate-spin" />
-        </div>
+      <div className="flex items-center justify-center h-full">
+        <Loader2 className="w-6 h-6 animate-spin" />
+      </div>
     );
   }
 
   return (
-      <Card className="w-full">
-        <div className="flex flex-wrap gap-4 items-center py-4 px-5">
-          {isAdmin && (
-              <div className="flex-1 text-xl flex gap-4 font-medium text-default-900">
-                <Select onValueChange={setSelectedUserId}>
-                  <SelectTrigger className="w-[150px] cursor-pointer">
-                    <SelectValue placeholder="Select Inventory" />
-                  </SelectTrigger>
-                  <SelectContent>
-                    <SelectGroup>
-                      <SelectLabel>Select Inventory</SelectLabel>
-                      {users &&
-                          users.map((user: any) => (
-                              <SelectItem key={user.id} value={user.id}>
-                                {user.userName}
-                              </SelectItem>
-                          ))}
-                    </SelectGroup>
-                  </SelectContent>
-                </Select>
-              </div>
-          )}
-          {!isAdmin && (
-              <div className="flex flex-row justify-between w-full">
-                <ExportCSVButton/>
-                <CSVUploadModal
-                  onUpload={async (file: File) => {
-                    await uploadCSV(file)
-                    gettingPricesForInventoryManager();
-                  }}
-                />
-              </div>
-          )}
-        </div>
-
-        {isAdmin && !selectedUserId ? (
-            <div className="text-center text-gray-500 py-10">Please select a inventory manager to view their prices.</div>
-        ) : isLoading ? (
-            <div className="flex items-center justify-center h-full">
-              <Loader2 className="w-6 h-6 animate-spin" />
-            </div>
-        ) : (
-            <CardContent>
-              <div className="border border-solid border-default-200 rounded-lg overflow-hidden border-t-0">
-                <Table>
-                  <TableHeader className="bg-default-200">
-                    {table.getHeaderGroups().map((headerGroup) => (
-                        <TableRow key={headerGroup.id}>
-                          {headerGroup.headers.map((header) => (
-                              <TableHead className="last:text-start" key={header.id}>
-                                {header.isPlaceholder
-                                    ? null
-                                    : flexRender(
-                                        header.column.columnDef.header,
-                                        header.getContext()
-                                    )}
-                              </TableHead>
-                          ))}
-                        </TableRow>
+    <Card className="w-full">
+      <div className="flex flex-wrap gap-4 items-center py-4 px-5">
+        {isAdmin && (
+          <div className="flex-1 text-xl flex gap-4 font-medium text-default-900">
+            <Select onValueChange={setSelectedUserId}>
+              <SelectTrigger className="w-[150px] cursor-pointer">
+                <SelectValue placeholder="Select Inventory" />
+              </SelectTrigger>
+              <SelectContent>
+                <SelectGroup>
+                  <SelectLabel>Select Inventory</SelectLabel>
+                  {users &&
+                    users.map((user: any) => (
+                      <SelectItem key={user.id} value={user.id}>
+                        {user.userName}
+                      </SelectItem>
                     ))}
-                  </TableHeader>
-                  <TableBody>
-                    {table.getRowModel().rows?.length ? (
-                        table.getRowModel().rows.map((row) => (
-                            <TableRow
-                                key={row.id}
-                                data-state={row.getIsSelected() && "selected"}
-                            >
-                              {row.getVisibleCells().map((cell) => (
-                                  <TableCell key={cell.id} className="h-[75px]">
-                                    {flexRender(
-                                        cell.column.columnDef.cell,
-                                        cell.getContext()
-                                    )}
-                                  </TableCell>
-                              ))}
-                            </TableRow>
-                        ))
-                    ) : (
-                        <TableRow>
-                          <TableCell
-                              colSpan={columns.length}
-                              className="h-24 text-center"
-                          >
-                            No results.
-                          </TableCell>
-                        </TableRow>
-                    )}
-                  </TableBody>
-                </Table>
-              </div>
-            </CardContent>
+                </SelectGroup>
+              </SelectContent>
+            </Select>
+          </div>
         )}
-        {!isAdmin || selectedUserId ? <TablePagination table={table} /> : null}
-      </Card>
+        {!isAdmin && (
+          <div className="flex flex-row justify-between w-full">
+            <ExportCSVButton />
+            <CSVUploadModal
+              onUpload={async (file: File) => {
+                await uploadCSV(file)
+                gettingPricesForInventoryManager();
+              }}
+            />
+          </div>
+        )}
+      </div>
+
+      {isAdmin && !selectedUserId ? (
+        <div className="text-center text-gray-500 py-10">Please select a inventory manager to view their prices.</div>
+      ) : isLoading ? (
+        <div className="flex items-center justify-center h-full">
+          <Loader2 className="w-6 h-6 animate-spin" />
+        </div>
+      ) : (
+        <CardContent>
+          <div className="border border-solid border-default-200 rounded-lg overflow-hidden border-t-0">
+            <Table>
+              <TableHeader className="bg-default-200">
+                {table.getHeaderGroups().map((headerGroup) => (
+                  <TableRow key={headerGroup.id}>
+                    {headerGroup.headers.map((header) => (
+                      <TableHead className="last:text-start" key={header.id}>
+                        {header.isPlaceholder
+                          ? null
+                          : flexRender(
+                            header.column.columnDef.header,
+                            header.getContext()
+                          )}
+                      </TableHead>
+                    ))}
+                  </TableRow>
+                ))}
+              </TableHeader>
+              <TableBody>
+                {table.getRowModel().rows?.length ? (
+                  table.getRowModel().rows.map((row) => (
+                    <TableRow
+                      key={row.id}
+                      data-state={row.getIsSelected() && "selected"}
+                    >
+                      {row.getVisibleCells().map((cell) => (
+                        <TableCell key={cell.id} className="h-[75px]">
+                          {flexRender(
+                            cell.column.columnDef.cell,
+                            cell.getContext()
+                          )}
+                        </TableCell>
+                      ))}
+                    </TableRow>
+                  ))
+                ) : (
+                  <TableRow>
+                    <TableCell
+                      colSpan={columns.length}
+                      className="h-24 text-center"
+                    >
+                      No results.
+                    </TableCell>
+                  </TableRow>
+                )}
+              </TableBody>
+            </Table>
+          </div>
+        </CardContent>
+      )}
+      {!isAdmin || selectedUserId ? <TablePagination table={table} /> : null}
+    </Card>
   );
 };
 
