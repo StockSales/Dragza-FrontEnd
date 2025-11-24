@@ -22,7 +22,7 @@ function useGettingAllProducts() {
 
       console.log("First Response:", firstResponse); // Debug log
 
-      // Handle 204 No Content
+
       if (firstResponse.status === 204) {
         setProducts([]);
         setLoading(false);
