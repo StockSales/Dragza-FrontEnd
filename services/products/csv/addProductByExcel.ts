@@ -19,7 +19,7 @@ function addProductsByExcel() {
       formData.append("file", file);
 
       const response = await AxiosInstance.post(
-        `/api/Products/ImportAddProductsFromExcel?returnFile=${returnFile}`,
+        `/api/Products/ImportProducts?returnFile=${returnFile}`,
         formData,
         {
           headers: {

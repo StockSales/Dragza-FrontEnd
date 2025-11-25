@@ -11,9 +11,9 @@ const withNextra = nextra({
 });
 const nextConfig = {
   // output: 'export',
-    eslint: {
-        ignoreDuringBuilds: true,
-    },
+  eslint: {
+    ignoreDuringBuilds: true,
+  },
   images: {
     remotePatterns: [
       {
