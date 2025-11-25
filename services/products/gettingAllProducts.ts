@@ -17,7 +17,7 @@ function useGettingAllProducts() {
     try {
       // Fetch first page to get total pages
       const firstResponse = await AxiosInstance.get(
-        `/api/Products?includeDeleted=${includeDeleted}&lang=1&pageNumber=1&pageSize=50`
+        `/api/Products/GetProducts?includeDeleted=${includeDeleted}&page=1&size=50`
       );
 
       console.log("First Response:", firstResponse); // Debug log
@@ -46,7 +46,7 @@ function useGettingAllProducts() {
           for (let page = 2; page <= totalPages; page++) {
             pagePromises.push(
               AxiosInstance.get(
-                `/api/Products?includeDeleted=${includeDeleted}&lang=1&pageNumber=${page}&pageSize=50`
+                `/api/Products/GetProducts?includeDeleted=${includeDeleted}&page=${page}&size=50`
               )
             );
           }
@@ -54,7 +54,7 @@ function useGettingAllProducts() {
           const responses = await Promise.all(pagePromises);
           responses.forEach((res) => {
             if ((res.status === 200 || res.status === 201) && res.data?.data) {
-              allProducts = [...allProducts, ...res.data.data];
+              allProducts = [...allProducts, ...res.data];
             }
           });
         }
