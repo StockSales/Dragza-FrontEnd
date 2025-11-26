@@ -1,6 +1,6 @@
 import { useState } from "react";
 import AxiosInstance from "@/lib/AxiosInstance";
-import {OrderStatus, StatusPathMap} from "@/enum";
+import { OrderStatus, StatusPathMap } from "@/enum";
 
 function useUpdateOrderStatus() {
     const [loading, setLoading] = useState(false);
@@ -16,7 +16,7 @@ function useUpdateOrderStatus() {
                 throw new Error("Unsupported status");
             }
 
-            const response = await AxiosInstance.put(`/api/Orders/${id}/${statusPath}`);
+            const response = await AxiosInstance.put(`/api/Orders/${statusPath}/${id}`);
             if (response.status !== 204) {
                 throw new Error("Failed to update order status");
             }

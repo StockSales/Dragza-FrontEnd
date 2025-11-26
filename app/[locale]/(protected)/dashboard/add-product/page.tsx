@@ -1,6 +1,6 @@
 "use client";
 
-import {useEffect, useState} from "react";
+import { useEffect, useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
@@ -17,10 +17,10 @@ import {
 import { Switch } from "@/components/ui/switch";
 import { Textarea } from "@/components/ui/textarea";
 import GetCategories from "@/services/categories/getCategories";
-import {Loader2} from "lucide-react";
+import { Loader2 } from "lucide-react";
 import useCreateProduct from "@/services/products/createProduct";
-import {toast} from "sonner";
-import {useRouter} from "@/i18n/routing";
+import { toast } from "sonner";
+import { useRouter } from "@/i18n/routing";
 import useGettingAllActiveIngredient from "@/services/ActiveIngerients/gettingAllActiveIngerients";
 import { useTranslations } from "next-intl";
 
@@ -38,18 +38,18 @@ const AddProduct = () => {
   const [activeIngredientId, setActiveIngredient] = useState<string>("")
   const [activeIngredientSearch, setActiveIngredientSearch] = useState<string>("");
 
-  
-  
-  
+
+
+
   // getting all categories
-  const {loading: gettingAllCatLoading, data, gettingAllCategories} = GetCategories()
-  
+  const { loading: gettingAllCatLoading, data, gettingAllCategories } = GetCategories()
+
   // getting all active ingredients
-  const {activeIngredients, loading: gettingAllActiveIngredientsLoading, error: gettingAllActiveIngredientsError, gettingAllActiveIngredients} = useGettingAllActiveIngredient()
-  
+  const { activeIngredients, loading: gettingAllActiveIngredientsLoading, error: gettingAllActiveIngredientsError, gettingAllActiveIngredients } = useGettingAllActiveIngredient()
+
   // Create new Product
-  const {createProduct, isCreated, loading: creatingProductLoading, error} = useCreateProduct()
-  
+  const { createProduct, isCreated, loading: creatingProductLoading, error } = useCreateProduct()
+
   const filteredActiveIngredients = activeIngredients.filter((item: any) =>
     item.name.toLowerCase().includes(activeIngredientSearch.toLowerCase())
   );
@@ -112,9 +112,9 @@ const AddProduct = () => {
 
   if (gettingAllCatLoading == true || gettingAllActiveIngredientsLoading == true) {
     return (
-        <div className="w-6 h-6 flex items-center justify-center">
-          <Loader2 size={12}/>
-        </div>
+      <div className="w-6 h-6 flex items-center justify-center">
+        <Loader2 size={12} />
+      </div>
     )
   }
 
@@ -157,11 +157,11 @@ const AddProduct = () => {
                 {t("company")}
               </Label>
               <Input
-                  id="pref"
-                  type="text"
-                  placeholder={t("company")}
-                  value={preef}
-                  onChange={(e) => setPref(e?.target?.value)}
+                id="pref"
+                type="text"
+                placeholder={t("company")}
+                value={preef}
+                onChange={(e) => setPref(e?.target?.value)}
               />
             </div>
             <div className="flex items-center flex-wrap">
@@ -169,15 +169,15 @@ const AddProduct = () => {
                 {t("productPhoto")}
               </Label>
               <Input
-                  id="photo"
-                  type="file"
-                  accept="image/*"
-                  onChange={(e) => {
-                    const file = e.target.files?.[0];
-                    if (file) {
-                      setPhoto(file);
-                    }
-                  }}
+                id="photo"
+                type="file"
+                accept="image/*"
+                onChange={(e) => {
+                  const file = e.target.files?.[0];
+                  if (file) {
+                    setPhoto(file);
+                  }
+                }}
               />
             </div>
 
@@ -191,12 +191,12 @@ const AddProduct = () => {
                   <SelectGroup>
                     <SelectLabel>{t("category")}</SelectLabel>
                     {data.map((category: any) => (
-                        <SelectItem
-                            key={category.id}
-                            value={category.id}
-                        >
-                          {category.name}
-                        </SelectItem>
+                      <SelectItem
+                        key={category.id}
+                        value={category.id}
+                      >
+                        {category.name}
+                      </SelectItem>
                     ))}
                   </SelectGroup>
                 </SelectContent>
@@ -242,10 +242,10 @@ const AddProduct = () => {
                 {t("description")}
               </Label>
               <Textarea
-                  id="desc"
-                  placeholder={t("description")}
-                  value={description}
-                  onChange={(e) => setDescription(e?.target?.value)}
+                id="desc"
+                placeholder={t("description")}
+                value={description}
+                onChange={(e) => setDescription(e?.target?.value)}
               />
             </div>
           </CardContent>
@@ -253,10 +253,10 @@ const AddProduct = () => {
       </div>
       <div className="col-span-12 flex justify-end">
         <Button
-            className={`cursor-pointer ${creatingProductLoading === true ? "cursor-not-allowed" : ""}`}
-            onClick={() => onSubmit()}
+          className={`cursor-pointer ${creatingProductLoading === true ? "cursor-not-allowed" : ""}`}
+          onClick={() => onSubmit()}
         >
-          {creatingProductLoading === true ? <Loader2 className="mr-2 h-4 w-4 animate-spin"/> : t("save")}
+          {creatingProductLoading === true ? <Loader2 className="mr-2 h-4 w-4 animate-spin" /> : t("save")}
         </Button>
       </div>
     </div>
