@@ -9,10 +9,10 @@ interface DataTablePaginationProps {
 const TablePagination = ({ table }: DataTablePaginationProps) => {
   const currentPage = table.getState().pagination.pageIndex;
   const totalPages = table.getPageCount();
-  
+
   const renderPageNumbers = () => {
     const pages = [];
-    
+
     if (totalPages <= 7) {
       // Show all pages if total is 7 or less
       for (let i = 0; i < totalPages; i++) {
@@ -21,9 +21,8 @@ const TablePagination = ({ table }: DataTablePaginationProps) => {
             key={`page-${i}`}
             onClick={() => table.setPageIndex(i)}
             size="icon"
-            className={`w-8 h-8 hover:text-primary-foreground ${
-              currentPage === i ? 'bg-default' : 'bg-default-300 text-default'
-            }`}
+            className={`w-8 h-8 hover:text-primary-foreground ${currentPage === i ? 'bg-default' : 'bg-default-300 text-default'
+              }`}
           >
             {i + 1}
           </Button>
@@ -36,9 +35,8 @@ const TablePagination = ({ table }: DataTablePaginationProps) => {
           key="page-0"
           onClick={() => table.setPageIndex(0)}
           size="icon"
-          className={`w-8 h-8 hover:text-primary-foreground ${
-            currentPage === 0 ? 'bg-default' : 'bg-default-300 text-default'
-          }`}
+          className={`w-8 h-8 hover:text-primary-foreground ${currentPage === 0 ? 'bg-default' : 'bg-default-300 text-default'
+            }`}
         >
           1
         </Button>
@@ -52,15 +50,14 @@ const TablePagination = ({ table }: DataTablePaginationProps) => {
               key={`page-${i}`}
               onClick={() => table.setPageIndex(i)}
               size="icon"
-              className={`w-8 h-8 hover:text-primary-foreground ${
-                currentPage === i ? 'bg-default' : 'bg-default-300 text-default'
-              }`}
+              className={`w-8 h-8 hover:text-primary-foreground ${currentPage === i ? 'bg-default' : 'bg-default-300 text-default'
+                }`}
             >
               {i + 1}
             </Button>
           );
         }
-        
+
         // Add dots if there's a gap
         if (totalPages > 5) {
           pages.push(
@@ -76,7 +73,7 @@ const TablePagination = ({ table }: DataTablePaginationProps) => {
             ...
           </span>
         );
-        
+
         // Show last few pages if we're near the end
         for (let i = Math.max(totalPages - 4, 1); i < totalPages - 1; i++) {
           pages.push(
@@ -84,9 +81,8 @@ const TablePagination = ({ table }: DataTablePaginationProps) => {
               key={`page-${i}`}
               onClick={() => table.setPageIndex(i)}
               size="icon"
-              className={`w-8 h-8 hover:text-primary-foreground ${
-                currentPage === i ? 'bg-default' : 'bg-default-300 text-default'
-              }`}
+              className={`w-8 h-8 hover:text-primary-foreground ${currentPage === i ? 'bg-default' : 'bg-default-300 text-default'
+                }`}
             >
               {i + 1}
             </Button>
@@ -99,7 +95,7 @@ const TablePagination = ({ table }: DataTablePaginationProps) => {
             ...
           </span>
         );
-        
+
         // Show current page and adjacent pages
         for (let i = currentPage - 1; i <= currentPage + 1; i++) {
           pages.push(
@@ -107,15 +103,14 @@ const TablePagination = ({ table }: DataTablePaginationProps) => {
               key={`page-${i}`}
               onClick={() => table.setPageIndex(i)}
               size="icon"
-              className={`w-8 h-8 hover:text-primary-foreground ${
-                currentPage === i ? 'bg-default' : 'bg-default-300 text-default'
-              }`}
+              className={`w-8 h-8 hover:text-primary-foreground ${currentPage === i ? 'bg-default' : 'bg-default-300 text-default'
+                }`}
             >
               {i + 1}
             </Button>
           );
         }
-        
+
         pages.push(
           <span key="dots-end" className="px-2 text-default-500">
             ...
@@ -130,16 +125,15 @@ const TablePagination = ({ table }: DataTablePaginationProps) => {
             key={`page-${totalPages - 1}`}
             onClick={() => table.setPageIndex(totalPages - 1)}
             size="icon"
-            className={`w-8 h-8 hover:text-primary-foreground ${
-              currentPage === totalPages - 1 ? 'bg-default' : 'bg-default-300 text-default'
-            }`}
+            className={`w-8 h-8 hover:text-primary-foreground ${currentPage === totalPages - 1 ? 'bg-default' : 'bg-default-300 text-default'
+              }`}
           >
             {totalPages}
           </Button>
         );
       }
     }
-    
+
     return pages;
   };
 
@@ -155,9 +149,9 @@ const TablePagination = ({ table }: DataTablePaginationProps) => {
         >
           <ChevronLeft className={`w-4 h-4 ${document?.dir === 'rtl' ? 'rotate-180' : ''}`} />
         </Button>
-        
+
         {renderPageNumbers()}
-        
+
         <Button
           variant="outline"
           size="icon"
@@ -168,7 +162,7 @@ const TablePagination = ({ table }: DataTablePaginationProps) => {
           <ChevronRight className={`w-4 h-4 ${document?.dir === 'rtl' ? 'rotate-180' : ''}`} />
         </Button>
       </div>
-      
+
       {/* Optional: Show current page info */}
       <div className="text-sm text-muted-foreground">
         Page {currentPage + 1} of {totalPages}

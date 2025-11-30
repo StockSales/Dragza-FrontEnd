@@ -21,21 +21,24 @@ export const baseColumns = ({ refresh, t }: {
       accessorKey: "orderNumber",
       header: t("orderNumber"),
       cell: ({ row }) => <span>{row.getValue("orderNumber") || "N/A"}</span>,
-    },
-    {
+    }, {
       accessorKey: "pharmacyName",
       header: t("pharmacyName"),
       cell: ({ row }) => {
+        // خذ الاسم مباشرة من البيانات الحالية للـ row
         const name = row.original.pharmacyName;
+
+        // لو الاسم مش موجود، اعرض "N/A"
         return (
           <div className="font-medium text-card-foreground/80">
             <span className="text-sm text-default-600 whitespace-nowrap">
-              {name ?? "Unknown User"}
+              {name ?? "N/A"}
             </span>
           </div>
         );
       },
     },
+
     {
       accessorKey: "inventoryName",
       header: t("inventoryName"),

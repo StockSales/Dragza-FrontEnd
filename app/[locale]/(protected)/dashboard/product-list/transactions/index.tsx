@@ -13,8 +13,6 @@ import {
   useReactTable,
 } from "@tanstack/react-table";
 import { baseColumns } from "./columns";
-import { Input } from "@/components/ui/input";
-
 import {
   Table,
   TableBody,
@@ -23,19 +21,8 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
-
 import TablePagination from "./table-pagination";
-
 import { CardContent } from "@/components/ui/card";
-import {
-  Select,
-  SelectContent,
-  SelectGroup,
-  SelectItem,
-  SelectLabel,
-  SelectTrigger,
-  SelectValue,
-} from "@/components/ui/select";
 import { Link } from "@/i18n/routing";
 import { Button } from "@/components/ui/button";
 import useGettingAllProducts from "@/services/products/gettingAllProducts";
@@ -45,10 +32,7 @@ import { toast } from "sonner";
 import GetCategories from "@/services/categories/getCategories";
 import Cookies from "js-cookie";
 import { ProductType } from "@/types/product";
-import product from "@/app/[locale]/(protected)/dashboard/dash-ecom/components/product";
 import SearchInput from "@/app/[locale]/(protected)/components/SearchInput/SearchInput";
-import { ExportCSVButton } from "@/components/partials/export-csv/ExportCSVButton";
-import { CSVUploadModal } from "@/components/partials/ImportCsv/ImportCsv";
 import { useTranslations } from "next-intl";
 import ExcelUploadButton from "@/app/[locale]/(protected)/dashboard/add-product-byExcel/ExcelUploadButton";
 
@@ -56,7 +40,7 @@ const TransactionsTable = () => {
   const t = useTranslations("productList");
   const userRole = Cookies.get("userRole");
   const userId = Cookies.get("userId");
-  // getting all products
+
   const {
     loading,
     getAllProducts,
@@ -64,9 +48,10 @@ const TransactionsTable = () => {
     error,
     includeDeleted,
     setIncludeDeletedState,
+    totalItems,
+    totalPages: apiTotalPages,
   } = useGettingAllProducts();
 
-  // getting all categories
   const {
     loading: categoriesLoading,
     data: categories,
@@ -74,16 +59,12 @@ const TransactionsTable = () => {
   } = GetCategories();
 
   const [sorting, setSorting] = React.useState<SortingState>([]);
-  const [columnFilters, setColumnFilters] = React.useState<ColumnFiltersState>(
-    []
-  );
-  const [columnVisibility, setColumnVisibility] =
-    React.useState<VisibilityState>({});
+  const [columnFilters, setColumnFilters] = React.useState<ColumnFiltersState>([]);
+  const [columnVisibility, setColumnVisibility] = React.useState<VisibilityState>({});
   const [rowSelection, setRowSelection] = React.useState({});
+  const [filteredProducts, setFilteredProducts] = useState<ProductType[]>([]);
 
   const columns = baseColumns({ refresh: () => getAllProducts("false"), t });
-
-  const [filteredProducts, setFilteredProducts] = useState<ProductType[]>([]);
 
   const table = useReactTable({
     data: filteredProducts ?? [],
@@ -96,6 +77,11 @@ const TransactionsTable = () => {
     getFilteredRowModel: getFilteredRowModel(),
     onColumnVisibilityChange: setColumnVisibility,
     onRowSelectionChange: setRowSelection,
+    initialState: {
+      pagination: {
+        pageSize: 50, // Set page size to 50
+      },
+    },
     state: {
       sorting,
       columnFilters,
@@ -104,24 +90,18 @@ const TransactionsTable = () => {
     },
   });
 
-  // for CSV upload
   const transformedProducts = (data ?? []).map((product) => {
     const allPrices = product.prices ?? [];
-
-    // Prices added by the specific user
     const userPrices = allPrices.filter((p) => p.inventoryUserId === userId);
 
     let selectedPrice;
-
     if (userPrices.length > 0) {
-      // Pick latest price added by the user
       selectedPrice = userPrices.sort(
         (a, b) =>
           new Date(b.creationDate).getTime() -
           new Date(a.creationDate).getTime()
       )[0];
     } else {
-      // Pick latest price globally
       selectedPrice = allPrices.sort(
         (a, b) =>
           new Date(b.creationDate).getTime() -
@@ -152,17 +132,14 @@ const TransactionsTable = () => {
     if (!res.ok) throw new Error("Upload failed");
   };
 
-  // mounted data
   useEffect(() => {
     gettingAllCategories();
   }, []);
 
-  // getting all products
   useEffect(() => {
     getAllProducts(includeDeleted);
   }, [includeDeleted]);
 
-  // dependent data
   useEffect(() => {
     if (data) setFilteredProducts(data);
   }, [data]);
@@ -208,14 +185,6 @@ const TransactionsTable = () => {
                 />
               </div>
             )}
-            {/*{userRole !== "Admin" && (*/}
-            {/*    <div className={"flex flex-row gap-6 justify-end"}>*/}
-            {/*      <ExportCSVButton/>*/}
-            {/*      <CSVUploadModal*/}
-            {/*          onUpload={handleCSVUpload}*/}
-            {/*      />*/}
-            {/*    </div>*/}
-            {/*)}*/}
           </div>
         </div>
       </div>
@@ -241,9 +210,9 @@ const TransactionsTable = () => {
                             {header.isPlaceholder
                               ? null
                               : flexRender(
-                                  header.column.columnDef.header,
-                                  header.getContext()
-                                )}
+                                header.column.columnDef.header,
+                                header.getContext()
+                              )}
                           </TableHead>
                         );
                       })}
@@ -281,10 +250,18 @@ const TransactionsTable = () => {
               </Table>
             </div>
           </CardContent>
+
+          {/* Pagination component */}
           <TablePagination table={table} />
+
+          {/* Optional: Show total items info */}
+          <div className="text-center text-sm text-muted-foreground pb-4">
+            {t("totalProducts") || "Total products"}: {totalItems} | {t("totalPages") || "Total pages"}: {apiTotalPages}
+          </div>
         </>
       )}
     </div>
   );
 };
+
 export default TransactionsTable;

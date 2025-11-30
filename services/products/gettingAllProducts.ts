@@ -6,74 +6,81 @@ function useGettingAllProducts() {
   const [loading, setLoading] = useState<boolean>(false);
   const [products, setProducts] = useState<ProductType[]>([]);
   const [error, setError] = useState<string | null>(null);
-  const [includeDeletedState, setIncludeDeletedState] =
-    useState<string>("false");
+  const [includeDeletedState, setIncludeDeletedState] = useState<string>("false");
+  const [totalItems, setTotalItems] = useState<number>(0);
+  const [totalPages, setTotalPages] = useState<number>(1);
 
+  // Get all products at once (for client-side pagination - current behavior)
   const getAllProducts = async (includeDeleted: string) => {
     setLoading(true);
     setError(null);
     setIncludeDeletedState(includeDeleted);
 
     try {
-      // Fetch first page to get total pages
+      // Fetch first page to get total count
       const firstResponse = await AxiosInstance.get(
         `/api/Products/GetProducts?includeDeleted=${includeDeleted}&page=1&size=50`
       );
 
-      console.log("First Response:", firstResponse); // Debug log
-
-
       if (firstResponse.status === 204) {
         setProducts([]);
+        setTotalItems(0);
+        setTotalPages(1);
         setLoading(false);
         return;
       }
 
       if (firstResponse.status === 200 || firstResponse.status === 201) {
-        // Check if data exists
         if (!firstResponse.data || !firstResponse.data.data) {
           setProducts([]);
+          setTotalItems(0);
+          setTotalPages(1);
           setLoading(false);
           return;
         }
 
-        const totalPages = firstResponse.data.pagination?.totalPages || 1;
+        const paginationInfo = firstResponse.data.pagination;
+        const calculatedTotalPages = paginationInfo?.totalPages || 10000;
+        const calculatedTotalItems = paginationInfo?.totalItems || firstResponse.data.data.length;
+
+        setTotalItems(calculatedTotalItems);
+        setTotalPages(calculatedTotalPages);
+
         let allProducts = [...firstResponse.data.data];
 
-        // Fetch remaining pages in parallel
-        if (totalPages > 1) {
-          const pagePromises = [];
-          for (let page = 2; page <= totalPages; page++) {
-            pagePromises.push(
+        // Fetch remaining pages if there are more
+        if (calculatedTotalPages > 1) {
+          const requests = [];
+          for (let page = 2; page <= calculatedTotalPages; page++) {
+            requests.push(
               AxiosInstance.get(
                 `/api/Products/GetProducts?includeDeleted=${includeDeleted}&page=${page}&size=50`
               )
             );
           }
 
-          const responses = await Promise.all(pagePromises);
-          responses.forEach((res) => {
+          const results = await Promise.all(requests);
+          results.forEach((res) => {
             if ((res.status === 200 || res.status === 201) && res.data?.data) {
-              allProducts = [...allProducts, ...res.data];
+              allProducts = [...allProducts, ...res.data.data];
             }
           });
         }
 
         setProducts(allProducts);
       } else {
-        // Handle error responses
         if (firstResponse.data?.errors) {
           const firstKey = Object.keys(firstResponse.data.errors)[0];
-          const firstMessage = firstResponse.data.errors[firstKey]?.[0] || "Unknown error";
+          const firstMessage =
+            firstResponse.data.errors[firstKey]?.[0] || "Unknown error";
           setError(`${firstKey}: ${firstMessage}`);
         } else {
           setError("An unexpected error occurred.");
         }
       }
     } catch (err: any) {
-      console.error("Error fetching products:", err); // Debug log
+      console.error("Error fetching products:", err);
 
-      // Better error handling
       if (err?.response?.status === 404) {
         setError("Products endpoint not found.");
       } else if (err?.response?.status === 401) {
@@ -83,7 +90,8 @@ function useGettingAllProducts() {
       } else if (err?.response?.data?.errors) {
         const apiErrors = err.response.data.errors;
         const firstKey = Object.keys(apiErrors)[0];
-        const firstMessage = apiErrors[firstKey]?.[0] || "Unknown error";
+        const firstMessage =
+          apiErrors[firstKey]?.[0] || "Unknown error";
         setError(`${firstKey}: ${firstMessage}`);
       } else if (err?.message) {
         setError(err.message);
@@ -102,6 +110,8 @@ function useGettingAllProducts() {
     products,
     includeDeleted: includeDeletedState,
     setIncludeDeletedState,
+    totalItems, // Add this
+    totalPages, // Add this
   };
 }
 

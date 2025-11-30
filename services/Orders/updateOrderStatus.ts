@@ -12,11 +12,16 @@ function useUpdateOrderStatus() {
         setLoading(true);
         try {
             const statusPath = StatusPathMap[status];
+
             if (!statusPath) {
                 throw new Error("Unsupported status");
             }
 
-            const response = await AxiosInstance.put(`/api/Orders/${statusPath}/${id}`);
+            const url = `/api/Orders/${statusPath}/${id}`;
+            console.log("REQUEST URL:", url);
+
+            const response = await AxiosInstance.put(url);
+
             if (response.status !== 204) {
                 throw new Error("Failed to update order status");
             }
