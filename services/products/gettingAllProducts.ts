@@ -39,19 +39,19 @@ function useGettingAllProducts() {
           return;
         }
 
-        const paginationInfo = firstResponse.data.pagination;
-        const calculatedTotalPages = paginationInfo?.totalPages || 10000;
-        const calculatedTotalItems = paginationInfo?.totalItems || firstResponse.data.data.length;
+        // Extract pagination info (totalPages, totalItems)
+        const totalPages = firstResponse.data.totalPages || 1;
+        const totalItems = firstResponse.data.totalItems || firstResponse.data.data.length;
 
-        setTotalItems(calculatedTotalItems);
-        setTotalPages(calculatedTotalPages);
+        setTotalItems(totalItems);
+        setTotalPages(totalPages);
 
         let allProducts = [...firstResponse.data.data];
 
         // Fetch remaining pages if there are more
-        if (calculatedTotalPages > 1) {
+        if (totalPages > 1) {
           const requests = [];
-          for (let page = 2; page <= calculatedTotalPages; page++) {
+          for (let page = 2; page <= totalPages; page++) {
             requests.push(
               AxiosInstance.get(
                 `/api/Products/GetProducts?includeDeleted=${includeDeleted}&page=${page}&size=50`
@@ -110,8 +110,8 @@ function useGettingAllProducts() {
     products,
     includeDeleted: includeDeletedState,
     setIncludeDeletedState,
-    totalItems, // Add this
-    totalPages, // Add this
+    totalItems, // Return totalItems
+    totalPages, // Return totalPages
   };
 }
 
