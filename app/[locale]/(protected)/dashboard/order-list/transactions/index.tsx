@@ -218,7 +218,7 @@ export default function TransactionsTable() {
           >
             {t(`statusCode.${OrderStatusLabel[OrderStatus.Completed].toLowerCase()}`)}
           </Button>
-          <Button
+          {/* <Button
             size="md"
             variant={selectedStatus === OrderStatus.ReAssignTo ? "default" : "ghost"}
             color="default"
@@ -226,7 +226,7 @@ export default function TransactionsTable() {
             onClick={() => filterOrdersByStatus(OrderStatus.ReAssignTo)}
           >
             {t(`statusCode.${OrderStatusLabel[OrderStatus.ReAssignTo].toLocaleLowerCase()}`)}
-          </Button>
+          </Button> */}
         </div>
       </div>
 
