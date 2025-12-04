@@ -20,7 +20,7 @@ const AddProduct = () => {
       <div className="col-span-12 md:col-span-7 space-y-4 lg:col-span-7 ">
         <Card>
           <CardHeader className="border-b border-solid border-default-200 mb-6">
-            <CardTitle>Product Information</CardTitle>
+            <CardTitle>Product Infozzzzrmation</CardTitle>
           </CardHeader>
           <CardContent className="space-y-4">
             <div className="flex items-center flex-wrap">
