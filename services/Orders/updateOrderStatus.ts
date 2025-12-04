@@ -3,38 +3,49 @@ import AxiosInstance from "@/lib/AxiosInstance";
 import { OrderStatus, StatusPathMap } from "@/enum";
 
 function useUpdateOrderStatus() {
-    const [loading, setLoading] = useState(false);
+  const [loading, setLoading] = useState(false);
 
-    const updateOrderStatus = async (
-        id: string | string[] | undefined,
-        status: OrderStatus
-    ): Promise<{ success: boolean; error?: string }> => {
-        setLoading(true);
-        try {
-            const statusPath = StatusPathMap[status];
+  const updateOrderStatus = async (
+    id: string | string[] | undefined,
+    status: OrderStatus
+  ): Promise<{ success: boolean; error?: string }> => {
+    setLoading(true);
 
-            if (!statusPath) {
-                throw new Error("Unsupported status");
-            }
+    try {
+      const statusPath = StatusPathMap[status];
 
-            const url = `/api/Orders/${statusPath}/${id}`;
-            console.log("REQUEST URL:", url);
+      if (!statusPath) {
+        throw new Error("Unsupported status");
+      }
 
-            const response = await AxiosInstance.put(url);
+      const url = `/api/Orders/${statusPath}/${id}`;
+      console.log("REQUEST URL:", url);
 
-            if (response.status !== 204) {
-                throw new Error("Failed to update order status");
-            }
+      const response = await AxiosInstance.put(url);
 
-            return { success: true };
-        } catch (error: any) {
-            return { success: false, error: error.message };
-        } finally {
-            setLoading(false);
-        }
-    };
+      // Debug: اطبع الـ response كامل
+      console.log("RESPONSE:", response);
 
-    return { updateOrderStatus, loading };
+      // تحقق من أي status ناجح (2xx)
+      if (response.status < 200 || response.status >= 300) {
+        throw new Error("Failed to update order status");
+      }
+
+      // تحقق من وجود بيانات JSON فيها success=false
+      if (response.data && response.data.success === false) {
+        throw new Error(response.data.message || "Failed to update order status");
+      }
+
+      return { success: true };
+    } catch (error: any) {
+      console.error("UPDATE ERROR:", error);
+      return { success: false, error: error.message || "Unknown error" };
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  return { updateOrderStatus, loading };
 }
 
 export default useUpdateOrderStatus;
