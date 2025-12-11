@@ -1,5 +1,9 @@
 import { ColumnDef } from "@tanstack/react-table";
 import { formatDateToDMY } from "@/utils";
+import { Icon } from "@/components/ui/icon";
+import { Button } from "@/components/ui/button";
+import { useRouter } from "@/i18n/routing";
+import Cookies from "js-cookie";
 
 export const basecolumns = ({ t }: { t: (key: string) => string }): ColumnDef<any>[] => [
   {
@@ -20,10 +24,7 @@ export const basecolumns = ({ t }: { t: (key: string) => string }): ColumnDef<an
     accessorKey: "inventoryName",
     header: t("inventoryName"),
     cell: ({ row }) => {
-      // استخدم inventoryUser الرئيسي إذا موجود
       const mainInventory = row.original.inventoryUser?.bussinesName;
-
-      // استخرج أسماء inventory من items في حالة وجود أكثر من واحد
       const items = row.original.items || [];
       const itemNames = Array.from(
         new Set(
@@ -33,14 +34,12 @@ export const basecolumns = ({ t }: { t: (key: string) => string }): ColumnDef<an
         )
       );
 
-      // دمج الاسم الرئيسي مع أسماء العناصر مع إزالة التكرار
       const names = mainInventory ? Array.from(new Set([mainInventory, ...itemNames])) : itemNames;
 
       if (names.length === 0) {
         return <span>{t("unknown")}</span>;
       }
 
-      // عرض أول اسمين + عدد الباقي إذا زاد
       const firstTwo = names.slice(0, 2);
       const remaining = names.slice(2);
 
@@ -65,10 +64,58 @@ export const basecolumns = ({ t }: { t: (key: string) => string }): ColumnDef<an
       return <span>{formatDateToDMY(row.original.requestDate)}</span>;
     },
   },
-  // إذا أردت يمكنك إعادة عمود totalReturnValue
-  // {
-  //   accessorKey: "totalReturnValue",
-  //   header: t("returnCost"),
-  //   cell: ({ row }) => <span>{row.original.totalReturnValue}</span>,
-  // },
+  {
+    accessorKey: "status",
+    header: t("status"),
+    cell: ({ row }) => {
+      const statusValue = row.original.status ?? 0;
+
+      // Map numeric status to text
+      const statusText = statusValue === 1 ? "completed" : "requested";
+
+      // Styling based on status
+      const statusStyles = statusValue === 1
+        ? "bg-emerald-100 text-emerald-700"
+        : "bg-yellow-100 text-yellow-700";
+
+      return (
+        <span className={`px-3 py-1 rounded-full text-sm font-medium ${statusStyles}`}>
+          {statusText}
+        </span>
+      );
+    },
+  },
+  {
+    id: "actions",
+    header: t("actions"),
+    cell: ({ row }) => {
+      const router = useRouter();
+
+      const handleViewDetails = () => {
+        const returnId = row.original.id;
+        const userRole = Cookies.get("userRole");
+
+        // Debug logs
+        console.log("Return ID:", returnId);
+        console.log("User Role:", userRole);
+
+        const targetPath = `/dashboard/return-details/${returnId}`;
+        console.log("Navigating to:", targetPath);
+
+        router.push(targetPath);
+      };
+
+      return (
+        <Button
+          size="icon"
+          variant="outline"
+          className="h-8 w-8"
+          onClick={handleViewDetails}
+          title={t("viewDetails")}
+        >
+          <Icon icon="heroicons:eye" className="h-4 w-4" />
+        </Button>
+      );
+    },
+  },
 ];

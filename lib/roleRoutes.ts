@@ -1,4 +1,4 @@
-import {jwtDecode} from "jwt-decode";
+import { jwtDecode } from "jwt-decode";
 import Cookies from "js-cookie";
 
 export function getRoleFromToken(): string | null {
@@ -24,6 +24,9 @@ export const roleRoutes: Record<string, string[]> = {
         "/en/dashboard/order-details",
         "/ar/dashboard/return-list",
         "/en/dashboard/return-list",
+        "/ar/dashboard/return-details",
+        "/en/dashboard/return-details",
+
         // "/en/dashboard/sales",
         // "/ar/dashboard/sales",
         "/ar/dashboard/add-product-price",

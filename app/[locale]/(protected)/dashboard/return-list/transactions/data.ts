@@ -12,8 +12,8 @@ export const data: any[] = [
     amount: "$1779.53",
     reason: "Order Cancelled",
     inventory: {
-        name: "Jenny Wilson",
-        phone: "+12345876",
+      name: "Jenny Wilson",
+      phone: "+12345876",
     },
     status: "paid",
     method: "Bkash",
@@ -38,6 +38,14 @@ export const data: any[] = [
     method: "Nagad",
     action: null,
   },
+  {
+    statusCode: {
+      "requested": "Requested",
+      "completed": "Completed"
+    }
+  }
+
+  ,
   {
     id: 3,
     order: 339,

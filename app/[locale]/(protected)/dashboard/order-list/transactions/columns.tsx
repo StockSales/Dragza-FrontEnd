@@ -104,7 +104,7 @@ export const baseColumns = ({ refresh, t }: {
           4: "bg-indigo-200 text-indigo-700", // Shipped
           5: "bg-green-200 text-green-700",   // Delivered
           6: "bg-emerald-200 text-emerald-700", // Completed
-         // 7: "bg-gray-200 text-gray-700",     // Reassign
+          // 7: "bg-gray-200 text-gray-700",     // Reassign
         };
 
         // ✔ الحل النهائي
@@ -120,7 +120,7 @@ export const baseColumns = ({ refresh, t }: {
           4: "statusCode.shipped",
           5: "statusCode.delivered",
           6: "statusCode.completed",
-         // 7: "statusCode.reassigned",
+          // 7: "statusCode.reassigned",
         };
 
         const statusLabel = t(statusTranslationKeys[status] ?? "status.unknown");
