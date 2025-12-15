@@ -56,7 +56,7 @@ const ReturnDetails = () => { // REMOVED THE PROPS
   // Convert numeric status to string for Select component
   useEffect(() => {
     if (fetchedData) {
-      const statusMap: Record<number, string> = { 0: "requested", 1: "completed" };
+      const statusMap: Record<number, string> = { 0: "requested", 4: "completed" };
       const statusValue =
         typeof fetchedData.status === "number"
           ? statusMap[fetchedData.status] || "requested"
@@ -81,7 +81,7 @@ const ReturnDetails = () => { // REMOVED THE PROPS
     }
 
     try {
-      const statusMap: Record<string, number> = { requested: 0, completed: 1 };
+      const statusMap: Record<string, number> = { requested: 0, completed: 4 };
       const statusValue = statusMap[selectedStatus] ?? 0;
       const updatedData = { status: statusValue };
 
@@ -276,8 +276,8 @@ const ReturnDetails = () => { // REMOVED THE PROPS
               <h4 className="text-default-600 text-xs uppercase mt-2">
                 Status:{" "}
                 <span className={`px-2 py-1 rounded text-xs ${returnData?.status === "completed"
-                    ? "bg-green-100 text-green-800"
-                    : "bg-yellow-100 text-yellow-800"
+                  ? "bg-green-100 text-green-800"
+                  : "bg-yellow-100 text-yellow-800"
                   }`}>
                   {returnData?.status === "completed" ? "Completed" : "Requested"}
                 </span>

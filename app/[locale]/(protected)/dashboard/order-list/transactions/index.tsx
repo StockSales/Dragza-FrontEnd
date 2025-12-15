@@ -62,8 +62,13 @@ export default function TransactionsTable() {
   const [filteredOrders, setFilteredOrders] = useState<Orders[]>([]);
   const [selectedStatus, setSelectedStatus] = useState<OrderStatus | "all">("all");
 
-  // Create a unified data source
-  const allOrdersData = isAdmin ? orders : myOrders;
+  // Create a unified data source - filter out orders with total amount = 0
+  const allOrdersData = React.useMemo(() => {
+    const rawData = isAdmin ? orders : myOrders;
+    // Filter out orders where totalAmount is 0 (returned orders)
+    return rawData?.filter(order => order.totalAmount !== 0) || [];
+  }, [isAdmin, orders, myOrders]);
+
   const isLoadingData = isAdmin ? loading : myOrdersLoading;
 
   const t = useTranslations("OrderList")

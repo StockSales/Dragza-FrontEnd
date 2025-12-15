@@ -10,7 +10,9 @@ export const basecolumns = ({ t }: { t: (key: string) => string }): ColumnDef<an
     accessorKey: "pharmacyName",
     header: t("pharmacyName"),
     cell: ({ row }) => {
-      const name = row.original.pharmacyName;
+      // From your API response, pharmacy name is inside pharmacyUser object
+      const pharmacyUser = row.original.pharmacyUser;
+      const name = pharmacyUser?.bussinesName || row.original.pharmacyName;
       return (
         <div className="font-medium text-card-foreground/80">
           <span className="text-sm text-default-600 whitespace-nowrap">
@@ -68,15 +70,29 @@ export const basecolumns = ({ t }: { t: (key: string) => string }): ColumnDef<an
     accessorKey: "status",
     header: t("status"),
     cell: ({ row }) => {
+
       const statusValue = row.original.status ?? 0;
 
-      // Map numeric status to text
-      const statusText = statusValue === 1 ? "completed" : "requested";
+      // Map numeric status to text as per your requirement:
+      // 0 = requested, 4 = completed
+      let statusText = "requested";
+      let statusStyles = "bg-yellow-100 text-yellow-700";
 
-      // Styling based on status
-      const statusStyles = statusValue === 1
-        ? "bg-emerald-100 text-emerald-700"
-        : "bg-yellow-100 text-yellow-700";
+      if (statusValue === 4) {
+        statusText = "completed";
+        statusStyles = "bg-emerald-100 text-emerald-700";
+      } else if (statusValue === 0) {
+        statusText = "requested";
+        statusStyles = "bg-yellow-100 text-yellow-700";
+      }
+
+      else if (statusValue === 2) {
+        statusText = "approved";
+        statusStyles = "bg-blue-100 text-blue-700";
+      } else if (statusValue === 3) {
+        statusText = "rejected";
+        statusStyles = "bg-red-100 text-red-700";
+      }
 
       return (
         <span className={`px-3 py-1 rounded-full text-sm font-medium ${statusStyles}`}>
@@ -98,6 +114,7 @@ export const basecolumns = ({ t }: { t: (key: string) => string }): ColumnDef<an
         // Debug logs
         console.log("Return ID:", returnId);
         console.log("User Role:", userRole);
+        console.log("Status value:", row.original.status);
 
         const targetPath = `/dashboard/return-details/${returnId}`;
         console.log("Navigating to:", targetPath);
