@@ -359,7 +359,7 @@
     "itemName": "اسم العنصر",
     "quantity": "الكمية",
     "price": "السعر",
-    "date":"التاريخ",
+    "date": "التاريخ",
     "total": "المجموع",
     "actions": "الإجراءات",
     "removeItem": "إزالة العنصر",
@@ -454,7 +454,7 @@
     "fileDownloaded": "تم تنزيل الملف بنجاح.",
     "fileDownloadError": "فشل في تنزيل الملف. يرجى المحاولة مرة أخرى."
   },
-  "generateInvoice" : {
+  "generateInvoice": {
     "invoiceGenerated": "تم إنشاء الفاتورة بنجاح.",
     "invoiceGenerationError": "فشل في إنشاء الفاتورة. يرجى المحاولة مرة أخرى.",
     "fileUploaded": "تم رفع الملف بنجاح.",
@@ -537,7 +537,7 @@
     "Cash": "نقدي",
     "Credit": "ائتمان",
     "noBalanceFound": "لا توجد معلومات رصيد متاحة."
-  }, 
+  },
   "ReturnList": {
     "returnList": "قائمة الإرجاع",
     "returnDetails": "تفاصيل الإرجاع",
@@ -601,6 +601,7 @@
     "productList": "قائمة المنتجات",
     "productName": "اسم المنتج",
     "arabicName": "الاسم بالعربية",
+    "productCode": "كود المنتج",
     "unknown": "غير معروف",
     "category": "الفئة",
     "brand": "العلامة التجارية",

@@ -41,6 +41,17 @@ export const baseColumns = ({
       ),
     },
     {
+      accessorKey: "productCode",
+      header: t("productCode"),
+      cell: ({ row }) => (
+        <div className="font-medium text-card-foreground/80">
+          <span className="text-sm text-default-600">
+            {row.original.productCode ?? t("unknown")}
+          </span>
+        </div>
+      ),
+    },
+    {
       accessorKey: "preef",
       header: t("company"),
       cell: ({ row }) => (
@@ -140,4 +151,3 @@ export const baseColumns = ({
 
   return columns;
 };
- 
