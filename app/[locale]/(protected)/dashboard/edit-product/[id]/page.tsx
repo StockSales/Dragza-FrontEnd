@@ -229,17 +229,17 @@ const EditProduct = () => {
             </div>
 <div className="flex items-center flex-wrap gap-4 md:gap-0">
   <Label className="w-[150px] flex-none">{t("category")}</Label>
-  <Select 
+
+  <Select
     value={formData.categoryId}
     onValueChange={(value) => {
-      setFormData({...formData, categoryId: value});
+      setFormData({ ...formData, categoryId: value });
     }}
   >
     <SelectTrigger className="flex-1 cursor-pointer">
-      <SelectValue placeholder={t("selectCategory")}>
-        {formData.categoryId && categories.find((c: any) => c.id.toString() === formData.categoryId)?.name}
-      </SelectValue>
+      <SelectValue placeholder={t("selectCategory")} />
     </SelectTrigger>
+
     <SelectContent>
       <SelectGroup>
         <SelectLabel>{t("category")}</SelectLabel>
@@ -255,6 +255,7 @@ const EditProduct = () => {
     </SelectContent>
   </Select>
 </div>
+
 
             <div className="flex items-center flex-wrap gap-4 md:gap-0">
               <Label className="w-[150px] flex-none">{t("activeIngredient")}</Label>
