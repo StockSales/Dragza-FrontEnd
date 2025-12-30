@@ -229,36 +229,28 @@ const EditProduct = () => {
             </div>
 <div className="flex items-center flex-wrap gap-4 md:gap-0">
   <Label className="w-[150px] flex-none">{t("category")}</Label>
-  
-  {/* Debug output - remove in production */}
-  <div className="text-xs text-gray-500">
-    Current: {formData.categoryId} | Type: {typeof formData.categoryId}
-  </div>
-  
   <Select 
     value={formData.categoryId}
     onValueChange={(value) => {
-      console.log("Selected category:", value);
       setFormData({...formData, categoryId: value});
     }}
   >
     <SelectTrigger className="flex-1 cursor-pointer">
-      <SelectValue placeholder={t("selectCategory")} />
+      <SelectValue placeholder={t("selectCategory")}>
+        {formData.categoryId && categories.find((c: any) => c.id.toString() === formData.categoryId)?.name}
+      </SelectValue>
     </SelectTrigger>
     <SelectContent>
       <SelectGroup>
         <SelectLabel>{t("category")}</SelectLabel>
-        {categories.map((category: any) => {
-          console.log("Category option:", category.id, typeof category.id, category.name);
-          return (
-            <SelectItem
-              key={category.id}
-              value={String(category.id)} // Force string conversion
-            >
-              {category.name}
-            </SelectItem>
-          );
-        })}
+        {categories.map((category: any) => (
+          <SelectItem
+            key={category.id}
+            value={String(category.id)}
+          >
+            {category.name}
+          </SelectItem>
+        ))}
       </SelectGroup>
     </SelectContent>
   </Select>
