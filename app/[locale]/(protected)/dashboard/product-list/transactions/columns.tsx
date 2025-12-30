@@ -65,7 +65,9 @@ export const baseColumns = ({
     {
       accessorKey: "category",
       header: t("category"),
-      cell: ({ row }) => <span>{row.original.category.name}</span>,
+      cell: ({ row }) => (
+        <span>{row.original.category?.name ?? t("unknown")}</span>
+      ),
     },
     {
       accessorKey: "activeIngredient",
