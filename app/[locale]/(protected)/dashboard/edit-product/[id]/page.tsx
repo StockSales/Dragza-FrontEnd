@@ -101,11 +101,7 @@ const EditProduct = () => {
     data.append("description", formData.description);
     data.append("categoryId", formData.categoryId);
     data.append("activeIngredientId", formData.activeIngredientId);
-    
-    // Only append image if it's a new file
-    if (formData.image instanceof File) {
-      data.append("image", formData.image);
-    }
+    data.append("image", formData.image);
 
     try {
      const { success: isUpdated, error} = await updatingProductById(productId, data)
@@ -133,7 +129,18 @@ const EditProduct = () => {
     if (productId) getProductById(productId)
   }, [productId]);
 
-  // Update form data when product is loaded
+  // // If product is undefined after loading is done, show error
+  //   useEffect(() => {
+  //       if (loading == false && !product) {
+  //         toast.error("Something went wrong", {
+  //             description: "Please, reload the page",
+  //         });
+  //         setTimeout(() => {
+  //           router.push('/dashboard/product-list');
+  //         }, 2000);
+  //       }
+  //   }, [loading, product]);
+
   useEffect(() => {
     if (product) {
         setFormData({
@@ -141,9 +148,9 @@ const EditProduct = () => {
             arabicName: product.arabicName || "",
             pref: product.preef || "",
             description: product.description || "",
-            categoryId: String(product.category?.id) || "" ,
-            activeIngredientId: product.activeIngredient?.id || "",
-            image: null // Reset image to null when loading existing product
+            categoryId: String(product.category.id) || "" ,
+            activeIngredientId: product.activeIngredient.id || "",
+            image: product.image || ""
         })
     }
   }, [product]);
@@ -208,32 +215,22 @@ const EditProduct = () => {
               <Label className="w-[150px] flex-none" htmlFor="image">
                 {t("productPhoto")}
               </Label>
-              <div className="flex-1">
-                <Input
-                    id="image"
-                    type="file"
-                    accept="image/*"
-                    onChange={(e) => {
-                      const file = e.target.files?.[0];
-                      if (file) {
-                        setFormData({ ...formData, image: file });
-                      }
-                    }}
-                />
-                {product?.image && !formData.image && (
-                  <p className="text-sm text-muted-foreground mt-1">
-                    Current image: {product.image}
-                  </p>
-                )}
-              </div>
+              <Input
+                  id="image"
+                  type="file"
+                  accept="image/*"
+                  onChange={(e) => {
+                    const file = e.target.files?.[0];
+                    if (file) {
+                      setFormData({ ...formData, image: file });
+                    }
+                  }}
+              />
             </div>
 
             <div className="flex items-center flex-wrap gap-4 md:gap-0">
               <Label className="w-[150px] flex-none">{t("category")}</Label>
-              <Select 
-                value={formData.categoryId} 
-                onValueChange={(value) => setFormData({...formData, categoryId: value})}
-              >
+              <Select value={product?.category.id?.toString()} onValueChange={(value) => setFormData({...formData, categoryId: value})}>
                 <SelectTrigger className="flex-1 cursor-pointer">
                   <SelectValue placeholder={t("selectCategory")} />
                 </SelectTrigger>
@@ -243,7 +240,7 @@ const EditProduct = () => {
                     {categories.map((category: any) => (
                         <SelectItem
                             key={category.id}
-                            value={String(category.id)}
+                            value={category.id}
                         >
                           {category.name}
                         </SelectItem>
@@ -275,7 +272,7 @@ const EditProduct = () => {
                     <SelectLabel>{t("activeIngredient")}</SelectLabel>
                     {filteredActiveIngredients.length > 0 ? (
                       filteredActiveIngredients.map((active: any) => (
-                        <SelectItem key={active.id} value={String(active.id)}>
+                        <SelectItem key={active.id} value={active.id}>
                           {active.name}
                         </SelectItem>
                       ))
@@ -287,7 +284,9 @@ const EditProduct = () => {
               </Select>
             </div>
 
-            <div className="flex items-center flex-wrap">
+
+
+              <div className="flex items-center flex-wrap">
               <Label className="w-[150px] flex-none" htmlFor="Description">
                 {t("description")}
               </Label>
@@ -295,63 +294,51 @@ const EditProduct = () => {
                   id="Description"
                   placeholder={t("description")}
                   value={formData?.description}
-                  onChange={(e) => setFormData({...formData, description: e.target.value})}
               />
             </div>
           </CardContent>
         </Card>
 
         {product?.prices && product?.prices.length > 0 && (
-          <Card>
-            <CardHeader className="border-b border-solid border-default-200 mb-6">
-              <CardTitle>{t("productPrice")}</CardTitle>
-            </CardHeader>
-            <CardContent className="space-y-4">
-              <Accordion type="single" collapsible className="w-full">
-                {product.prices.map((item: Price, index: number) => (
-                  <AccordionItem
-                    value={`value-${index + 1}`}
-                    key={`changelog-${index}`}
-                    className="border-default-100"
-                  >
-                    <AccordionTrigger className="cursor-pointer">
-                      <div>
-                        {item.inventoryUserName}
-                        <span className="font-semibold text-xs text-default-400">
-                          {" "}– {t("publishedDate")} {formatDateToDMY(item.creationDate)}
-                        </span>
-                      </div>
-                    </AccordionTrigger>
-                    <AccordionContent>
-                      <div className="border border-solid border-default-200 rounded-lg overflow-hidden border-t-0 p-4 space-y-2">
-                        <p><strong>{t("purchasePrice")}:</strong> {item.purchasePrice}</p>
-                        <p><strong>{t("salesPrice")}:</strong> {item.salesPrice}</p>
-                        <p><strong>{t("stockQuantity")}:</strong> {item.stockQuantity}</p>
-                      </div>
-                    </AccordionContent>
-                  </AccordionItem>
-                ))}
-              </Accordion>
-            </CardContent>
-          </Card>
-        )}
+  <Card>
+    <CardHeader className="border-b border-solid border-default-200 mb-6">
+      <CardTitle>{t("productPrice")}</CardTitle>
+    </CardHeader>
+    <CardContent className="space-y-4">
+      <Accordion type="single" collapsible className="w-full">
+        {product.prices.map((item: Price, index: number) => (
+          <AccordionItem
+            value={`value-${index + 1}`}
+            key={`changelog-${index}`}
+            className="border-default-100"
+          >
+            <AccordionTrigger className="cursor-pointer">
+              <div>
+                {item.inventoryUserName}
+                <span className="font-semibold text-xs text-default-400">
+                  {" "}– {t("publishedDate")} {formatDateToDMY(item.creationDate)}
+                </span>
+              </div>
+            </AccordionTrigger>
+            <AccordionContent>
+              {/* You can show details of this specific price item here */}
+              <div className="border border-solid border-default-200 rounded-lg overflow-hidden border-t-0 p-4 space-y-2">
+                <p><strong>{t("purchasePrice")}:</strong> {item.purchasePrice}</p>
+                <p><strong>{t("salesPrice")}:</strong> {item.salesPrice}</p>
+                <p><strong>{t("stockQuantity")}:</strong> {item.stockQuantity}</p>
+              </div>
+            </AccordionContent>
+          </AccordionItem>
+        ))}
+      </Accordion>
+    </CardContent>
+  </Card>
+)}
 
       </div>
 
       <div className="col-span-12 flex justify-end">
-        <Button 
-          onClick={() => handleUpdateProduct(productId, formData)}
-          disabled={updateProductLoading}
-        >
-          {updateProductLoading ? (
-            <>
-              <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-              {t("updating")}
-            </>
-          ) : (
-            t("updateProduct")
-          )}
-        </Button>
+        <Button onClick={() => handleUpdateProduct(productId, formData)}>{t("updateProduct")}</Button>
       </div>
     </div>
   );
