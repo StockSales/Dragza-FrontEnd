@@ -15,18 +15,18 @@ import {
 } from "@/components/ui/select";
 import { Switch } from "@/components/ui/switch";
 import { Textarea } from "@/components/ui/textarea";
-import {useParams} from "next/navigation";
+import { useParams } from "next/navigation";
 import useGettingProductById from "@/services/products/gettingProductById";
-import {useEffect, useState} from "react";
-import {toast} from "sonner";
-import {useRouter} from "@/i18n/routing";
-import {Loader2} from "lucide-react";
+import { useEffect, useState } from "react";
+import { toast } from "sonner";
+import { useRouter } from "@/i18n/routing";
+import { Loader2 } from "lucide-react";
 import GetCategories from "@/services/categories/getCategories";
 import useGettingAllActiveIngredient from "@/services/ActiveIngerients/gettingAllActiveIngerients";
-import {Accordion, AccordionContent, AccordionItem, AccordionTrigger} from "@/components/ui/accordion";
-import {formatDateToDMY} from "@/utils";
-import {Price} from "@/types/price";
-import {Table, TableBody, TableCell, TableHead, TableHeader, TableRow} from "@/components/ui/table";
+import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "@/components/ui/accordion";
+import { formatDateToDMY } from "@/utils";
+import { Price } from "@/types/price";
+import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import {
   flexRender,
   getCoreRowModel,
@@ -35,7 +35,7 @@ import {
   getSortedRowModel,
   useReactTable
 } from "@tanstack/react-table";
-import {productColumns} from "@/app/[locale]/(protected)/dashboard/edit-product/[id]/columns";
+import { productColumns } from "@/app/[locale]/(protected)/dashboard/edit-product/[id]/columns";
 import useUpdateProductById from "@/services/products/UpdateProductById";
 import { useTranslations } from "next-intl";
 
@@ -45,10 +45,10 @@ const EditProduct = () => {
   const router = useRouter();
 
   // update product
-  const { loading: updateProductLoading, updatingProductById, error: updateProductError} = useUpdateProductById()
+  const { loading: updateProductLoading, updatingProductById, error: updateProductError } = useUpdateProductById()
 
   // states for getting all categories
-  const {data: categories, gettingAllCategories, loading: gettingAllCategoriesLoading} = GetCategories()
+  const { data: categories, gettingAllCategories, loading: gettingAllCategoriesLoading } = GetCategories()
 
   // getting all Active Ingredients
   const { loading: gettingAllActiveIngredientsLoading, activeIngredients, gettingAllActiveIngredients } = useGettingAllActiveIngredient()
@@ -69,7 +69,7 @@ const EditProduct = () => {
   const productId = params?.id as string;
 
   // function to get product by id
-  const {getProductById, product, loading, error} = useGettingProductById()
+  const { getProductById, product, loading, error } = useGettingProductById()
 
 
   const [activeIngredientSearch, setActiveIngredientSearch] = useState<string>("");
@@ -104,7 +104,7 @@ const EditProduct = () => {
     data.append("image", formData.image);
 
     try {
-     const { success: isUpdated, error} = await updatingProductById(productId, data)
+      const { success: isUpdated, error } = await updatingProductById(productId, data)
       if (isUpdated) {
         toast.success(t("Product updated successfully"));
         setTimeout(() => {
@@ -143,15 +143,15 @@ const EditProduct = () => {
 
   useEffect(() => {
     if (product) {
-        setFormData({
-            name: product.name || "",
-            arabicName: product.arabicName || "",
-            pref: product.preef || "",
-            description: product.description || "",
-            categoryId: String(product.category.id) || "" ,
-            activeIngredientId: product.activeIngredient.id || "",
-            image: product.image || ""
-        })
+      setFormData({
+        name: product.name || "",
+        arabicName: product.arabicName || "",
+        pref: product.preef || "",
+        description: product.description || "",
+        categoryId: String(product.category.id) || "",
+        activeIngredientId: product.activeIngredient.id || "",
+        image: product.image || ""
+      })
     }
   }, [product]);
 
@@ -177,11 +177,11 @@ const EditProduct = () => {
                 {t("productName")}
               </Label>
               <Input
-                  id="h_Fullname"
-                  type="text"
-                  placeholder={t("productName")}
-                  value={formData?.name}
-                  onChange={(e) => setFormData({...formData, name: e.target.value})}
+                id="h_Fullname"
+                type="text"
+                placeholder={t("productName")}
+                value={formData?.name}
+                onChange={(e) => setFormData({ ...formData, name: e.target.value })}
               />
             </div>
 
@@ -190,11 +190,11 @@ const EditProduct = () => {
                 {t("arabicName")}
               </Label>
               <Input
-                  id="arabicName"
-                  type="text"
-                  placeholder={t("arabicName")}
-                  value={formData?.arabicName}
-                  onChange={(e) => setFormData({...formData, arabicName: e.target.value})}
+                id="arabicName"
+                type="text"
+                placeholder={t("arabicName")}
+                value={formData?.arabicName}
+                onChange={(e) => setFormData({ ...formData, arabicName: e.target.value })}
               />
             </div>
 
@@ -203,11 +203,11 @@ const EditProduct = () => {
                 {t("company")}
               </Label>
               <Input
-                  id="pref"
-                  type="text"
-                  placeholder={t("company")}
-                  value={formData?.pref}
-                    onChange={(e) => setFormData({...formData, pref: e.target.value})}
+                id="pref"
+                type="text"
+                placeholder={t("company")}
+                value={formData?.pref}
+                onChange={(e) => setFormData({ ...formData, pref: e.target.value })}
               />
             </div>
 
@@ -216,45 +216,45 @@ const EditProduct = () => {
                 {t("productPhoto")}
               </Label>
               <Input
-                  id="image"
-                  type="file"
-                  accept="image/*"
-                  onChange={(e) => {
-                    const file = e.target.files?.[0];
-                    if (file) {
-                      setFormData({ ...formData, image: file });
-                    }
-                  }}
+                id="image"
+                type="file"
+                accept="image/*"
+                onChange={(e) => {
+                  const file = e.target.files?.[0];
+                  if (file) {
+                    setFormData({ ...formData, image: file });
+                  }
+                }}
               />
             </div>
-<div className="flex items-center flex-wrap gap-4 md:gap-0">
-  <Label className="w-[150px] flex-none">{t("category")}</Label>
+            <div className="flex items-center flex-wrap gap-4 md:gap-0">
+              <Label className="w-[150px] flex-none">{t("category")}</Label>
 
-  <Select
-    value={formData.categoryId}
-    onValueChange={(value) => {
-      setFormData({ ...formData, categoryId: value });
-    }}
-  >
-    <SelectTrigger className="flex-1 cursor-pointer">
-      <SelectValue placeholder={t("selectCategory")} />
-    </SelectTrigger>
+              <Select
+                value={formData.categoryId}
+                onValueChange={(value) => {
+                  setFormData({ ...formData, categoryId: value });
+                }}
+              >
+                <SelectTrigger className="flex-1 cursor-pointer">
+                  <SelectValue placeholder={t("selectCategory")} />
+                </SelectTrigger>
 
-    <SelectContent>
-      <SelectGroup>
-        <SelectLabel>{t("category")}</SelectLabel>
-        {categories.map((category: any) => (
-          <SelectItem
-            key={category.id}
-            value={String(category.id)}
-          >
-            {category.name}
-          </SelectItem>
-        ))}
-      </SelectGroup>
-    </SelectContent>
-  </Select>
-</div>
+                <SelectContent>
+                  <SelectGroup>
+                    <SelectLabel>{t("category")}</SelectLabel>
+                    {categories.map((category: any) => (
+                      <SelectItem
+                        key={category.id}
+                        value={String(category.id)}
+                      >
+                        {category.name}
+                      </SelectItem>
+                    ))}
+                  </SelectGroup>
+                </SelectContent>
+              </Select>
+            </div>
 
 
             <div className="flex items-center flex-wrap gap-4 md:gap-0">
@@ -293,54 +293,61 @@ const EditProduct = () => {
 
 
 
-              <div className="flex items-center flex-wrap">
+            <div className="flex items-center flex-wrap">
               <Label className="w-[150px] flex-none" htmlFor="Description">
                 {t("description")}
               </Label>
-              <Textarea
-                  id="Description"
-                  placeholder={t("description")}
-                  value={formData?.description}
+               <Input
+                id="Description"
+                type="text"
+                placeholder={t("description")}
+                value={formData?.description}
+                onChange={(e) => setFormData({ ...formData, description: e.target.value })}
               />
+              {/* <Textarea
+                id="Description
+                placeholder={t("description")}
+                value={formData?.description}
+              /> */}
             </div>
           </CardContent>
         </Card>
 
         {product?.prices && product?.prices.length > 0 && (
-  <Card>
-    <CardHeader className="border-b border-solid border-default-200 mb-6">
-      <CardTitle>{t("productPrice")}</CardTitle>
-    </CardHeader>
-    <CardContent className="space-y-4">
-      <Accordion type="single" collapsible className="w-full">
-        {product.prices.map((item: Price, index: number) => (
-          <AccordionItem
-            value={`value-${index + 1}`}
-            key={`changelog-${index}`}
-            className="border-default-100"
-          >
-            <AccordionTrigger className="cursor-pointer">
-              <div>
-                {item.inventoryUserName}
-                <span className="font-semibold text-xs text-default-400">
-                  {" "}– {t("publishedDate")} {formatDateToDMY(item.creationDate)}
-                </span>
-              </div>
-            </AccordionTrigger>
-            <AccordionContent>
-              {/* You can show details of this specific price item here */}
-              <div className="border border-solid border-default-200 rounded-lg overflow-hidden border-t-0 p-4 space-y-2">
-                <p><strong>{t("purchasePrice")}:</strong> {item.purchasePrice}</p>
-                <p><strong>{t("salesPrice")}:</strong> {item.salesPrice}</p>
-                <p><strong>{t("stockQuantity")}:</strong> {item.stockQuantity}</p>
-              </div>
-            </AccordionContent>
-          </AccordionItem>
-        ))}
-      </Accordion>
-    </CardContent>
-  </Card>
-)}
+          <Card>
+            <CardHeader className="border-b border-solid border-default-200 mb-6">
+              <CardTitle>{t("productPrice")}</CardTitle>
+            </CardHeader>
+            <CardContent className="space-y-4">
+              <Accordion type="single" collapsible className="w-full">
+                {product.prices.map((item: Price, index: number) => (
+                  <AccordionItem
+                    value={`value-${index + 1}`}
+                    key={`changelog-${index}`}
+                    className="border-default-100"
+                  >
+                    <AccordionTrigger className="cursor-pointer">
+                      <div>
+                        {item.inventoryUserName}
+                        <span className="font-semibold text-xs text-default-400">
+                          {" "}– {t("publishedDate")} {formatDateToDMY(item.creationDate)}
+                        </span>
+                      </div>
+                    </AccordionTrigger>
+                    <AccordionContent>
+                      {/* You can show details of this specific price item here */}
+                      <div className="border border-solid border-default-200 rounded-lg overflow-hidden border-t-0 p-4 space-y-2">
+                        <p><strong>{t("purchasePrice")}:</strong> {item.purchasePrice}</p>
+                        <p><strong>{t("salesPrice")}:</strong> {item.salesPrice}</p>
+                        <p><strong>{t("stockQuantity")}:</strong> {item.stockQuantity}</p>
+                      </div>
+                    </AccordionContent>
+                  </AccordionItem>
+                ))}
+              </Accordion>
+            </CardContent>
+          </Card>
+        )}
 
       </div>
 
