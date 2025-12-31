@@ -292,7 +292,7 @@ const EditProduct = () => {
             </div>
 
 
-
+                                 
             <div className="flex items-center flex-wrap">
               <Label className="w-[150px] flex-none" htmlFor="Description">
                 {t("description")}
@@ -304,11 +304,7 @@ const EditProduct = () => {
                 value={formData?.description}
                 onChange={(e) => setFormData({ ...formData, description: e.target.value })}
               />
-              {/* <Textarea
-                id="Description
-                placeholder={t("description")}
-                value={formData?.description}
-              /> */}
+            
             </div>
           </CardContent>
         </Card>
