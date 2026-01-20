@@ -14,7 +14,6 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import { Switch } from "@/components/ui/switch";
 import { Textarea } from "@/components/ui/textarea";
 import GetCategories from "@/services/categories/getCategories";
 import { Loader2 } from "lucide-react";
@@ -28,7 +27,6 @@ const AddProduct = () => {
   const t = useTranslations("productList");
   const router = useRouter();
 
-  // states for product
   const [name, setName] = useState<string>("")
   const [arabicName, setArabicName] = useState<string>("")
   const [preef, setPref] = useState<string>("")
@@ -37,24 +35,33 @@ const AddProduct = () => {
   const [photo, setPhoto] = useState<File | null>(null);
   const [activeIngredientId, setActiveIngredient] = useState<string>("")
   const [activeIngredientSearch, setActiveIngredientSearch] = useState<string>("");
+  const [categorySearch, setCategorySearch] = useState<string>("");
+  const [filteredCategories, setFilteredCategories] = useState<any[]>([]);
 
-
-
-
-  // getting all categories
   const { loading: gettingAllCatLoading, data, gettingAllCategories } = GetCategories()
-
-  // getting all active ingredients
+  
   const { activeIngredients, loading: gettingAllActiveIngredientsLoading, error: gettingAllActiveIngredientsError, gettingAllActiveIngredients } = useGettingAllActiveIngredient()
-
-  // Create new Product
+  
   const { createProduct, isCreated, loading: creatingProductLoading, error } = useCreateProduct()
 
   const filteredActiveIngredients = activeIngredients.filter((item: any) =>
     item.name.toLowerCase().includes(activeIngredientSearch.toLowerCase())
   );
 
-  // on submit
+  // Filter categories based on search input
+  useEffect(() => {
+    if (data && data.length > 0) {
+      if (categorySearch.trim() === "") {
+        setFilteredCategories(data);
+      } else {
+        const filtered = data.filter((category: any) =>
+          category.name.toLowerCase().includes(categorySearch.toLowerCase())
+        );
+        setFilteredCategories(filtered);
+      }
+    }
+  }, [categorySearch, data]);
+
   const onSubmit = async () => {
     if (!name.trim()) {
       toast.error(t("nameValidation"));
@@ -104,11 +111,17 @@ const AddProduct = () => {
     }
   }
 
-  // mounted data
   useEffect(() => {
     gettingAllCategories()
     gettingAllActiveIngredients()
   }, []);
+
+  // Initialize filteredCategories when data is loaded
+  useEffect(() => {
+    if (data && data.length > 0) {
+      setFilteredCategories(data);
+    }
+  }, [data]);
 
   if (gettingAllCatLoading == true || gettingAllActiveIngredientsLoading == true) {
     return (
@@ -187,17 +200,32 @@ const AddProduct = () => {
                 <SelectTrigger className="flex-1 cursor-pointer">
                   <SelectValue placeholder={t("selectCategoryPlaceholder")} />
                 </SelectTrigger>
-                <SelectContent>
+                <SelectContent onCloseAutoFocus={(e) => e.preventDefault()}>
+                  {/* Search Bar for Categories */}
+                  <div className="px-2 py-1" tabIndex={-1}>
+                    <Input
+                      placeholder={t("searchCategory") || "Search categories..."}
+                      value={categorySearch}
+                      onChange={(e) => setCategorySearch(e.target.value)}
+                      className="w-full"
+                    />
+                  </div>
                   <SelectGroup>
                     <SelectLabel>{t("category")}</SelectLabel>
-                    {data.map((category: any) => (
-                      <SelectItem
-                        key={category.id}
-                        value={category.id}
-                      >
-                        {category.name}
+                    {filteredCategories.length > 0 ? (
+                      filteredCategories.map((category: any) => (
+                        <SelectItem
+                          key={category.id}
+                          value={category.id}
+                        >
+                          {category.name}
+                        </SelectItem>
+                      ))
+                    ) : (
+                      <SelectItem value="null" className="px-2 py-1 text-sm text-muted-foreground">
+                        {t("noCategoryFound")}
                       </SelectItem>
-                    ))}
+                    )}
                   </SelectGroup>
                 </SelectContent>
               </Select>
@@ -236,7 +264,6 @@ const AddProduct = () => {
               </Select>
             </div>
 
-
             <div className="flex items-center flex-wrap">
               <Label className="w-[150px] flex-none" htmlFor="desc">
                 {t("description")}
@@ -255,6 +282,7 @@ const AddProduct = () => {
         <Button
           className={`cursor-pointer ${creatingProductLoading === true ? "cursor-not-allowed" : ""}`}
           onClick={() => onSubmit()}
+          disabled={creatingProductLoading}
         >
           {creatingProductLoading === true ? <Loader2 className="mr-2 h-4 w-4 animate-spin" /> : t("save")}
         </Button>
