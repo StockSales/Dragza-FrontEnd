@@ -635,6 +635,8 @@
     "selectCompany": "اختر الشركة",
     "selectActiveIngredient": "اختر المكون النشط",
     "searchActiveIngredient": "ابحث عن المكون النشط",
+    "noCategoryFound":"لا توجد فئة مماثلة",
+    "searchCategory": "ابحث عن الفئة",
     "noResultsFound": "لا توجد نتائج",
     "productPrice": "سعر المنتج",
     "publishedDate": "تاريخ النشر",

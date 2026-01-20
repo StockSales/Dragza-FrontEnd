@@ -48,7 +48,6 @@ const AddProduct = () => {
     item.name.toLowerCase().includes(activeIngredientSearch.toLowerCase())
   );
 
-  // Filter categories based on search input
   useEffect(() => {
     if (data && data.length > 0) {
       if (categorySearch.trim() === "") {
@@ -116,7 +115,6 @@ const AddProduct = () => {
     gettingAllActiveIngredients()
   }, []);
 
-  // Initialize filteredCategories when data is loaded
   useEffect(() => {
     if (data && data.length > 0) {
       setFilteredCategories(data);
@@ -201,7 +199,6 @@ const AddProduct = () => {
                   <SelectValue placeholder={t("selectCategoryPlaceholder")} />
                 </SelectTrigger>
                 <SelectContent onCloseAutoFocus={(e) => e.preventDefault()}>
-                  {/* Search Bar for Categories */}
                   <div className="px-2 py-1" tabIndex={-1}>
                     <Input
                       placeholder={t("searchCategory") || "Search categories..."}

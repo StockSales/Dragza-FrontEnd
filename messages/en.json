@@ -674,6 +674,8 @@
     "selectCompany": "Select Company",
     "selectActiveIngredient": "Select Active Ingredient",
     "searchActiveIngredient": "Search Active Ingredient",
+    "noCategoryFound":"No Category Found",
+    "searchCategory": "Search Category",
     "noResultsFound": "No results found",
     "productPrice": "Product Price",
     "publishedDate": "Published Date",
