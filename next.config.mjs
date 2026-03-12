@@ -1,19 +1,22 @@
 import createNextIntlPlugin from "next-intl/plugin";
 import nextra from "nextra";
 
-/** @type {import('next').NextConfig} */
-
 const withNextIntl = createNextIntlPlugin();
 
 const withNextra = nextra({
   theme: "nextra-theme-docs",
   themeConfig: "./theme.config.tsx",
 });
+
+/** @type {import('next').NextConfig} */
+
 const nextConfig = {
-  // output: 'export',
+  output: 'standalone', 
+  
   eslint: {
     ignoreDuringBuilds: true,
   },
+  
   images: {
     remotePatterns: [
       {
