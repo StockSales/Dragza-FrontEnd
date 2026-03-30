@@ -16,7 +16,6 @@ export const baseColumns = ({
 }): ColumnDef<ProductType>[] => {
   const userRole = Cookies.get("userRole");
 
-  // ===== الأعمدة الأساسية =====
   const columns: ColumnDef<ProductType>[] = [
     {
       accessorKey: "name",
@@ -76,7 +75,6 @@ export const baseColumns = ({
     },
   ];
 
-  // ===== إضافة عمود Actions فقط للـ Admin =====
   if (userRole === "Admin") {
     columns.push({
       id: "actions",
@@ -128,7 +126,6 @@ export const baseColumns = ({
 
         return (
           <div className="flex items-center gap-1">
-            {/* زر Edit */}
             <Link
               href={`/dashboard/edit-product/${row.original.id}`}
               className="flex items-center p-2 border-b text-info hover:text-info-foreground bg-info/40 hover:bg-info duration-200 transition-all rounded-full"
@@ -136,7 +133,6 @@ export const baseColumns = ({
               <SquarePen className="w-4 h-4" />
             </Link>
 
-            {/* زر Delete */}
             <div
               onClick={() => handleDeleteProduct(row.original.id)}
               className="flex items-center p-2 text-destructive bg-destructive/40 duration-200 transition-all hover:bg-destructive/80 hover:text-destructive-foreground rounded-full"

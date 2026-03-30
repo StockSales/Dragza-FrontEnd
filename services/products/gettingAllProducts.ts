@@ -7,72 +7,49 @@ function useGettingAllProducts() {
   const [products, setProducts] = useState<ProductType[]>([]);
   const [error, setError] = useState<string | null>(null);
   const [includeDeletedState, setIncludeDeletedState] = useState<string>("false");
+
   const [totalItems, setTotalItems] = useState<number>(0);
   const [totalPages, setTotalPages] = useState<number>(1);
+  const [currentPage, setCurrentPage] = useState<number>(1);
 
-  // Get all products at once (for client-side pagination - current behavior)
-  const getAllProducts = async (includeDeleted: string) => {
+  const getAllProducts = async (
+    includeDeleted: string,
+    page: number = 1,
+    size: number = 50
+  ) => {
     setLoading(true);
     setError(null);
-    setIncludeDeletedState(includeDeleted);
 
     try {
-      // Fetch first page to get total count
-      const firstResponse = await AxiosInstance.get(
-        `/api/Products/GetProducts?includeDeleted=${includeDeleted}&page=1&size=50`
+      const response = await AxiosInstance.get(
+        `/api/Products/GetProducts?includeDeleted=${includeDeleted}&page=${page}&size=${size}`
       );
 
-      if (firstResponse.status === 204) {
+      if (response.status === 204) {
         setProducts([]);
         setTotalItems(0);
         setTotalPages(1);
-        setLoading(false);
         return;
       }
 
-      if (firstResponse.status === 200 || firstResponse.status === 201) {
-        if (!firstResponse.data || !firstResponse.data.data) {
+      if (response.status === 200 || response.status === 201) {
+        if (!response.data || !response.data.data) {
           setProducts([]);
           setTotalItems(0);
           setTotalPages(1);
-          setLoading(false);
           return;
         }
 
-        // Extract pagination info (totalPages, totalItems)
-        const totalPages = firstResponse.data.totalPages || 1;
-        const totalItems = firstResponse.data.totalItems || firstResponse.data.data.length;
-
-        setTotalItems(totalItems);
-        setTotalPages(totalPages);
-
-        let allProducts = [...firstResponse.data.data];
-
-        // Fetch remaining pages if there are more
-        if (totalPages > 1) {
-          const requests = [];
-          for (let page = 2; page <= totalPages; page++) {
-            requests.push(
-              AxiosInstance.get(
-                `/api/Products/GetProducts?includeDeleted=${includeDeleted}&page=${page}&size=50`
-              )
-            );
-          }
-
-          const results = await Promise.all(requests);
-          results.forEach((res) => {
-            if ((res.status === 200 || res.status === 201) && res.data?.data) {
-              allProducts = [...allProducts, ...res.data.data];
-            }
-          });
-        }
-
-        setProducts(allProducts);
+        setProducts(response.data.data);
+        setTotalItems(response.data.totalItems || response.data.data.length);
+        setTotalPages(response.data.totalPages || 1);
+        setCurrentPage(page);
+        setIncludeDeletedState(includeDeleted);
       } else {
-        if (firstResponse.data?.errors) {
-          const firstKey = Object.keys(firstResponse.data.errors)[0];
+        if (response.data?.errors) {
+          const firstKey = Object.keys(response.data.errors)[0];
           const firstMessage =
-            firstResponse.data.errors[firstKey]?.[0] || "Unknown error";
+            response.data.errors[firstKey]?.[0] || "Unknown error";
           setError(`${firstKey}: ${firstMessage}`);
         } else {
           setError("An unexpected error occurred.");
@@ -110,8 +87,10 @@ function useGettingAllProducts() {
     products,
     includeDeleted: includeDeletedState,
     setIncludeDeletedState,
-    totalItems, // Return totalItems
-    totalPages, // Return totalPages
+    totalItems,
+    totalPages,
+    currentPage,
+    setCurrentPage,
   };
 }
 

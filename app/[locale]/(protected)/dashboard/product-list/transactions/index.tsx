@@ -50,6 +50,9 @@ const TransactionsTable = () => {
     setIncludeDeletedState,
     totalItems,
     totalPages: apiTotalPages,
+    currentPage,
+    setCurrentPage,
+    
   } = useGettingAllProducts();
 
   const {
@@ -64,31 +67,25 @@ const TransactionsTable = () => {
   const [rowSelection, setRowSelection] = React.useState({});
   const [filteredProducts, setFilteredProducts] = useState<ProductType[]>([]);
 
-  const columns = baseColumns({ refresh: () => getAllProducts("false"), t });
+  const columns = baseColumns({ refresh: () => getAllProducts(includeDeleted, currentPage), t });
 
-  const table = useReactTable({
-    data: filteredProducts ?? [],
-    columns,
-    onSortingChange: setSorting,
-    onColumnFiltersChange: setColumnFilters,
-    getCoreRowModel: getCoreRowModel(),
-    getPaginationRowModel: getPaginationRowModel(),
-    getSortedRowModel: getSortedRowModel(),
-    getFilteredRowModel: getFilteredRowModel(),
-    onColumnVisibilityChange: setColumnVisibility,
-    onRowSelectionChange: setRowSelection,
-    initialState: {
-      pagination: {
-        pageSize: 50, // Set page size to 50
-      },
-    },
-    state: {
-      sorting,
-      columnFilters,
-      columnVisibility,
-      rowSelection,
-    },
-  });
+const table = useReactTable({
+  data: filteredProducts ?? [],
+  columns,
+  onSortingChange: setSorting,
+  onColumnFiltersChange: setColumnFilters,
+  getCoreRowModel: getCoreRowModel(),
+  getSortedRowModel: getSortedRowModel(),
+  getFilteredRowModel: getFilteredRowModel(),
+  onColumnVisibilityChange: setColumnVisibility,
+  onRowSelectionChange: setRowSelection,
+  state: {
+    sorting,
+    columnFilters,
+    columnVisibility,
+    rowSelection,
+  },
+});
 
   const transformedProducts = (data ?? []).map((product) => {
     const allPrices = product.prices ?? [];
@@ -136,9 +133,9 @@ const TransactionsTable = () => {
     gettingAllCategories();
   }, []);
 
-  useEffect(() => {
-    getAllProducts(includeDeleted);
-  }, [includeDeleted]);
+useEffect(() => {
+  getAllProducts(includeDeleted, currentPage);
+}, [includeDeleted, currentPage]);
 
   useEffect(() => {
     if (data) setFilteredProducts(data);
@@ -252,7 +249,26 @@ const TransactionsTable = () => {
           </CardContent>
 
           {/* Pagination component */}
-          <TablePagination table={table} />
+          {/* <TablePagination table={table} /> */}
+                    <div className="flex items-center justify-center gap-4 py-4">
+            <Button
+              disabled={currentPage === 1}
+              onClick={() => setCurrentPage((prev) => prev - 1)}
+            >
+              Prev
+            </Button>
+
+            <span>
+              Page {currentPage} of {apiTotalPages}
+            </span>
+
+            <Button
+              disabled={currentPage === apiTotalPages}
+              onClick={() => setCurrentPage((prev) => prev + 1)}
+            >
+              Next
+            </Button>
+          </div>
 
           {/* Optional: Show total items info */}
           <div className="text-center text-sm text-muted-foreground pb-4">
