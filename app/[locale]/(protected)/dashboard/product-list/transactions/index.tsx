@@ -8,7 +8,6 @@ import {
   flexRender,
   getCoreRowModel,
   getFilteredRowModel,
-  getPaginationRowModel,
   getSortedRowModel,
   useReactTable,
 } from "@tanstack/react-table";
@@ -21,7 +20,6 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
-import TablePagination from "./table-pagination";
 import { CardContent } from "@/components/ui/card";
 import { Link } from "@/i18n/routing";
 import { Button } from "@/components/ui/button";
@@ -31,8 +29,6 @@ import { Loader2 } from "lucide-react";
 import { toast } from "sonner";
 import GetCategories from "@/services/categories/getCategories";
 import Cookies from "js-cookie";
-import { ProductType } from "@/types/product";
-import SearchInput from "@/app/[locale]/(protected)/components/SearchInput/SearchInput";
 import { useTranslations } from "next-intl";
 import ExcelUploadButton from "@/app/[locale]/(protected)/dashboard/add-product-byExcel/ExcelUploadButton";
 
@@ -47,101 +43,66 @@ const TransactionsTable = () => {
     products: data,
     error,
     includeDeleted,
-    setIncludeDeletedState,
     totalItems,
     totalPages: apiTotalPages,
     currentPage,
     setCurrentPage,
-    
   } = useGettingAllProducts();
 
   const {
     loading: categoriesLoading,
-    data: categories,
     gettingAllCategories,
   } = GetCategories();
 
   const [sorting, setSorting] = React.useState<SortingState>([]);
-  const [columnFilters, setColumnFilters] = React.useState<ColumnFiltersState>([]);
-  const [columnVisibility, setColumnVisibility] = React.useState<VisibilityState>({});
+  const [columnFilters, setColumnFilters] = React.useState<ColumnFiltersState>(
+    []
+  );
+  const [columnVisibility, setColumnVisibility] =
+    React.useState<VisibilityState>({});
   const [rowSelection, setRowSelection] = React.useState({});
-  const [filteredProducts, setFilteredProducts] = useState<ProductType[]>([]);
 
-  const columns = baseColumns({ refresh: () => getAllProducts(includeDeleted, currentPage), t });
+  // ✅ search state
+  const [searchValue, setSearchValue] = useState("");
 
-const table = useReactTable({
-  data: filteredProducts ?? [],
-  columns,
-  onSortingChange: setSorting,
-  onColumnFiltersChange: setColumnFilters,
-  getCoreRowModel: getCoreRowModel(),
-  getSortedRowModel: getSortedRowModel(),
-  getFilteredRowModel: getFilteredRowModel(),
-  onColumnVisibilityChange: setColumnVisibility,
-  onRowSelectionChange: setRowSelection,
-  state: {
-    sorting,
-    columnFilters,
-    columnVisibility,
-    rowSelection,
-  },
-});
-
-  const transformedProducts = (data ?? []).map((product) => {
-    const allPrices = product.prices ?? [];
-    const userPrices = allPrices.filter((p) => p.inventoryUserId === userId);
-
-    let selectedPrice;
-    if (userPrices.length > 0) {
-      selectedPrice = userPrices.sort(
-        (a, b) =>
-          new Date(b.creationDate).getTime() -
-          new Date(a.creationDate).getTime()
-      )[0];
-    } else {
-      selectedPrice = allPrices.sort(
-        (a, b) =>
-          new Date(b.creationDate).getTime() -
-          new Date(a.creationDate).getTime()
-      )[0];
-    }
-
-    return {
-      id: product.id ?? "",
-      name: product.name,
-      salesPrice: selectedPrice?.salesPrice ?? "",
-      purchasePrice: selectedPrice?.purchasePrice ?? "",
-      creationDate: selectedPrice?.creationDate ?? "",
-      categoryName: product.category.name ?? "",
-      categoryId: product.category.id ?? "",
-    };
+  const columns = baseColumns({
+    refresh: () =>
+      getAllProducts(includeDeleted, currentPage, 50, searchValue),
+    t,
   });
 
-  const handleCSVUpload = async (file: File) => {
-    const formData = new FormData();
-    formData.append("file", file);
-
-    const res = await fetch("/api/upload-csv", {
-      method: "POST",
-      body: formData,
-    });
-
-    if (!res.ok) throw new Error("Upload failed");
-  };
+  const table = useReactTable({
+    data: data ?? [],
+    columns,
+    onSortingChange: setSorting,
+    onColumnFiltersChange: setColumnFilters,
+    getCoreRowModel: getCoreRowModel(),
+    getSortedRowModel: getSortedRowModel(),
+    getFilteredRowModel: getFilteredRowModel(),
+    onColumnVisibilityChange: setColumnVisibility,
+    onRowSelectionChange: setRowSelection,
+    state: {
+      sorting,
+      columnFilters,
+      columnVisibility,
+      rowSelection,
+    },
+  });
 
   useEffect(() => {
     gettingAllCategories();
   }, []);
 
-useEffect(() => {
-  getAllProducts(includeDeleted, currentPage);
-}, [includeDeleted, currentPage]);
-
+  // ✅ debounce + search + pagination
   useEffect(() => {
-    if (data) setFilteredProducts(data);
-  }, [data]);
+    const delay = setTimeout(() => {
+      getAllProducts(includeDeleted, currentPage, 50, searchValue);
+    }, 500);
 
-  if (categoriesLoading == true) {
+    return () => clearTimeout(delay);
+  }, [includeDeleted, currentPage, searchValue]);
+
+  if (categoriesLoading) {
     return (
       <div className="flex items-center justify-center h-full">
         <Loader2 className="w-6 h-6 animate-spin" />
@@ -157,74 +118,82 @@ useEffect(() => {
 
   return (
     <div className="w-full">
+      {/* Header */}
       <div className="flex justify-between flex-row items-center py-4 px-6 border-b border-solid border-default-200">
-        <div className="flex flex-row items-center w-full gap-4 justify-between">
-          <div className="flex items-center gap-4 w-full flex-wrap">
-            <SearchInput
-              data={data ?? []}
-              filterKey={"name"}
-              setFilteredData={setFilteredProducts}
-            />
-            {userRole == "Admin" && (
-              <div className="flex items-center gap-3">
-                <Link href="/dashboard/add-product">
-                  <Button size={"md"} variant="outline" color="secondary">
-                    {t("addProduct")}
-                  </Button>
-                </Link>
-                <ExcelUploadButton
-                  onSuccess={() => {
-                    getAllProducts(includeDeleted);
-                    toast.success(
-                      t("dataRefreshed") || "Product list refreshed"
-                    );
-                  }}
-                />
-              </div>
-            )}
-          </div>
+        <div className="flex items-center gap-4 w-full flex-wrap justify-between">
+          
+          {/* ✅ Search Input */}
+          <input
+            type="text"
+            placeholder="Search products..."
+            className="border px-3 py-2 rounded-md w-[250px]"
+            value={searchValue}
+            onChange={(e) => {
+              setCurrentPage(1); // 🔥 مهم
+              setSearchValue(e.target.value);
+            }}
+          />
+
+          {userRole == "Admin" && (
+            <div className="flex items-center gap-3">
+              <Link href="/dashboard/add-product">
+                <Button size={"md"} variant="outline" color="secondary">
+                  {t("addProduct")}
+                </Button>
+              </Link>
+
+              <ExcelUploadButton
+                onSuccess={() => {
+                  getAllProducts(
+                    includeDeleted,
+                    currentPage,
+                    50,
+                    searchValue
+                  );
+                  toast.success(
+                    t("dataRefreshed") || "Product list refreshed"
+                  );
+                }}
+              />
+            </div>
+          )}
         </div>
       </div>
 
-      {loading == true ? (
+      {/* Loading */}
+      {loading ? (
         <div className="flex items-center justify-center h-full">
           <Loader2 className="w-6 h-6 animate-spin" />
         </div>
       ) : (
         <>
+          {/* Table */}
           <CardContent className="pt-6">
             <div className="border border-solid border-default-200 rounded-lg overflow-hidden border-t-0">
               <Table>
                 <TableHeader className="bg-default-200">
                   {table.getHeaderGroups().map((headerGroup) => (
                     <TableRow key={headerGroup.id}>
-                      {headerGroup.headers.map((header) => {
-                        return (
-                          <TableHead
-                            className="last:text-start"
-                            key={header.id}
-                          >
-                            {header.isPlaceholder
-                              ? null
-                              : flexRender(
+                      {headerGroup.headers.map((header) => (
+                        <TableHead key={header.id}>
+                          {header.isPlaceholder
+                            ? null
+                            : flexRender(
                                 header.column.columnDef.header,
                                 header.getContext()
                               )}
-                          </TableHead>
-                        );
-                      })}
+                        </TableHead>
+                      ))}
                     </TableRow>
                   ))}
                 </TableHeader>
+
                 <TableBody>
                   {table.getRowModel().rows?.length ? (
                     table.getRowModel().rows.map((row) => (
-                      <TableRow
-                        key={row.id}
-                        data-state={row.getIsSelected() && "selected"}
-                      >
+                      <TableRow key={row.id}>
                         {row.getVisibleCells().map((cell) => (
-                          <TableCell key={cell.id} className="h-[75px]">
+                          <TableCell key={cell.id}>
                             {flexRender(
                               cell.column.columnDef.cell,
                               cell.getContext()
@@ -248,9 +217,8 @@ useEffect(() => {
             </div>
           </CardContent>
 
-          {/* Pagination component */}
-          {/* <TablePagination table={table} /> */}
-                    <div className="flex items-center justify-center gap-4 py-4">
+          {/* ✅ Pagination */}
+          <div className="flex items-center justify-center gap-4 py-4">
             <Button
               disabled={currentPage === 1}
               onClick={() => setCurrentPage((prev) => prev - 1)}
@@ -270,9 +238,10 @@ useEffect(() => {
             </Button>
           </div>
 
-          {/* Optional: Show total items info */}
+          {/* Info */}
           <div className="text-center text-sm text-muted-foreground pb-4">
-            {t("totalProducts") || "Total products"}: {totalItems} | {t("totalPages") || "Total pages"}: {apiTotalPages}
+            {t("totalProducts") || "Total products"}: {totalItems} |{" "}
+            {t("totalPages") || "Total pages"}: {apiTotalPages}
           </div>
         </>
       )}

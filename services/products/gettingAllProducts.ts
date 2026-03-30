@@ -12,17 +12,21 @@ function useGettingAllProducts() {
   const [totalPages, setTotalPages] = useState<number>(1);
   const [currentPage, setCurrentPage] = useState<number>(1);
 
+  // ✅ NEW: search state
+  const [search, setSearch] = useState<string>("");
+
   const getAllProducts = async (
     includeDeleted: string,
     page: number = 1,
-    size: number = 50
+    size: number = 50,
+    searchValue: string = ""
   ) => {
     setLoading(true);
     setError(null);
 
     try {
       const response = await AxiosInstance.get(
-        `/api/Products/GetProducts?includeDeleted=${includeDeleted}&page=${page}&size=${size}`
+        `/api/Products/GetProducts?includeDeleted=${includeDeleted}&page=${page}&size=${size}&search=${searchValue}`
       );
 
       if (response.status === 204) {
@@ -45,6 +49,7 @@ function useGettingAllProducts() {
         setTotalPages(response.data.totalPages || 1);
         setCurrentPage(page);
         setIncludeDeletedState(includeDeleted);
+        setSearch(searchValue); // ✅ حفظ قيمة السيرش
       } else {
         if (response.data?.errors) {
           const firstKey = Object.keys(response.data.errors)[0];
@@ -91,6 +96,8 @@ function useGettingAllProducts() {
     totalPages,
     currentPage,
     setCurrentPage,
+    search,        // ✅ NEW
+    setSearch,     // ✅ NEW
   };
 }
 
